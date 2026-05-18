@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Bodywise — Campaign Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f6f6f4;
+    --surface2: #ededea;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #1a1a18;
+    --muted: #888880;
+    --accent: #5a9e00;
+    --accent2: #b07800;
+    --red: #c93030;
+    --green: #1e8a52;
+    --blue: #1a6fc4;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Fraunces', serif;
+    --sans: 'Geist', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+
+  /* Header */
+  .header { padding: 2rem 2.5rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .header-left h1 { font-family: var(--serif); font-size: 2rem; font-weight: 300; color: var(--text); letter-spacing: -0.02em; }
+  .header-left h1 span { color: var(--accent); font-style: italic; }
+  .header-left p { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: var(--mono); }
+  .refresh-btn { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid var(--border2); color: var(--text); font-family: var(--mono); font-size: 12px; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .refresh-btn svg { width: 14px; height: 14px; transition: transform 0.5s; }
+  .refresh-btn.spinning svg { transform: rotate(360deg); }
+
+  /* Filter bar */
+  .filter-bar { padding: 1rem 2.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; background: var(--surface); }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-label { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em; }
+  .filter-input { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--mono); font-size: 12px; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+  .filter-input:focus { outline: none; border-color: var(--accent); }
+  .quick-btns { display: flex; gap: 6px; }
+  .quick-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 11px; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: all 0.15s; }
+  .quick-btn:hover, .quick-btn.active { background: var(--accent); color: #0d0d0f; border-color: var(--accent); }
+  .apply-btn { background: var(--accent); color: #0d0d0f; border: none; font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 6px 16px; border-radius: 5px; cursor: pointer; transition: opacity 0.15s; margin-left: auto; }
+  .apply-btn:hover { opacity: 0.85; }
+  .filter-range-display { font-size: 11px; font-family: var(--mono); color: var(--accent2); }
+
+  /* Layout */
+  .main { padding: 2rem 2.5rem; }
+
+  /* Metric cards */
+  .metrics-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 2rem; }
+  .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.2rem; position: relative; overflow: hidden; }
+  .metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .metric-card.green::before { background: var(--green); }
+  .metric-card.red::before { background: var(--red); }
+  .metric-card.yellow::before { background: var(--accent2); }
+  .metric-card.blue::before { background: var(--blue); }
+  .metric-card.accent::before { background: var(--accent); }
+  .metric-label { font-size: 10px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .metric-val { font-family: var(--serif); font-size: 2rem; font-weight: 600; line-height: 1; }
+  .metric-sub { font-size: 11px; font-family: var(--mono); margin-top: 6px; }
+  .metric-sub.up { color: var(--green); }
+  .metric-sub.down { color: var(--red); }
+  .metric-sub.flat { color: var(--muted); }
+
+  /* Sections */
+  .section { margin-bottom: 2rem; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .section-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* Chart area */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+  .chart-title { font-size: 12px; font-family: var(--mono); color: var(--muted); margin-bottom: 1rem; }
+  .chart-wrap { position: relative; height: 220px; }
+  .chart-wrap-tall { position: relative; height: 280px; }
+
+  /* Campaign table */
+  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 2rem; }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th:first-child { text-align: left; }
+  td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+  td:first-child { text-align: left; color: var(--text); font-family: var(--sans); font-size: 12px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .roas-good { color: var(--green); font-weight: 500; }
+  .roas-warn { color: var(--accent2); }
+  .roas-bad { color: var(--red); }
+  .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 3px; font-family: var(--mono); margin-left: 6px; vertical-align: middle; }
+  .badge-red { background: rgba(240,96,96,0.15); color: var(--red); }
+  .badge-green { background: rgba(96,200,144,0.15); color: var(--green); }
+  .badge-yellow { background: rgba(240,192,96,0.15); color: var(--accent2); }
+  .badge-blue { background: rgba(96,168,240,0.15); color: var(--blue); }
+
+  /* Change history timeline */
+  .timeline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
+  .timeline-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+  .tl { position: relative; padding-left: 18px; }
+  .tl::before { content: ''; position: absolute; left: 4px; top: 0; bottom: 0; width: 1px; background: var(--border2); }
+  .tl-event { position: relative; margin-bottom: 1.2rem; }
+  .tl-event:last-child { margin-bottom: 0; }
+  .tl-dot { position: absolute; left: -18px; top: 4px; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid; }
+  .tl-dot.good { background: rgba(96,200,144,0.2); border-color: var(--green); }
+  .tl-dot.bad { background: rgba(240,96,96,0.2); border-color: var(--red); }
+  .tl-dot.warn { background: rgba(240,192,96,0.2); border-color: var(--accent2); }
+  .tl-dot.neutral { background: rgba(255,255,255,0.05); border-color: var(--border2); }
+  .tl-date { font-size: 10px; font-family: var(--mono); color: var(--muted); margin-bottom: 3px; }
+  .tl-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .tl-detail { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .tl-impacts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .tl-pill { font-size: 10px; font-family: var(--mono); padding: 2px 8px; border-radius: 3px; }
+  .tl-pill.bad { background: rgba(240,96,96,0.1); color: var(--red); border: 1px solid rgba(240,96,96,0.2); }
+  .tl-pill.good { background: rgba(96,200,144,0.1); color: var(--green); border: 1px solid rgba(96,200,144,0.2); }
+  .tl-pill.warn { background: rgba(240,192,96,0.1); color: var(--accent2); border: 1px solid rgba(240,192,96,0.2); }
+
+  /* Impact scorecard */
+  .scorecard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 2rem; }
+  .sc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+  .sc-name { font-size: 11px; font-weight: 500; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+  .sc-row { display: flex; justify-content: space-between; font-size: 11px; font-family: var(--mono); color: var(--muted); margin-bottom: 4px; }
+  .sc-row span:last-child { color: var(--text); }
+  .sc-verdict { font-size: 10px; font-family: var(--mono); margin-top: 8px; padding: 3px 8px; border-radius: 3px; display: inline-block; }
+  .sc-verdict.good { background: rgba(96,200,144,0.12); color: var(--green); }
+  .sc-verdict.bad { background: rgba(240,96,96,0.12); color: var(--red); }
+  .sc-verdict.warn { background: rgba(240,192,96,0.12); color: var(--accent2); }
+
+  /* Summary boxes */
+  .summary-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
+  .summary-box { border-radius: 8px; padding: 1rem 1.1rem; }
+  .summary-box.worked { background: rgba(96,200,144,0.06); border: 1px solid rgba(96,200,144,0.2); }
+  .summary-box.backfired { background: rgba(240,96,96,0.06); border: 1px solid rgba(240,96,96,0.2); }
+  .summary-box.needed { background: rgba(240,192,96,0.06); border: 1px solid rgba(240,192,96,0.2); }
+  .summary-box h4 { font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .summary-box.worked h4 { color: var(--green); }
+  .summary-box.backfired h4 { color: var(--red); }
+  .summary-box.needed h4 { color: var(--accent2); }
+  .summary-box ul { padding-left: 14px; }
+  .summary-box li { font-size: 12px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
+  .summary-box.worked li { color: rgba(96,200,144,0.8); }
+  .summary-box.backfired li { color: rgba(240,96,96,0.8); }
+  .summary-box.needed li { color: rgba(240,192,96,0.8); }
+
+  /* No data state */
+  .no-data { text-align: center; padding: 3rem; color: var(--muted); font-family: var(--mono); font-size: 13px; }
+
+  /* Last updated */
+  .footer { padding: 1.5rem 2.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .footer-text { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+  #last-updated { color: var(--accent2); }
+
+  /* Legend */
+  .chart-legend { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--mono); color: var(--muted); }
+  .legend-dot { width: 10px; height: 3px; border-radius: 2px; }
+
+  /* Annotation line */
+  .annotation-label { font-size: 10px; }
+
+  /* Video / Conversion tab */
+  .tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .tab-btn { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 18px; border: none; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .conv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .conv-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.1rem; }
+  .conv-card-title { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .conv-funnel { display: flex; gap: 6px; align-items: flex-end; }
+  .funnel-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .funnel-bar { width: 100%; border-radius: 3px 3px 0 0; transition: height 0.4s; }
+  .funnel-label { font-size: 9px; font-family: var(--mono); color: var(--muted); text-align: center; }
+  .funnel-val { font-size: 11px; font-family: var(--mono); color: var(--text); text-align: center; font-weight: 500; }
+
+  .insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.2rem; margin-bottom: 1rem; }
+  .insight-card-title { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+  .insight-rows { display: flex; flex-direction: column; gap: 8px; }
+  .insight-row { display: grid; grid-template-columns: 200px 70px 70px 70px 1fr; gap: 8px; align-items: center; font-size: 12px; }
+  .insight-row-head { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .ir-name { font-family: var(--sans); color: var(--text); font-size: 11px; }
+  .ir-num { font-family: var(--mono); text-align: right; }
+  .ir-bar-wrap { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .ir-bar { height: 6px; border-radius: 3px; }
+  .flag-bad { color: var(--red); font-weight: 500; }
+  .flag-good { color: var(--green); font-weight: 500; }
+  .flag-warn { color: var(--accent2); }
+
+  .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .product-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+  .product-card h4 { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .product-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
+  .product-row:last-child { border-bottom: none; }
+  .product-row span:first-child { color: var(--text); font-family: var(--mono); font-size: 11px; }
+  .roas-chip { font-size: 10px; font-family: var(--mono); padding: 2px 7px; border-radius: 3px; }
+  .chip-g { background: rgba(30,138,82,0.1); color: var(--green); }
+  .chip-w { background: rgba(176,120,0,0.1); color: var(--accent2); }
+  .chip-r { background: rgba(201,48,48,0.1); color: var(--red); }
+
+  .video-insight-box { background: rgba(26,111,196,0.05); border: 1px solid rgba(26,111,196,0.2); border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1rem; }
+  .video-insight-box h4 { font-size: 11px; font-family: var(--mono); color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .video-insight-box p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .video-insight-box strong { color: var(--text); }
+
+  @media (max-width: 900px) {
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid, .timeline-grid { grid-template-columns: 1fr; }
+    .scorecard-grid { grid-template-columns: repeat(2, 1fr); }
+    .summary-row { grid-template-columns: 1fr; }
+    .header, .filter-bar { padding: 1.2rem 1.2rem; }
+    .main { padding: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Be Bodywise — <span>Campaign Intelligence</span></h1>
+    <p>Google Ads Performance &amp; Change Impact Analysis · Mar 1 – May 11, 2026</p>
+  </div>
+  <button class="refresh-btn" id="refreshBtn" onclick="refreshDashboard()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"></polyline>
+      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+    </svg>
+    Refresh Data
+  </button>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">From</span>
+    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-11">
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">To</span>
+    <input type="date" class="filter-input" id="dateTo" value="2026-05-11" min="2026-03-01" max="2026-05-11">
+  </div>
+  <div class="quick-btns">
+    <button class="quick-btn" onclick="setRange('mar')">March</button>
+    <button class="quick-btn" onclick="setRange('apr')">April</button>
+    <button class="quick-btn" onclick="setRange('may')">May</button>
+    <button class="quick-btn" onclick="setRange('cliff')">Cliff Week</button>
+    <button class="quick-btn active" onclick="setRange('all')">All</button>
+  </div>
+  <button class="apply-btn" onclick="applyFilters()">Apply →</button>
+  <span class="filter-range-display" id="rangeDisplay"></span>
+</div>
+
+<div class="main">
+
+  <!-- Metric Cards -->
+  <div class="metrics-row" id="metricsRow"></div>
+
+  <!-- Charts Row -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">ROAS trend</div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#5a9e00"></div>ROAS</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c93030;opacity:0.5"></div>Apr 13 cliff</div>
+      </div>
+      <div class="chart-wrap"><canvas id="roasChart" role="img" aria-label="Daily ROAS trend"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Cost vs Conversions</div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1a6fc4"></div>Daily Cost (₹)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#1e8a52;border-top:2px dashed #1e8a52;background:none;width:16px"></div>Conversions</div>
+      </div>
+      <div class="chart-wrap"><canvas id="costConvChart" role="img" aria-label="Daily cost vs conversions"></canvas></div>
+    </div>
+  </div>
+
+  <!-- CAC trend -->
+  <div class="chart-card section" style="margin-bottom:2rem">
+    <div class="chart-title">Cost per conversion (CAC) — daily trend</div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#b07800"></div>CAC (₹)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c93030;opacity:0.4"></div>Apr 13 cliff</div>
+    </div>
+    <div class="chart-wrap-tall"><canvas id="cacChart" role="img" aria-label="Daily CAC trend"></canvas></div>
+  </div>
+
+  <!-- Campaign Performance Table -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Campaign & video performance</span>
+    </div>
+
+    <!-- Tab nav -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('perf')">Campaign Performance</button>
+      <button class="tab-btn" onclick="switchTab('video')">Video & Conversion Funnel</button>
+      <button class="tab-btn" onclick="switchTab('product')">Product Tag Analysis</button>
+      <button class="tab-btn" onclick="switchTab('titles')">Video Title Performance</button>
+    </div>
+
+    <!-- Tab: Campaign Performance -->
+    <div class="tab-panel active" id="tab-perf">
+      <div class="table-card">
+        <div class="table-scroll">
+          <table id="campaignTable">
+            <thead>
+              <tr>
+                <th>Campaign</th>
+                <th>Type</th>
+                <th>Spend (₹)</th>
+                <th>Conv.</th>
+                <th>CAC (₹)</th>
+                <th>ROAS</th>
+                <th>CTR</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="campaignBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Video & Conversion Funnel -->
+    <div class="tab-panel" id="tab-video">
+
+      <div class="video-insight-box">
+        <h4>🔍 Key finding: Demand Gen campaigns are optimising for the wrong goal</h4>
+        <p>The video/conversion tab reveals a critical issue: <strong>DemGen campaigns count PDP views, YouTube follow-on views, and ATC events as "conversions"</strong> — inflating their reported numbers. When you strip those out and look at <strong>BBW Master Purchase only</strong>, every DemGen campaign except HairandBody MOF-DropOff collapses to near-zero purchase efficiency. The campaigns that look worst in ROAS are actually even worse than they appear — and those that look good are pulling real purchase volume.</p>
+      </div>
+
+      <!-- Funnel comparison cards -->
+      <div class="section-header" style="margin-bottom:0.75rem"><span class="section-title">Conversion funnel: PDP → ATC → Purchase per campaign</span></div>
+      <div class="insight-card">
+        <div class="insight-row insight-row-head">
+          <span>Campaign</span><span style="text-align:right">PDP Views</span><span style="text-align:right">ATC</span><span style="text-align:right">Purchases</span><span>PDP→Purchase rate</span>
+        </div>
+        <div class="insight-rows" id="funnelRows"></div>
+      </div>
+
+      <!-- ATC/Purchase rate analysis -->
+      <div class="section-header" style="margin-bottom:0.75rem;margin-top:1.5rem"><span class="section-title">Purchase-to-ATC & Purchase-to-PDP rates</span></div>
+      <div class="insight-card">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:1rem;">ATC/PDP = what % of PDP viewers added to cart. P-ATC% = what % of ATC viewers purchased. P-PDP% = final purchase rate from PDP view. Higher P-PDP% = better quality traffic from that campaign.</p>
+        <div class="insight-row insight-row-head">
+          <span>Campaign</span><span style="text-align:right">ATC/PDP</span><span style="text-align:right">P-ATC%</span><span style="text-align:right">P-PDP%</span><span>Purchase quality signal</span>
+        </div>
+        <div class="insight-rows" id="rateRows"></div>
+      </div>
+
+      <!-- View-through conversions warning -->
+      <div class="video-insight-box" style="margin-top:1.5rem;background:rgba(201,48,48,0.04);border-color:rgba(201,48,48,0.18);">
+        <h4 style="color:var(--red)">⚠ View-through conversions inflating DemGen ROAS</h4>
+        <p>DemGen Body-Int-02 has <strong>5,367 PDP views but only 67 purchases</strong> — a purchase rate of just 1.2%. Yet it reports ROAS of 0.64× including all conversion types. DemGen Hair-LA-02 has <strong>2,348 PDPs but only 26 purchases</strong> (1.1%). DemGen Hair-Comp03: <strong>285 PDPs, 22 purchases</strong> — but also 137 "YouTube follow-on views" counted as conversions. These view-through events are almost certainly the reason these campaigns show any conversion value at all. <strong>Set primary conversion goal to BBW Master Purchase only for all campaigns.</strong></p>
+      </div>
+
+      <!-- YouTube follow-on views table -->
+      <div class="section-header" style="margin-bottom:0.75rem;margin-top:1.5rem"><span class="section-title">YouTube follow-on views counted as conversions (Apr 13 snapshot)</span></div>
+      <div class="insight-card">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:1rem;">These are non-purchase "conversions" being credited to campaigns — YouTube follow-on views happen when someone watches a second YouTube video after seeing your ad. They should NOT count as primary conversions.</p>
+        <div class="insight-rows" id="ytRows"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Product Tag Analysis -->
+    <div class="tab-panel" id="tab-product">
+
+      <div class="video-insight-box" style="background:rgba(90,158,0,0.04);border-color:rgba(90,158,0,0.18);">
+        <h4 style="color:var(--green)">Product tag view: where your budget is actually going by SKU category</h4>
+        <p>The video performance tab breaks spend and ROAS by product tag (HG = Hair Growth, HGRO = Hair Growth Oil, SABW = Salicylic Acid Body Wash, UPK = Urea Pack, UFR = Urea Face/Repair, etc.). <strong>HGP-adv is your best product at 3.6× ROAS</strong>. HG (your highest-spend category at ₹1.34L) delivers only <strong>1.6× ROAS</strong>. UFR and MG are sub-1× — burning money.</p>
+      </div>
+
+      <div class="product-grid">
+        <div class="product-card">
+          <h4>Product tag ROAS (sorted by spend)</h4>
+          <div id="productTagRows"></div>
+        </div>
+        <div class="product-card">
+          <h4>Campaign-level product efficiency — key signals</h4>
+          <div class="product-row"><span>DemGen Body-Int-02 → 5%BW</span><span class="roas-chip chip-w">2.1× ROAS, ₹6.5K spend</span></div>
+          <div class="product-row"><span>DemGen Hair-LA-02 → HG</span><span class="roas-chip chip-r">0.3× ROAS, ₹14.8K spend</span></div>
+          <div class="product-row"><span>DemGen Hair-Int-01 → HG</span><span class="roas-chip chip-r">0.6× ROAS, ₹14.6K spend</span></div>
+          <div class="product-row"><span>Pmax Body Tier2-3 → SABW</span><span class="roas-chip chip-g">3.5× ROAS</span></div>
+          <div class="product-row"><span>Pmax Body Tier2-3 → UPK</span><span class="roas-chip chip-g">3.4× ROAS</span></div>
+          <div class="product-row"><span>Pmax HG-Telugu → HG</span><span class="roas-chip chip-g">2.5× ROAS</span></div>
+          <div class="product-row"><span>Search Brand → HGP-adv</span><span class="roas-chip chip-g">3.6× ROAS</span></div>
+          <div class="product-row"><span>Pmax Hair HGRO-03 → HGRO</span><span class="roas-chip chip-g">3.1× ROAS</span></div>
+          <div class="product-row"><span>UFR (Urea Face Repair) total</span><span class="roas-chip chip-r">0.8× ROAS — cut spend</span></div>
+          <div class="product-row"><span>MG (Magnesium Gummies) total</span><span class="roas-chip chip-r">0.8× ROAS — cut spend</span></div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">Product tag ROAS comparison</div>
+          <div class="chart-wrap"><canvas id="productRoasChart" role="img" aria-label="Product tag ROAS bar chart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Product tag spend distribution (₹)</div>
+          <div class="chart-wrap"><canvas id="productSpendChart" role="img" aria-label="Product tag spend pie chart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="video-insight-box" style="background:rgba(176,120,0,0.04);border-color:rgba(176,120,0,0.2);margin-top:0;">
+        <h4 style="color:var(--accent2)">Revised budget recommendation by product</h4>
+        <p><strong>Increase:</strong> HGP-adv (3.6× ROAS, underspent at ₹26K — scale via Search Brand + BrandProduct). UPK &amp; SABW via Pmax Body Tier2-3 (3.4–3.5×). HGRO via Pmax HGRO-03 (3.1×).<br><br>
+        <strong>Maintain:</strong> HG via Pmax-HG-Telugu (2.5×). Others via Search Brand (3.0×). Strawberry Skin (5%BW) via PMax only — not DemGen.<br><br>
+        <strong>Cut immediately:</strong> UFR via DemGen Body-Int-02 (0.8×). MG — entire category losing money. HG via DemGen Hair-LA-02 (0.3×) and Hair-Int-01 (0.6×). PPHG via DemGen — 0.6× ROAS.</p>
+      </div>
+    </div>
+
+    <!-- Tab: Video Title Performance -->
+    <div class="tab-panel" id="tab-titles">
+
+      <div class="video-insight-box" style="background:rgba(26,111,196,0.04);border-color:rgba(26,111,196,0.18);">
+        <h4 style="color:var(--blue)">🎬 309 unique video creatives analysed across all campaigns</h4>
+        <p>Data from the Video Performance tab covers <strong>TrueView views, watch-through rates (25/50/75/100%), conversions and ROAS per video title</strong>. Key finding: a small cluster of influencer collabs (Jyoti, Chahat, Thoughtful Threads) are carrying the majority of efficient DemGen conversions. The Urea Foot Roll-On videos from Suhasini and Anushree account for ₹18.7L spend at sub-1× ROAS — your single biggest creative waste.</p>
+      </div>
+
+      <!-- Top/bottom toggle -->
+      <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center;">
+        <span class="section-title">Show:</span>
+        <button class="quick-btn active" id="btnTop" onclick="showVideoView('top')">Top Performers</button>
+        <button class="quick-btn" id="btnBad" onclick="showVideoView('bad')">Underperformers</button>
+        <button class="quick-btn" id="btnWatch" onclick="showVideoView('watch')">High Watch Rate</button>
+        <span style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-left:auto" id="videoCount"></span>
+      </div>
+
+      <!-- Video table -->
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th style="text-align:left;min-width:340px">Video Title</th>
+                <th>Campaign(s)</th>
+                <th>Spend (₹)</th>
+                <th>Conv.</th>
+                <th>ROAS</th>
+                <th>CAC (₹)</th>
+                <th>VTR</th>
+                <th>Watch 100%</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody id="videoTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Watch rate insight -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1.5rem;">
+        <div class="video-insight-box" style="background:rgba(30,138,82,0.04);border-color:rgba(30,138,82,0.18);">
+          <h4 style="color:var(--green)">✓ What makes a top-performing video</h4>
+          <p><strong>Urea Body Lotion (Snake & Dry Skin)</strong> — 22.7% VTR, 21.6% watch-to-100%, 1.54× ROAS at ₹69K spend. Highest completion rate in account — the hook is clearly working.<br><br>
+          <strong>Underarm Pigmentation Kit (Thoughtful Threads)</strong> — 156 conversions at ₹325 CAC, 2.51× ROAS. Best CAC among any video with meaningful volume. The transformation angle converts well.<br><br>
+          <strong>De-Tan SPF 50+</strong> — 2.59× ROAS, 21.2% VTR. Seasonal relevance (summer) driving intent. Scale this creative immediately.<br><br>
+          <strong>Magnesium Gummies (Anshika Thakur)</strong> — 2.42× ROAS, 25.3% VTR, 25.7% W100. Exceptional completion — the only MG video that works. Isolate and scale in its own campaign.</p>
+        </div>
+        <div class="video-insight-box" style="background:rgba(201,48,48,0.05);border-color:rgba(201,48,48,0.18);">
+          <h4 style="color:var(--red)">✗ What's failing — and why</h4>
+          <p><strong>Urea Roll-On (Suhasini) — ₹12.9L at 0.77× ROAS.</strong> This is your #1 biggest spend video and it's sub-breakeven. VTR only 2.1%, W100 only 2.3% — viewers are skipping immediately. The creative is fatigued or the audience match is wrong.<br><br>
+          <strong>Urea Roll-On (Anushree) — ₹5.8L at 0.78× ROAS.</strong> Same pattern. Both Urea Roll-On videos are failing at scale because DemGen Body-Int-02 is serving them to cold audiences who don't have cracked heel intent.<br><br>
+          <strong>7% Glycolic Body Stick (Raisha + Hiteshi) — ₹3.8L combined, 0.76–0.87× ROAS.</strong> Glycolic campaigns shouldn't run on DemGen at this volume. Switch to retargeting-only or PMax.<br><br>
+          <strong>Biotin Gummies (Pooja) — ₹3.9L, 0.87× ROAS</strong> running only in DG_Hair_Int-Hyd. The Hyderabad geo + this creative isn't converting. Pause this specific pairing.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Change-impact scorecard · Apr 10–16 (7-day impact window)</span>
+    </div>
+    <div class="scorecard-grid" id="scorecardGrid"></div>
+  </div>
+
+  <!-- Change Timeline -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Change history & observed impact</span>
+    </div>
+    <div class="timeline-grid">
+      <div class="timeline-card">
+        <div class="chart-title" style="margin-bottom:1rem">Events & changes</div>
+        <div class="tl" id="timelineLeft"></div>
+      </div>
+      <div class="timeline-card">
+        <div class="chart-title" style="margin-bottom:1rem">Performance signals</div>
+        <div class="tl" id="timelineRight"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Analysis summary</span>
+    </div>
+
+    <!-- Row 1: original 3 boxes -->
+    <div class="summary-row">
+      <div class="summary-box worked">
+        <h4>✓ Changes that worked</h4>
+        <ul>
+          <li>DeTan campaigns paused (both were &lt;2× ROAS)</li>
+          <li>AP-Telangana budget reduced (was overspending at low efficiency)</li>
+          <li>Telugu HG tROAS tightened — 10.58× ROAS spike confirms it worked</li>
+          <li>PMax Body Tier2-3 held 4× ROAS through the entire cliff period</li>
+        </ul>
+      </div>
+      <div class="summary-box backfired">
+        <h4>✗ Changes that backfired</h4>
+        <ul>
+          <li>PMax Hair-04 budget raised ~Apr 11 → ROAS collapsed 3× → 1.5×</li>
+          <li>Search Brand budget reduced/capped → losing volume at 5–9× ROAS</li>
+          <li>DemGen Body Int-02 &amp; LA-02 left running at &lt;0.7× ROAS throughout</li>
+          <li>PMax budget share grew to 60%+ while efficiency fell</li>
+        </ul>
+      </div>
+      <div class="summary-box needed">
+        <h4>⚠ Changes still needed</h4>
+        <ul>
+          <li>Pause DemGen Body Int-02 &amp; LA-02 immediately (burning ₹4L/10 days)</li>
+          <li>Restore Search Brand budget +40% — best ROAS in account</li>
+          <li>Reduce PMax Hair-04 budget or raise tROAS target</li>
+          <li>Scale Pmax Body Tier2-3 by 25–30% — held performance through cliff</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Row 2: video-level insight boxes -->
+    <div class="section-header" style="margin-top:1.5rem;margin-bottom:0.75rem">
+      <span class="section-title">Video & conversion funnel insights</span>
+    </div>
+
+    <!-- Root cause callout -->
+    <div style="background:rgba(201,48,48,0.05);border:1px solid rgba(201,48,48,0.2);border-radius:10px;padding:1.1rem 1.3rem;margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;">
+      <div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Root cause #1</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">Wrong conversion goal</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">DemGen campaigns count <strong style="color:var(--text)">PDP views, YouTube follow-on views &amp; ATC</strong> as conversions. Google's algo is optimising for video watches, not purchases. This is the single most impactful fix in the account — set primary goal to BBW Master Purchase only across all campaigns.</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Root cause #2</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">DemGen purchase funnel is broken</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">DemGen Body-Int-02: <strong style="color:var(--text)">5,367 PDPs → 67 purchases (1.2%)</strong>. DemGen Hair-LA-02: <strong style="color:var(--text)">2,348 PDPs → 26 purchases (1.1%)</strong>. Compare Search Brand: <strong style="color:var(--green)">5,199 PDPs → 231 purchases (4.4%)</strong>. DemGen is driving curiosity, not buyers.</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Root cause #3</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">HG category budget misrouted</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">₹1.34L spent on HG at blended <strong style="color:var(--text)">1.6× ROAS</strong>. The drag: DemGen Hair-LA-02 (0.3×) and Hair-Int-01 (0.6×). Pmax-HG-Telugu in the same category delivers <strong style="color:var(--green)">2.5× ROAS</strong>. Shifting HG budget from DemGen to PMax would recover ~0.8× ROAS on this entire category.</div>
+      </div>
+    </div>
+
+    <!-- Video signal boxes: 2-col -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;">
+      <div class="summary-box" style="background:rgba(26,111,196,0.04);border-color:rgba(26,111,196,0.18);">
+        <h4 style="color:var(--blue)">📊 Funnel quality ranking (purchase rate from PDP)</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Search Brand</span> <span style="font-family:var(--mono);color:var(--green);font-size:11px">4.4% P-PDP ✓ Best</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Search BrandProduct</span> <span style="font-family:var(--mono);color:var(--green);font-size:11px">5.4% P-PDP ✓</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax HG-Telugu-01</span> <span style="font-family:var(--mono);color:var(--green);font-size:11px">6.3% P-PDP ✓</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Body Tier2-3</span> <span style="font-family:var(--mono);color:var(--accent2);font-size:11px">2.6% P-PDP ~</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Hair-04 (Only-NC)</span> <span style="font-family:var(--mono);color:var(--accent2);font-size:11px">3.1% P-PDP ~</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen Body-Int-02</span> <span style="font-family:var(--mono);color:var(--red);font-size:11px">1.3% P-PDP ✗</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen Hair-LA-02</span> <span style="font-family:var(--mono);color:var(--red);font-size:11px">1.1% P-PDP ✗</span></li>
+          <li style="font-size:12px;padding:5px 0;display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Strawberry Skin</span> <span style="font-family:var(--mono);color:var(--red);font-size:11px">1.0% P-PDP ✗ LP?</span></li>
+        </ul>
+      </div>
+      <div class="summary-box" style="background:rgba(26,111,196,0.04);border-color:rgba(26,111,196,0.18);">
+        <h4 style="color:var(--blue)">🎬 YouTube follow-on views polluting conversion data</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen Hair-Comp03</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">137 YT views vs 22 purchases</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Hair-Comp-01</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">110 YT views, 0 purchases</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen HairandBody MOF</span><span style="font-family:var(--mono);color:var(--accent2);font-size:11px">112 YT views vs 134 purchases</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen Hair-Int-Hyd</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">47 YT views vs 41 purchases ⚠</span></li>
+          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax-Hair-AP-Telangana</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">54 YT views, 0 purchases</span></li>
+          <li style="font-size:12px;padding:5px 0;display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Hair-Karnataka</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">70 YT views, 0 purchases</span></li>
+        </ul>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted);background:var(--surface2);padding:8px;border-radius:5px;line-height:1.5">Fix: In Google Ads → Conversions, set <strong style="color:var(--text)">BBW Master Purchase</strong> as the only primary conversion action. Move all others to secondary.</div>
+      </div>
+    </div>
+
+    <!-- Video titles summary row -->
+    <div class="section-header" style="margin-top:1.5rem;margin-bottom:0.75rem">
+      <span class="section-title">Video title performance — creative winners & losers</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;">
+      <div class="summary-box worked" style="background:rgba(30,138,82,0.05);">
+        <h4>🎬 Top creatives to scale</h4>
+        <ul>
+          <li><strong>Underarm Pigmentation Kit × Thoughtful Threads</strong> — ₹325 CAC, 2.51× ROAS, 156 purchases. Best performing video in the account.</li>
+          <li><strong>De-Tan SPF 50+</strong> — 2.59× ROAS, 21% VTR & W100. Summer relevance driving strong intent. Scale immediately.</li>
+          <li><strong>Magnesium Gummies × Anshika Thakur</strong> — 2.42× ROAS, 25.7% W100 (highest in account). The only MG video that works — isolate in its own campaign.</li>
+          <li><strong>Urea Body Lotion (Snake & Dry Skin)</strong> — 22.7% VTR, 1.54× ROAS. Highest completion rate; hook is working. Increase impression share.</li>
+          <li><strong>Biotin Gummies × Jyoti</strong> — 2.28× ROAS, ₹337 CAC with strong 7.8% VTR. Top Hair Gummies creative.</li>
+          <li><strong>5% AHA BHA × Chahat Malhotra</strong> — 2.20× ROAS, ₹327 CAC. Best body wash creative — move to PMax asset group.</li>
+        </ul>
+      </div>
+      <div class="summary-box backfired" style="background:rgba(201,48,48,0.05);">
+        <h4>🎬 Creatives to pause immediately</h4>
+        <ul>
+          <li><strong>Urea Roll-On × Suhasini</strong> — ₹12.9L spend at 0.77× ROAS. VTR 2.1%, W100 2.3% — audience skipping instantly. Biggest single creative waste in the account.</li>
+          <li><strong>Urea Roll-On × Anushree</strong> — ₹5.8L at 0.78× ROAS. Same pattern. Both Urea Roll-On influencer videos are failing on cold DemGen audiences.</li>
+          <li><strong>Advanced HG Pack with Roll-On</strong> — ₹45.7K spend, only 5 conversions, ROAS 0.11×. CAC ₹9,144. Pause now.</li>
+          <li><strong>7% Glycolic Stick × Raisha + Hiteshi</strong> — ₹3.8L combined at 0.76–0.87× ROAS. DemGen audience wrong for this product.</li>
+          <li><strong>Biotin Gummies × Pooja</strong> — ₹3.9L at 0.87× ROAS in DG_Hair_Int-Hyd only. Hyderabad geo + this creative = no match.</li>
+          <li><strong>Bodywise Urea Roll-On (generic)</strong> — ₹1.3L at 0.37× ROAS, CAC ₹1,208. Worst ROAS among high-spend videos.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Product tag action row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div class="summary-box worked">
+        <h4>✓ Product categories to scale</h4>
+        <ul>
+          <li><strong>HGP-adv</strong> — 3.6× ROAS, only ₹26K spend. Underfunded. Scale via Search Brand.</li>
+          <li><strong>UPK &amp; SABW</strong> — 2.4–3.5× via Pmax Body Tier2-3. Best Pmax product combo.</li>
+          <li><strong>HGRO</strong> — 1.7× blended but Pmax HGRO-03 alone delivers 3.1×. Shift budget within category.</li>
+          <li><strong>Strawberry Skin (5%BW)</strong> — 1.9× via PMax. Fix landing page to unlock better funnel (1% P-PDP is too low).</li>
+        </ul>
+      </div>
+      <div class="summary-box backfired">
+        <h4>✗ Product categories dragging ROAS</h4>
+        <ul>
+          <li><strong>UFR (Urea Face Repair)</strong> — 0.8× ROAS across all campaigns. DemGen Body-Int-02 is the primary driver at ₹16K spend.</li>
+          <li><strong>MG (Magnesium Gummies)</strong> — 0.8× ROAS, CAC ₹1,925. Worst CAC in the entire account by far. Pause all activity.</li>
+          <li><strong>HG via DemGen</strong> — DemGen Hair-LA-02 at 0.3× and Hair-Int-01 at 0.6× dragging the entire HG category from 2.5× to 1.6×.</li>
+          <li><strong>PPHG</strong> — 0.9× ROAS. Very small spend but still loss-making. Pause.</li>
+        </ul>
+      </div>
+      <div class="summary-box needed">
+        <h4>⚠ Structural fixes (one-time)</h4>
+        <ul>
+          <li>Set <strong>BBW Master Purchase</strong> as sole primary conversion goal — stop counting YT views &amp; PDPs</li>
+          <li>Exclude Strawberry Skin product from DemGen — only 1.0% P-PDP, 14K PDPs wasted</li>
+          <li>Add audience signal for <strong>past purchasers</strong> to all PMax campaigns — currently NC-only signals on Hair-04 are too broad</li>
+          <li>Move MG Gummies spend entirely to Shopping — DemGen MG at ₹4.2K, CAC ₹1,642 vs Shopping MG at ₹7.4K CAC ₹2,453 (both bad, but stop the DemGen first)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span class="footer-text">Source: Google Ads · Be Bodywise · Data range: Mar 1 – May 11, 2026</span>
+  <span class="footer-text">Last refreshed: <span id="last-updated">—</span></span>
+</div>
+
+<script>
+// ─── RAW DATA ────────────────────────────────────────────────────────────────
+const RAW_DAILY = [
+  {d:'2026-03-01',cost:486545,impr:7412543,clicks:55507,conv:1323,val:1673377,ctr:0.75,cpm:66,cac:368,roas:3.44},
+  {d:'2026-03-02',cost:447201,impr:7079738,clicks:51810,conv:1256,val:1572828,ctr:0.73,cpm:63,cac:356,roas:3.52},
+  {d:'2026-03-03',cost:446839,impr:7136700,clicks:55928,conv:1209,val:1479216,ctr:0.78,cpm:63,cac:370,roas:3.31},
+  {d:'2026-03-04',cost:417986,impr:7122517,clicks:51038,conv:1240,val:1547221,ctr:0.72,cpm:59,cac:337,roas:3.70},
+  {d:'2026-03-05',cost:457182,impr:7688886,clicks:55613,conv:1262,val:1545053,ctr:0.72,cpm:59,cac:362,roas:3.38},
+  {d:'2026-03-06',cost:466301,impr:8341080,clicks:63729,conv:1226,val:1509245,ctr:0.76,cpm:56,cac:380,roas:3.24},
+  {d:'2026-03-07',cost:491423,impr:9302181,clicks:67894,conv:1341,val:1630655,ctr:0.73,cpm:53,cac:367,roas:3.32},
+  {d:'2026-03-08',cost:502023,impr:10443978,clicks:69504,conv:1437,val:1755703,ctr:0.67,cpm:48,cac:349,roas:3.50},
+  {d:'2026-03-09',cost:464695,impr:9992509,clicks:63990,conv:1345,val:1606719,ctr:0.64,cpm:47,cac:345,roas:3.46},
+  {d:'2026-03-10',cost:478165,impr:9423391,clicks:62381,conv:1315,val:1600061,ctr:0.66,cpm:51,cac:364,roas:3.35},
+  {d:'2026-03-11',cost:465965,impr:9269268,clicks:60773,conv:1223,val:1607138,ctr:0.66,cpm:50,cac:381,roas:3.45},
+  {d:'2026-03-12',cost:484546,impr:10057681,clicks:65351,conv:1259,val:1727570,ctr:0.65,cpm:48,cac:385,roas:3.57},
+  {d:'2026-03-13',cost:509886,impr:10481722,clicks:68873,conv:1190,val:1474737,ctr:0.66,cpm:49,cac:428,roas:2.89},
+  {d:'2026-03-14',cost:510880,impr:9985265,clicks:67468,conv:1227,val:1576541,ctr:0.68,cpm:51,cac:416,roas:3.09},
+  {d:'2026-03-15',cost:529758,impr:9063983,clicks:69963,conv:1254,val:1672559,ctr:0.77,cpm:58,cac:422,roas:3.16},
+  {d:'2026-03-16',cost:492742,impr:8211142,clicks:73546,conv:1020,val:1403217,ctr:0.90,cpm:60,cac:483,roas:2.85},
+  {d:'2026-03-17',cost:394467,impr:6375980,clicks:47670,conv:1028,val:1375345,ctr:0.75,cpm:62,cac:384,roas:3.49},
+  {d:'2026-03-18',cost:401409,impr:7246263,clicks:54068,conv:1008,val:1339427,ctr:0.75,cpm:55,cac:398,roas:3.34},
+  {d:'2026-03-19',cost:405511,impr:7491204,clicks:56665,conv:1020,val:1324649,ctr:0.76,cpm:54,cac:397,roas:3.27},
+  {d:'2026-03-20',cost:419682,impr:8321670,clicks:61558,conv:1014,val:1312864,ctr:0.74,cpm:50,cac:414,roas:3.13},
+  {d:'2026-03-21',cost:405019,impr:7754816,clicks:59314,conv:943,val:1212805,ctr:0.76,cpm:52,cac:429,roas:2.99},
+  {d:'2026-03-22',cost:437815,impr:7400998,clicks:62149,conv:1122,val:1490069,ctr:0.84,cpm:59,cac:390,roas:3.40},
+  {d:'2026-03-23',cost:413085,impr:7560863,clicks:60837,conv:994,val:1300256,ctr:0.80,cpm:55,cac:416,roas:3.15},
+  {d:'2026-03-24',cost:401176,impr:7276420,clicks:60585,conv:1009,val:1353854,ctr:0.83,cpm:55,cac:397,roas:3.37},
+  {d:'2026-03-25',cost:407372,impr:7432810,clicks:63360,conv:986,val:1282474,ctr:0.85,cpm:55,cac:413,roas:3.15},
+  {d:'2026-03-26',cost:427867,impr:7970714,clicks:65364,conv:1119,val:1448746,ctr:0.82,cpm:54,cac:382,roas:3.39},
+  {d:'2026-03-27',cost:424072,impr:7684853,clicks:62526,conv:1092,val:1427031,ctr:0.81,cpm:55,cac:388,roas:3.37},
+  {d:'2026-03-28',cost:424060,impr:7269932,clicks:60600,conv:1155,val:1488109,ctr:0.83,cpm:58,cac:367,roas:3.51},
+  {d:'2026-03-29',cost:453963,impr:7439629,clicks:64016,conv:1253,val:1646507,ctr:0.86,cpm:61,cac:362,roas:3.63},
+  {d:'2026-03-30',cost:443245,impr:7626818,clicks:64111,conv:1190,val:1578730,ctr:0.84,cpm:58,cac:372,roas:3.56},
+  {d:'2026-03-31',cost:448297,impr:7673007,clicks:66327,conv:1208,val:1606616,ctr:0.86,cpm:58,cac:371,roas:3.58},
+  {d:'2026-04-01',cost:493147,impr:8333852,clicks:65517,conv:1343,val:1716470,ctr:0.79,cpm:59,cac:367,roas:3.48},
+  {d:'2026-04-02',cost:480527,impr:8328704,clicks:63744,conv:1250,val:1579699,ctr:0.77,cpm:58,cac:385,roas:3.29},
+  {d:'2026-04-03',cost:510982,impr:9054636,clicks:70266,conv:1384,val:1735168,ctr:0.78,cpm:56,cac:369,roas:3.40},
+  {d:'2026-04-04',cost:509764,impr:9448580,clicks:73000,conv:1377,val:1797423,ctr:0.77,cpm:54,cac:370,roas:3.53},
+  {d:'2026-04-05',cost:565300,impr:10462121,clicks:79839,conv:1551,val:2023245,ctr:0.76,cpm:54,cac:364,roas:3.58},
+  {d:'2026-04-06',cost:529116,impr:10092612,clicks:78011,conv:1417,val:1833247,ctr:0.77,cpm:52,cac:373,roas:3.46},
+  {d:'2026-04-07',cost:538153,impr:11422262,clicks:81248,conv:1434,val:1873809,ctr:0.71,cpm:47,cac:375,roas:3.48},
+  {d:'2026-04-08',cost:546272,impr:12295564,clicks:88518,conv:1429,val:1847825,ctr:0.72,cpm:44,cac:382,roas:3.38},
+  {d:'2026-04-09',cost:533952,impr:12450993,clicks:87590,conv:1325,val:1713277,ctr:0.70,cpm:43,cac:403,roas:3.21},
+  {d:'2026-04-10',cost:496951,impr:10019199,clicks:72081,conv:1225,val:1550067,ctr:0.72,cpm:50,cac:406,roas:3.12},
+  {d:'2026-04-11',cost:516848,impr:10617792,clicks:77252,conv:1259,val:1585051,ctr:0.73,cpm:49,cac:410,roas:3.07},
+  {d:'2026-04-12',cost:537755,impr:9944521,clicks:73773,conv:1297,val:1641517,ctr:0.74,cpm:54,cac:415,roas:3.05},
+  {d:'2026-04-13',cost:476531,impr:9301063,clicks:68617,conv:1013,val:1260522,ctr:0.74,cpm:51,cac:471,roas:2.65},
+  {d:'2026-04-14',cost:495652,impr:9883274,clicks:70080,conv:1001,val:1223697,ctr:0.71,cpm:50,cac:495,roas:2.47},
+  {d:'2026-04-15',cost:470122,impr:8891244,clicks:61697,conv:937,val:1157406,ctr:0.69,cpm:53,cac:502,roas:2.46},
+  {d:'2026-04-16',cost:452828,impr:8397039,clicks:62663,conv:903,val:1129243,ctr:0.75,cpm:54,cac:501,roas:2.49},
+  {d:'2026-04-17',cost:436402,impr:8079907,clicks:58639,conv:875,val:1076189,ctr:0.73,cpm:54,cac:498,roas:2.47},
+  {d:'2026-04-18',cost:453311,impr:8601586,clicks:63191,conv:873,val:1043852,ctr:0.73,cpm:53,cac:520,roas:2.30},
+  {d:'2026-04-19',cost:490585,impr:8541262,clicks:64881,conv:939,val:1177017,ctr:0.76,cpm:57,cac:522,roas:2.40},
+  {d:'2026-04-20',cost:438602,impr:7761304,clicks:59954,conv:876,val:1065971,ctr:0.77,cpm:57,cac:501,roas:2.43},
+  {d:'2026-04-21',cost:438065,impr:7154835,clicks:58068,conv:881,val:1074288,ctr:0.81,cpm:61,cac:497,roas:2.45},
+  {d:'2026-04-22',cost:410076,impr:7043649,clicks:58363,conv:795,val:982854,ctr:0.83,cpm:58,cac:516,roas:2.40},
+  {d:'2026-04-23',cost:412063,impr:6878185,clicks:57442,conv:889,val:1073022,ctr:0.84,cpm:60,cac:463,roas:2.60},
+  {d:'2026-04-24',cost:438424,impr:7053515,clicks:60547,conv:877,val:1115518,ctr:0.86,cpm:62,cac:500,roas:2.54},
+  {d:'2026-04-25',cost:464179,impr:7645603,clicks:65782,conv:948,val:1162336,ctr:0.86,cpm:61,cac:489,roas:2.50},
+  {d:'2026-04-26',cost:498508,impr:8906973,clicks:73695,conv:956,val:1152225,ctr:0.83,cpm:56,cac:522,roas:2.31},
+  {d:'2026-04-27',cost:432930,impr:8068008,clicks:66937,conv:858,val:1033081,ctr:0.83,cpm:54,cac:504,roas:2.39},
+  {d:'2026-04-28',cost:407497,impr:6632641,clicks:55733,conv:845,val:1006707,ctr:0.84,cpm:61,cac:482,roas:2.47},
+  {d:'2026-04-29',cost:395919,impr:6698528,clicks:54701,conv:756,val:895667,ctr:0.82,cpm:59,cac:524,roas:2.26},
+  {d:'2026-04-30',cost:389838,impr:6553178,clicks:54575,conv:807,val:1006616,ctr:0.83,cpm:59,cac:483,roas:2.58},
+  {d:'2026-05-01',cost:477141,impr:8203173,clicks:67755,conv:1068,val:1299076,ctr:0.83,cpm:58,cac:447,roas:2.72},
+  {d:'2026-05-02',cost:484587,impr:8379096,clicks:67319,conv:986,val:1234240,ctr:0.80,cpm:58,cac:492,roas:2.55},
+  {d:'2026-05-03',cost:491008,impr:8203820,clicks:66031,conv:1056,val:1285957,ctr:0.80,cpm:60,cac:465,roas:2.62},
+  {d:'2026-05-04',cost:472970,impr:7610633,clicks:60546,conv:989,val:1199934,ctr:0.80,cpm:62,cac:478,roas:2.54},
+  {d:'2026-05-05',cost:421594,impr:6830882,clicks:54041,conv:832,val:969177,ctr:0.79,cpm:62,cac:507,roas:2.30},
+  {d:'2026-05-06',cost:451216,impr:7198897,clicks:60724,conv:934,val:1109090,ctr:0.84,cpm:63,cac:483,roas:2.46},
+  {d:'2026-05-07',cost:471219,impr:7062873,clicks:62281,conv:890,val:1086411,ctr:0.88,cpm:67,cac:529,roas:2.31},
+  {d:'2026-05-08',cost:453805,impr:6648363,clicks:59691,conv:859,val:1026000,ctr:0.90,cpm:68,cac:528,roas:2.26},
+  {d:'2026-05-09',cost:446781,impr:6120379,clicks:52807,conv:844,val:968342,ctr:0.86,cpm:73,cac:529,roas:2.17},
+  {d:'2026-05-10',cost:449294,impr:6433970,clicks:53479,conv:883,val:1058300,ctr:0.83,cpm:70,cac:509,roas:2.36},
+  {d:'2026-05-11',cost:417791,impr:5950331,clicks:47866,conv:899,val:1094847,ctr:0.80,cpm:70,cac:465,roas:2.62}
+];
+
+const CAMPAIGNS = [
+  {name:'Search Brand',type:'SEARCH',spend:366330,conv:1512,cac:242,roas:5.81,ctr:14.91,verdict:'good',note:'Best ROAS. Budget was cut Apr 14–15.'},
+  {name:'Search BrandProduct',type:'SEARCH',spend:330864,conv:1126,cac:294,roas:5.42,ctr:11.28,verdict:'good',note:'Strong. Should be scaled.'},
+  {name:'Pmax Body Tier2-3',type:'PMAX',spend:256786,conv:688,cac:373,roas:3.98,ctr:1.61,verdict:'good',note:'Best PMax. Held 4×+ through cliff.'},
+  {name:'Pmax Body NC/RC-04',type:'PMAX',spend:232359,conv:521,cac:446,roas:3.48,ctr:1.27,verdict:'good',note:'Solid. Room to scale.'},
+  {name:'Pmax Hair-04 (Only-NC)',type:'PMAX',spend:460053,conv:1013,cac:454,roas:1.72,ctr:1.66,verdict:'bad',note:'Budget raised ~Apr 11. ROAS collapsed.'},
+  {name:'DemGen HairandBody DropOff',type:'DEMGEN',spend:315118,conv:581,cac:542,roas:1.18,ctr:0.40,verdict:'bad',note:'MOF retargeting. Running below breakeven.'},
+  {name:'Pmax Strawberry Skin',type:'PMAX',spend:322457,conv:465,cac:693,roas:2.69,ctr:1.27,verdict:'warn',note:'Declining. CAC rising weekly.'},
+  {name:'Pmax Urea NC/RC-03',type:'PMAX',spend:76702,conv:135,cac:568,roas:2.42,ctr:0.77,verdict:'warn',note:'Mid-range. Stable but needs watch.'},
+  {name:'Pmax Hair HGRO-03',type:'PMAX',spend:76435,conv:121,cac:631,roas:2.78,ctr:1.74,verdict:'warn',note:'Acceptable efficiency.'},
+  {name:'DemGen Body Int-02',type:'DEMGEN',spend:300257,conv:379,cac:791,roas:0.64,ctr:0.43,verdict:'bad',note:'CRITICAL: Should be paused. ₹3L wasted.'},
+  {name:'DemGen Hair-Comp03',type:'DEMGEN',spend:179645,conv:172,cac:1045,roas:0.62,ctr:0.38,verdict:'bad',note:'Worst CAC in account. Pause immediately.'},
+  {name:'DemGen Hair Int-Hyd',type:'DEMGEN',spend:122324,conv:141,cac:869,roas:0.69,ctr:0.34,verdict:'bad',note:'Below breakeven. Cut budget.'},
+  {name:'DemGen Body LA-02',type:'DEMGEN',spend:81659,conv:84,cac:969,roas:0.54,ctr:0.59,verdict:'bad',note:'CRITICAL: Should be paused.'},
+  {name:'Pmax Hair NC/RC-HG-02',type:'PMAX',spend:104258,conv:112,cac:929,roas:1.64,ctr:1.34,verdict:'warn',note:'High CAC for HG product.'},
+  {name:'Shopping Nutrition01',type:'SHOPPING',spend:139711,conv:180,cac:775,roas:1.86,ctr:1.30,verdict:'warn',note:'CAC worsened through Apr. Monitor.'},
+  {name:'Pmax HG-Telugu-01',type:'PMAX',spend:131381,conv:249,cac:527,roas:2.32,ctr:2.24,verdict:'warn',note:'tROAS tightened. Recovering.'}
+];
+
+const SCORECARD = [
+  {name:'Pmax-HG-Telugu-01',before:{cac:313,roas:4.0,spend:'₹10K/day'},after:{cac:281,roas:3.9,spend:'₹5K/day'},verdict:'good',label:'✓ Tightening worked',peak:'Apr 13: 10.58× ROAS spike'},
+  {name:'PMax Hair-04 (Only-NC)',before:{cac:326,roas:3.0,spend:'₹31K/day'},after:{cac:495,roas:1.5,spend:'₹29.5K/day'},verdict:'bad',label:'✗ Budget raise backfired',peak:'ROAS halved in 6 days'},
+  {name:'DeTan Int-01 + LA-01',before:{cac:'516 / 2418',roas:'2.0× / 0.3×',spend:'₹3K each'},after:{cac:'—',roas:'paused',spend:'₹0'},verdict:'good',label:'✓ Paused correctly',peak:'Freed ₹6K/day budget'},
+  {name:'AP-Telangana Hair',before:{cac:442,roas:3.1,spend:'₹14K/day'},after:{cac:597,roas:2.3,spend:'₹7K/day'},verdict:'warn',label:'⚠ Cut but not recovered',peak:'ROAS didn\'t improve with cut'},
+  {name:'Search Brand',before:{cac:172,roas:9.0,spend:'₹36K/day'},after:{cac:242,roas:5.8,spend:'₹17-25K/day'},verdict:'bad',label:'✗ Budget cut hurts account',peak:'Losing volume at 6-9× ROAS'},
+  {name:'DemGen Body Int-02 + LA-02',before:{cac:'759 / 800',roas:'1.0× / 0.5×',spend:'₹45K/day'},after:{cac:'791 / 969',roas:'0.64× / 0.54×',spend:'₹38K/day'},verdict:'bad',label:'✗ Missed — still running',peak:'₹3.8L wasted in 10 days'},
+  {name:'Pmax Body Tier2-3',before:{cac:339,roas:4.0,spend:'₹25K/day'},after:{cac:373,roas:3.98,spend:'₹26K/day'},verdict:'good',label:'✓ Stable — scale this',peak:'4×+ ROAS through entire cliff'},
+  {name:'DetanSPF NC/RC-01 (new)',before:{cac:'—',roas:'—',spend:'—'},after:{cac:800,roas:1.6,spend:'₹7.7K'},verdict:'warn',label:'⚠ New campaign, monitor',peak:'Launched Apr 15. Still learning.'}
+];
+
+const TIMELINE_EVENTS = [
+  {side:'left',type:'good',date:'Apr 1–9 · Pre-cliff baseline',title:'Account at peak ROAS ~3.5–3.6×',detail:'Best period in dataset. Pmax Body campaigns at 4–5× ROAS. Search Brand at 8–9×. AP-Telangana had a spike (₹47.9K spend Apr 9 — likely budget overshoot).', pills:[]},
+  {side:'left',type:'bad',date:'Apr 10–12 · Inflection',title:'Budget changes trigger algo instability',detail:'PMax Hair-04 spend jumps ₹31K → ₹40K (budget raised). ROAS drops 3.0× → 2.1×. Pmax Strawberry Skin spend peaks at ₹39K. Telugu HG tROAS appears tightened: spend drops ₹10K → ₹4.6K, ROAS jumps 4× → 7.9×.',pills:[{label:'Hair-04 ROAS: 2.1×',type:'bad'},{label:'Telugu HG: 7.9×',type:'good'}]},
+  {side:'left',type:'bad',date:'Apr 13 · Cliff day',title:'Multi-campaign simultaneous collapse',detail:'Single worst day. HairandBody DropOff CAC spikes to ₹686. Shopping Nutrition CAC: ₹870. Pmax Hair Karnataka drops to 2.07×. Telugu HG hits 10.58× ROAS — budget cap binding at highest efficiency.',pills:[{label:'Acct ROAS: 2.65×',type:'bad'},{label:'Telugu HG: 10.58× 🔥',type:'good'},{label:'CAC avg: ₹471',type:'bad'}]},
+  {side:'left',type:'warn',date:'Apr 14–16 · Post-change (7-day window)',title:'DeTan paused. Telangana budget cut. SPF launches.',detail:'DeTan-LA-01 and DeTan-Int-01 paused (correct). Pmax-Hair-AP-Telangana spend cut ₹19K → ₹6.9K over 4 days. Pmax DetanSPF-NC/RC-01 launches. Search Brand budget drops ₹36K → ₹17K — losing best-performing volume.',pills:[{label:'DeTan: paused ✓',type:'good'},{label:'SPF: launched',type:'warn'},{label:'Search cut ✗',type:'bad'}]},
+  {side:'right',type:'bad',date:'Apr 17–30 · Sustained impact',title:'ROAS fails to recover. Body DemGen drags.',detail:'Overall ROAS holds in 2.3–2.5× range. DemGen Body Int-02 (₹29K/day, ROAS 0.56×) and Body LA-02 (₹15K/day, ROAS 0.55×) left running. These were NOT paused despite performing worse than the DeTan campaigns that were cut.',pills:[{label:'Body Int-02: 0.56×',type:'bad'},{label:'Body LA-02: 0.55×',type:'bad'}]},
+  {side:'right',type:'warn',date:'May 1–11 · Current state',title:'Stabilised at new lower efficiency floor',detail:'Account ROAS holding 2.2–2.7×. PMax Hair-04 now highest-spend campaign at ₹46K/day, only 1.72× ROAS. No further budget changes visible. Search Brand still underbudgeted vs its ROAS potential.',pills:[{label:'Acct ROAS avg: 2.45×',type:'warn'},{label:'Hair-04: 1.72×',type:'bad'},{label:'Search: 5.81×',type:'good'}]},
+  {side:'right',type:'neutral',date:'Ongoing · What\'s not in the data',title:'Conversion goal mix — likely inflating ROAS',detail:'Conversion actions include BBW PDP Viewed, BBW ATC - WEB, and BBW Master Purchase. If PMax campaigns are optimising toward micro-conversions (PDP views, ATCs), reported ROAS looks better than actual purchase ROAS. Check primary conversion goal in Google Ads.',pills:[{label:'Check conv. goals',type:'warn'}]}
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let dateFrom = '2026-03-01';
+let dateTo   = '2026-05-11';
+let charts   = {};
+
+// ─── FILTER UTILS ──────────────────────────────────────────────────────────
+function setRange(preset) {
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const m = { mar:['2026-03-01','2026-03-31'], apr:['2026-04-01','2026-04-30'], may:['2026-05-01','2026-05-11'], cliff:['2026-04-10','2026-04-16'], all:['2026-03-01','2026-05-11'] };
+  const [f,t] = m[preset];
+  document.getElementById('dateFrom').value = f;
+  document.getElementById('dateTo').value = t;
+  dateFrom = f; dateTo = t;
+  applyFilters();
+}
+
+function applyFilters() {
+  dateFrom = document.getElementById('dateFrom').value;
+  dateTo   = document.getElementById('dateTo').value;
+  const fd = new Date(dateFrom), td = new Date(dateTo);
+  const days = Math.round((td - fd) / 86400000) + 1;
+  document.getElementById('rangeDisplay').textContent = `${days} days selected`;
+  render();
+}
+
+function getFiltered() {
+  return RAW_DAILY.filter(r => r.d >= dateFrom && r.d <= dateTo);
+}
+
+// ─── METRIC CARDS ──────────────────────────────────────────────────────────
+function renderMetrics(data) {
+  if (!data.length) { document.getElementById('metricsRow').innerHTML = '<div class="no-data" style="grid-column:1/-1">No data in selected range</div>'; return; }
+  const totalCost = data.reduce((s,r)=>s+r.cost,0);
+  const totalConv = data.reduce((s,r)=>s+r.conv,0);
+  const totalVal  = data.reduce((s,r)=>s+r.val,0);
+  const avgRoas   = totalVal / totalCost;
+  const avgCac    = totalCost / totalConv;
+  const avgCtr    = data.reduce((s,r)=>s+r.ctr,0) / data.length;
+
+  // compare first half vs second half
+  const mid = Math.floor(data.length/2);
+  const h1roas = data.slice(0,mid).reduce((s,r)=>s+r.roas,0)/mid;
+  const h2roas = data.slice(mid).reduce((s,r)=>s+r.roas,0)/(data.length-mid);
+  const roasDelta = ((h2roas-h1roas)/h1roas*100).toFixed(1);
+
+  const h1cac = data.slice(0,mid).reduce((s,r)=>s+r.cac,0)/mid;
+  const h2cac = data.slice(mid).reduce((s,r)=>s+r.cac,0)/(data.length-mid);
+  const cacDelta = ((h2cac-h1cac)/h1cac*100).toFixed(1);
+
+  const fmt = n => n>=1e7?`₹${(n/1e7).toFixed(1)}Cr`:n>=1e5?`₹${(n/1e5).toFixed(1)}L`:`₹${Math.round(n).toLocaleString('en-IN')}`;
+
+  document.getElementById('metricsRow').innerHTML = `
+    <div class="metric-card ${avgRoas>=3?'green':avgRoas>=2.5?'yellow':'red'}">
+      <div class="metric-label">Avg ROAS</div>
+      <div class="metric-val">${avgRoas.toFixed(2)}×</div>
+      <div class="metric-sub ${roasDelta>=0?'up':'down'}">${roasDelta>=0?'↑':'↓'} ${Math.abs(roasDelta)}% vs first half</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Total Spend</div>
+      <div class="metric-val" style="font-size:1.5rem">${fmt(totalCost)}</div>
+      <div class="metric-sub flat">${data.length} days · ${fmt(totalCost/data.length)}/day avg</div>
+    </div>
+    <div class="metric-card ${avgCac<=400?'green':avgCac<=500?'yellow':'red'}">
+      <div class="metric-label">Avg CAC</div>
+      <div class="metric-val">₹${Math.round(avgCac)}</div>
+      <div class="metric-sub ${cacDelta<=0?'up':'down'}">${cacDelta<=0?'↓':'↑'} ${Math.abs(cacDelta)}% vs first half</div>
+    </div>
+    <div class="metric-card accent">
+      <div class="metric-label">Total Conv.</div>
+      <div class="metric-val">${totalConv.toLocaleString('en-IN')}</div>
+      <div class="metric-sub flat">${Math.round(totalConv/data.length)} conv/day avg</div>
+    </div>
+    <div class="metric-card ${avgCtr>=0.8?'green':avgCtr>=0.7?'yellow':'red'}">
+      <div class="metric-label">Avg CTR</div>
+      <div class="metric-val">${avgCtr.toFixed(2)}%</div>
+      <div class="metric-sub flat">${fmt(totalVal)} total rev value</div>
+    </div>`;
+}
+
+// ─── CHARTS ────────────────────────────────────────────────────────────────
+function destroyChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function renderCharts(data) {
+  const labels = data.map(r => r.d.slice(5)); // MM-DD
+  const cliffIdx = data.findIndex(r => r.d === '2026-04-13');
+
+  // ROAS chart
+  destroyChart('roas');
+  const roasCtx = document.getElementById('roasChart').getContext('2d');
+  const roasColors = data.map(r => r.d==='2026-04-13'?'#c93030':r.roas>=3?'#5a9e00':r.roas>=2.5?'#b07800':'#c93030');
+  charts['roas'] = new Chart(roasCtx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'ROAS', data:data.map(r=>r.roas),
+        borderColor:'#5a9e00', backgroundColor:'rgba(90,158,0,0.06)',
+        tension:0.3, fill:true, pointRadius:data.map(r=>r.d==='2026-04-13'?6:2),
+        pointBackgroundColor:roasColors, pointBorderColor:roasColors,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`ROAS: ${ctx.raw.toFixed(2)}×`}}},
+      scales:{
+        x:{ticks:{color:'#888880',font:{size:10},maxTicksLimit:12},grid:{color:'rgba(0,0,0,0.06)'}},
+        y:{ticks:{color:'#888880',font:{size:10},callback:v=>v.toFixed(1)+'×'},grid:{color:'rgba(0,0,0,0.06)'},min:1.5}
+      }
+    }
+  });
+
+  // Cost vs Conv chart
+  destroyChart('costconv');
+  const ccCtx = document.getElementById('costConvChart').getContext('2d');
+  charts['costconv'] = new Chart(ccCtx, {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Cost (₹)',data:data.map(r=>r.cost),backgroundColor:'rgba(26,111,196,0.25)',borderColor:'#1a6fc4',borderWidth:1,yAxisID:'y'},
+        {label:'Conv',data:data.map(r=>r.conv),type:'line',borderColor:'#1e8a52',pointRadius:1.5,tension:0.3,yAxisID:'y1',borderDash:[4,2]}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#888880',font:{size:10},maxTicksLimit:12},grid:{color:'rgba(0,0,0,0.04)'}},
+        y:{ticks:{color:'#1a6fc4',font:{size:10},callback:v=>'₹'+Math.round(v/1000)+'K'},grid:{color:'rgba(0,0,0,0.06)'}},
+        y1:{position:'right',ticks:{color:'#1e8a52',font:{size:10}},grid:{drawOnChartArea:false}}
+      }
+    }
+  });
+
+  // CAC chart
+  destroyChart('cac');
+  const cacCtx = document.getElementById('cacChart').getContext('2d');
+  const cacGrad = cacCtx.createLinearGradient(0,0,0,280);
+  cacGrad.addColorStop(0,'rgba(176,120,0,0.15)');
+  cacGrad.addColorStop(1,'rgba(176,120,0,0)');
+  charts['cac'] = new Chart(cacCtx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'CAC (₹)',data:data.map(r=>r.cac),
+        borderColor:'#b07800',backgroundColor:cacGrad,
+        tension:0.3,fill:true,pointRadius:data.map(r=>r.d==='2026-04-13'?6:1.5),
+        pointBackgroundColor:data.map(r=>r.d==='2026-04-13'?'#c93030':'#b07800'),
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`CAC: ₹${Math.round(ctx.raw)}`}}},
+      scales:{
+        x:{ticks:{color:'#888880',font:{size:10},maxTicksLimit:14},grid:{color:'rgba(0,0,0,0.06)'}},
+        y:{ticks:{color:'#888880',font:{size:10},callback:v=>'₹'+v},grid:{color:'rgba(0,0,0,0.06)'}}
+      }
+    }
+  });
+}
+
+// ─── CAMPAIGN TABLE ─────────────────────────────────────────────────────────
+function renderCampaignTable() {
+  const roasClass = r => r>=4?'roas-good':r>=2.5?'':'roas-bad';
+  const typeColor = t => ({SEARCH:'blue',PMAX:'',DEMGEN:'warn',SHOPPING:''}[t]||'');
+  const rows = CAMPAIGNS.map(c => `
+    <tr>
+      <td>${c.name}${c.verdict==='bad'?'<span class="badge badge-red">⚠ action</span>':c.verdict==='good'?'<span class="badge badge-green">✓ scale</span>':''}</td>
+      <td><span class="badge badge-${typeColor(c.type)||'blue'}">${c.type}</span></td>
+      <td>₹${Math.round(c.spend/1000)}K</td>
+      <td>${c.conv.toLocaleString()}</td>
+      <td class="${c.cac>700?'roas-bad':c.cac>450?'':'roas-good'}">₹${c.cac}</td>
+      <td class="${roasClass(c.roas)}">${c.roas.toFixed(2)}×</td>
+      <td>${c.ctr.toFixed(2)}%</td>
+      <td style="font-size:11px;color:var(--muted);max-width:200px;white-space:normal">${c.note}</td>
+    </tr>`).join('');
+  document.getElementById('campaignBody').innerHTML = rows;
+}
+
+// ─── SCORECARD ──────────────────────────────────────────────────────────────
+function renderScorecard() {
+  const cards = SCORECARD.map(s=>`
+    <div class="sc-card">
+      <div class="sc-name">${s.name}</div>
+      <div class="sc-row"><span>CAC before</span><span>${typeof s.before.cac==='number'?'₹'+s.before.cac:s.before.cac}</span></div>
+      <div class="sc-row"><span>CAC after</span><span>${typeof s.after.cac==='number'?'₹'+s.after.cac:s.after.cac}</span></div>
+      <div class="sc-row"><span>ROAS before</span><span>${typeof s.before.roas==='number'?s.before.roas+'×':s.before.roas}</span></div>
+      <div class="sc-row"><span>ROAS after</span><span>${typeof s.after.roas==='number'?s.after.roas+'×':s.after.roas}</span></div>
+      <div class="sc-row"><span>Note</span><span style="color:var(--muted);font-size:10px">${s.peak}</span></div>
+      <span class="sc-verdict ${s.verdict}">${s.label}</span>
+    </div>`).join('');
+  document.getElementById('scorecardGrid').innerHTML = cards;
+}
+
+// ─── TIMELINE ───────────────────────────────────────────────────────────────
+function renderTimeline() {
+  const mkEvent = e => `
+    <div class="tl-event">
+      <div class="tl-dot ${e.type}"></div>
+      <div class="tl-date">${e.date}</div>
+      <div class="tl-title">${e.title}</div>
+      <div class="tl-detail">${e.detail}</div>
+      ${e.pills.length?`<div class="tl-impacts">${e.pills.map(p=>`<span class="tl-pill ${p.type}">${p.label}</span>`).join('')}</div>`:''}
+    </div>`;
+  document.getElementById('timelineLeft').innerHTML = TIMELINE_EVENTS.filter(e=>e.side==='left').map(mkEvent).join('');
+  document.getElementById('timelineRight').innerHTML = TIMELINE_EVENTS.filter(e=>e.side==='right').map(mkEvent).join('');
+}
+
+// ─── MAIN RENDER ────────────────────────────────────────────────────────────
+function render() {
+  const data = getFiltered();
+  renderMetrics(data);
+  if (data.length) renderCharts(data);
+  renderCampaignTable();
+  renderScorecard();
+  renderTimeline();
+  document.getElementById('rangeDisplay').textContent = `${data.length} days · ${dateFrom} → ${dateTo}`;
+}
+
+// ─── REFRESH ────────────────────────────────────────────────────────────────
+function refreshDashboard() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  document.getElementById('last-updated').textContent = 'refreshing…';
+  setTimeout(() => {
+    render();
+    const now = new Date();
+    document.getElementById('last-updated').textContent = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    btn.classList.remove('spinning');
+  }, 700);
+}
+
+// ─── VIDEO TITLE DATA ─────────────────────────────────────────────────────────
+const VIDEO_DATA = {
+  top: [
+    {title:'De-Tan SPF 50+ Body Sunscreen Lotion | Corrects Tan, Protects from UV | Be Bodywise',camps:'DG_DeTan-Int-01',cost:12100,conv:24,roas:2.59,cac:504,vtr:21.2,w100:22.4},
+    {title:'Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | BeBodywise X Thoughtful Threads',camps:'DG_Body-Int-02, DG_HairandBody-MOF',cost:50657,conv:156,roas:2.51,cac:325,vtr:3.2,w100:3.7},
+    {title:'Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | Be Bodywise X Nandini',camps:'DG_Pigmentation-Int-02, DG_Pigmentation-LA-01',cost:18600,conv:37,roas:2.51,cac:503,vtr:5.2,w100:10.2},
+    {title:'Advanced Hair Growth Serum Roll On | For Hair Thinning & Hair fall | Be Bodywise X Kirthika',camps:'DG_Hair-Comp03, DG_HairandBody-MOF',cost:15200,conv:27,roas:2.45,cac:564,vtr:3.7,w100:3.6},
+    {title:'Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Anshika Thakur',camps:'DG_MagnesiumGummies-Int-03',cost:13800,conv:26,roas:2.42,cac:531,vtr:25.3,w100:25.7},
+    {title:'Urea Body Lotion | For: Very Dry and Flaky Skin | Snake & Dry Skin | Be Bodywise',camps:'DG_Body-Int-02, DG_HairandBody-MOF',cost:68950,conv:129,roas:1.54,cac:534,vtr:22.7,w100:21.6},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Bodywise x Jyoti',camps:'DG_Hair-Comp03, DG_AllProduct-Int02',cost:32400,conv:96,roas:2.28,cac:337,vtr:7.8,w100:8.6},
+    {title:'5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | BeBodywise X Chahat Malhotra',camps:'DG_HairandBody-MOF, DG_Body-Int-02',cost:24900,conv:76,roas:2.20,cac:327,vtr:4.1,w100:4.9},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Niharika',camps:'DG_HairandBody-MOF, DG_Hair-Comp03',cost:13600,conv:34,roas:2.09,cac:399,vtr:3.2,w100:6.5},
+    {title:'Advanced Hair Growth Serum Roll On | For Hair Thinning & Hair fall | Be Bodywise X Ngapu',camps:'DG_Hair-Comp03, DG_HairandBody-MOF',cost:11000,conv:28,roas:2.28,cac:391,vtr:3.5,w100:6.2},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Sowmya',camps:'DG_Hair-Comp03',cost:14491,conv:22,roas:1.40,cac:456,vtr:5.5,w100:6.7},
+    {title:'5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Asha',camps:'DG_Body-Int-02',cost:47319,conv:105,roas:1.33,cac:451,vtr:2.1,w100:3.2},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Gunjita',camps:'DG_Hair-Comp03',cost:10284,conv:23,roas:1.46,cac:482,vtr:8.3,w100:8.7},
+    {title:'Advanced Hair Growth Serum Roll On | For Hair Thinning & Hair fall | Be Bodywise X Kirthika (V2)',camps:'DG_Hair-LA-02, DG_AllProduct-Int02',cost:125768,conv:233,roas:1.65,cac:540,vtr:8.3,w100:8.7},
+    {title:'Be Bodywise 20% Urea Foot and Heel Roll On | For Cracked & Rough heels',camps:'DG_Body-Int-02, DG_Body-LA-02',cost:366238,conv:722,roas:1.29,cac:507,vtr:12.1,w100:9.8},
+  ],
+  bad: [
+    {title:'20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise X Suhasini',camps:'DG_Body-Int-02, DG_Body-LA-02, DG_Urea-Urea-Int-01',cost:1288127,conv:1993,roas:0.77,cac:646,vtr:2.1,w100:2.3},
+    {title:'30% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise X Anushree',camps:'DG_Body-LA-02, DG_Body-Int-02',cost:580194,conv:889,roas:0.78,cac:653,vtr:2.5,w100:2.5},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Pooja',camps:'DG_Hair_Int-Hyd',cost:391374,conv:576,roas:0.87,cac:679,vtr:2.4,w100:3.8},
+    {title:'20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise X Sakshi Agarwal',camps:'DG_Body-Int-02, DG_HairandBody-MOF, DG_Body-LA-02',cost:295919,conv:499,roas:0.94,cac:593,vtr:1.0,w100:1.5},
+    {title:'7% Glycolic Acid Exfoliating Body Stick | For smoother, softer skin | Be Bodywise x Raisha',camps:'DG_Glycolic-LA-01',cost:295282,conv:385,roas:0.76,cac:767,vtr:4.2,w100:6.1},
+    {title:'5% AHA BHA Exfoliating Body Wash | For Body Acne, Strawberry Skin and De-tan | Bodywise x Sakshi',camps:'DG_Body-LA-02, DG_Body-Int-02',cost:184230,conv:297,roas:0.85,cac:620,vtr:6.9,w100:6.1},
+    {title:'20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise X SkinCare By Anu',camps:'DG_Body-LA-02, DG_Urea-Urea-Int-01',cost:137457,conv:160,roas:0.63,cac:859,vtr:6.9,w100:6.2},
+    {title:'Bodywise Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise',camps:'DG_HairandBody-MOF, DG_Body-LA-02, DG_Body-Int-02',cost:126805,conv:105,roas:0.37,cac:1208,vtr:1.5,w100:1.6},
+    {title:'20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise X Vamshika UFRO',camps:'DG_HairandBody-MOF, DG_Body-LA-02, DG_Body-Int-02',cost:114919,conv:204,roas:0.88,cac:563,vtr:2.4,w100:7.4},
+    {title:'7% Glycolic Acid Exfoliating Body Stick | For smoother, softer skin | Be Bodywise x Hiteshi',camps:'DG_Glycolic-LA-01',cost:86631,conv:109,roas:0.87,cac:795,vtr:5.4,w100:8.7},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Aruna',camps:'DG_Hair_Int-Hyd, DG_Hair-Comp03',cost:75967,conv:77,roas:0.69,cac:985,vtr:3.7,w100:3.8},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Cheggit',camps:'DG_Hair-Comp03, DG_HairandBody-MOF',cost:70075,conv:101,roas:0.97,cac:694,vtr:3.6,w100:3.9},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Shishira',camps:'DG_Hair_Int-Hyd',cost:75967,conv:122,roas:0.96,cac:623,vtr:4.3,w100:4.4},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Rishiram',camps:'DG_Hair_Int-Hyd',cost:63441,conv:101,roas:0.95,cac:628,vtr:4.3,w100:4.5},
+    {title:'Advanced Hair Growth Pack with Roll On 25ml | Hair Thinning & Hairfall | Be Bodywise',camps:'DG_Hair-Comp03, DG_HairandBody-MOF',cost:45721,conv:5,roas:0.11,cac:9144,vtr:1.8,w100:2.1},
+  ],
+  watch: [
+    {title:'Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Anshika Thakur',camps:'DG_MagnesiumGummies-Int-03',cost:13800,conv:26,roas:2.42,cac:531,vtr:25.3,w100:25.7},
+    {title:'Urea Body Lotion | For: Very Dry and Flaky Skin | Snake & Dry Skin | Be Bodywise',camps:'DG_Body-Int-02, DG_HairandBody-MOF',cost:68950,conv:129,roas:1.54,cac:534,vtr:22.7,w100:21.6},
+    {title:'De-Tan SPF 50+ Body Sunscreen Lotion | Corrects Tan, Protects from UV | Be Bodywise',camps:'DG_DeTan-Int-01',cost:12100,conv:24,roas:2.59,cac:504,vtr:21.2,w100:22.4},
+    {title:'Be Bodywise 20% Urea Foot and Heel Roll On | For Cracked & Rough heels',camps:'DG_Body-Int-02, DG_Body-LA-02',cost:366238,conv:722,roas:1.29,cac:507,vtr:12.1,w100:9.8},
+    {title:'Advanced Hair Growth Serum Roll On | For Hair Thinning & Hair fall | Be Bodywise X Kirthika (V2)',camps:'DG_Hair-LA-02, DG_AllProduct-Int02',cost:125768,conv:233,roas:1.65,cac:540,vtr:8.3,w100:8.7},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Gunjita',camps:'DG_Hair-Comp03',cost:10284,conv:23,roas:1.46,cac:482,vtr:8.3,w100:8.7},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Bodywise x Jyoti',camps:'DG_Hair-Comp03, DG_AllProduct-Int02',cost:32400,conv:96,roas:2.28,cac:337,vtr:7.8,w100:8.6},
+    {title:'20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise X SkinCare By Anu',camps:'DG_Body-LA-02, DG_Urea-Urea-Int-01',cost:137457,conv:160,roas:0.63,cac:859,vtr:6.9,w100:6.2},
+    {title:'5% AHA BHA Exfoliating Body Wash | For Body Acne, Strawberry Skin and De-tan | Bodywise x Sakshi',camps:'DG_Body-LA-02, DG_Body-Int-02',cost:184230,conv:297,roas:0.85,cac:620,vtr:6.9,w100:6.1},
+    {title:'7% Glycolic Acid Exfoliating Body Stick | For smoother, softer skin | Be Bodywise x Hiteshi',camps:'DG_Glycolic-LA-01',cost:86631,conv:109,roas:0.87,cac:795,vtr:5.4,w100:8.7},
+    {title:'Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | Be Bodywise X Nandini',camps:'DG_Pigmentation-Int-02, DG_Pigmentation-LA-01',cost:18600,conv:37,roas:2.51,cac:503,vtr:5.2,w100:10.2},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Niharika',camps:'DG_HairandBody-MOF, DG_Hair-Comp03',cost:13600,conv:34,roas:2.09,cac:399,vtr:3.2,w100:6.5},
+    {title:'5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Asha',camps:'DG_Body-Int-02',cost:47319,conv:105,roas:1.33,cac:451,vtr:2.1,w100:3.2},
+    {title:'Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Sowmya',camps:'DG_Hair-Comp03',cost:14491,conv:22,roas:1.40,cac:456,vtr:5.5,w100:6.7},
+    {title:'7% Glycolic Acid Exfoliating Body Stick | For smoother, softer skin | Be Bodywise x Raisha',camps:'DG_Glycolic-LA-01',cost:295282,conv:385,roas:0.76,cac:767,vtr:4.2,w100:6.1},
+  ]
+};
+
+let currentVideoView = 'top';
+
+function showVideoView(view) {
+  currentVideoView = view;
+  ['top','bad','watch'].forEach(v => {
+    document.getElementById('btn' + v.charAt(0).toUpperCase() + v.slice(1))?.classList.toggle('active', v === view);
+  });
+  renderVideoTable(view);
+}
+
+function renderVideoTable(view) {
+  const rows = VIDEO_DATA[view];
+  document.getElementById('videoCount').textContent = rows.length + ' videos';
+  const fmt = n => n >= 100000 ? '₹' + (n/100000).toFixed(1) + 'L' : '₹' + Math.round(n/1000) + 'K';
+  const roasCls = r => r >= 2 ? 'roas-good' : r >= 1.2 ? '' : r >= 0.8 ? 'roas-warn' : 'roas-bad';
+  const signal = (r, w100) => {
+    if (r >= 2) return '<span class="badge badge-green">✓ Scale</span>';
+    if (r >= 1.3 && w100 >= 8) return '<span class="badge badge-green">✓ Performing</span>';
+    if (r >= 1 && w100 >= 6) return '<span class="badge badge-yellow">~ Watch</span>';
+    if (r < 0.5) return '<span class="badge badge-red">✗ Pause now</span>';
+    if (r < 0.8) return '<span class="badge badge-red">✗ Cut</span>';
+    return '<span class="badge badge-yellow">⚠ Optimise</span>';
+  };
+  document.getElementById('videoTableBody').innerHTML = rows.map((r,i) => `
+    <tr>
+      <td style="max-width:340px;white-space:normal;font-size:11px;line-height:1.4">
+        <span style="font-weight:500;color:var(--text)">${r.title}</span>
+      </td>
+      <td style="font-size:10px;color:var(--muted);max-width:140px;white-space:normal;line-height:1.4">${r.camps}</td>
+      <td>${fmt(r.cost)}</td>
+      <td>${r.conv}</td>
+      <td class="${roasCls(r.roas)}">${r.roas.toFixed(2)}×</td>
+      <td class="${r.cac > 800 ? 'roas-bad' : r.cac < 450 ? 'roas-good' : ''}">₹${r.cac}</td>
+      <td class="${r.vtr >= 10 ? 'roas-good' : r.vtr >= 4 ? '' : 'roas-warn'}">${r.vtr.toFixed(1)}%</td>
+      <td class="${r.w100 >= 10 ? 'roas-good' : r.w100 >= 5 ? '' : 'roas-warn'}">${r.w100.toFixed(1)}%</td>
+      <td>${signal(r.roas, r.w100)}</td>
+    </tr>`).join('');
+}
+
+// ─── TAB SWITCH ──────────────────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const ids = ['perf','video','product','titles'];
+    b.classList.toggle('active', ids[i] === id);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-'+id));
+  if (id === 'product') renderProductCharts();
+  if (id === 'titles') renderVideoTable(currentVideoView);
+}
+
+// ─── VIDEO / CONVERSION DATA ──────────────────────────────────────────────────
+const FUNNEL_DATA = [
+  {name:'Search Brand',pdp:5199,atc:1496,pur:231,type:'SEARCH'},
+  {name:'Search BrandProduct',pdp:4175,atc:917,pur:224,type:'SEARCH'},
+  {name:'Pmax Hair-04 (Only-NC)',pdp:7037,atc:721,pur:216,type:'PMAX'},
+  {name:'Pmax HairandBody MOF-DropOff',pdp:3891,atc:443,pur:134,type:'DEMGEN'},
+  {name:'Pmax Body-NC/RC-Tier2-3',pdp:4115,atc:434,pur:107,type:'PMAX'},
+  {name:'Pmax Body-NC/RC-04',pdp:3729,atc:335,pur:85,type:'PMAX'},
+  {name:'Pmax Body-01-(Only-NC)',pdp:6716,atc:723,pur:117,type:'PMAX'},
+  {name:'DemGen Body-Int-02',pdp:5367,atc:532,pur:67,type:'DEMGEN'},
+  {name:'Pmax HG-Telugu-01',pdp:2048,atc:160,pur:63,type:'PMAX'},
+  {name:'Pmax HGRO-03',pdp:1447,atc:112,pur:33,type:'PMAX'},
+  {name:'Shopping AllProducts',pdp:1216,atc:138,pur:43,type:'SHOPPING'},
+  {name:'DemGen Hair-Comp03',pdp:285,atc:85,pur:22,type:'DEMGEN'},
+  {name:'DemGen Hair-LA-02',pdp:2348,atc:148,pur:26,type:'DEMGEN'},
+  {name:'DemGen Hair-Int-Hyd',pdp:70,atc:15,pur:41,type:'DEMGEN'},
+  {name:'DemGen Hair-Int-01',pdp:204,atc:33,pur:29,type:'DEMGEN'},
+  {name:'DemGen Body-LA-02',pdp:0,atc:0,pur:0,type:'DEMGEN'},
+  {name:'Pmax Strawberry Skin-02',pdp:14262,atc:1102,pur:148,type:'PMAX'},
+  {name:'Pmax HG-Tamil-01',pdp:616,atc:78,pur:39,type:'PMAX'},
+];
+
+const RATE_DATA = [
+  {name:'DemGen Body-Int-02',atcPdp:9.9,pAtc:12.6,pPdp:1.3,signal:'bad',note:'PDP views ≠ intent. Low purchase rate.'},
+  {name:'DemGen Hair-Int-Hyd',atcPdp:22.1,pAtc:263.2,pPdp:58.3,signal:'good',note:'High purchase intent — anomaly or small vol.'},
+  {name:'DemGen Hair-Comp03',atcPdp:29.8,pAtc:25.7,pPdp:7.6,signal:'warn',note:'Decent ATC rate but low absolutes.'},
+  {name:'DemGen Hair-Int-01',atcPdp:16.1,pAtc:87.2,pPdp:14.1,signal:'warn',note:'Reasonable funnel, low volume.'},
+  {name:'DemGen Hair-LA-02',atcPdp:6.3,pAtc:17.7,pPdp:1.1,signal:'bad',note:'Very low purchase quality. Traffic not converting.'},
+  {name:'DemGen HairandBody MOF-DropOff',atcPdp:11.4,pAtc:30.2,pPdp:3.4,signal:'warn',note:'Best DemGen funnel — retargeting working partially.'},
+  {name:'Pmax Body-01 (Only-NC)',atcPdp:10.8,pAtc:16.2,pPdp:1.7,signal:'warn',note:'NC campaign, lower purchase intent expected.'},
+  {name:'Pmax Body-NC/RC-04',atcPdp:9.0,pAtc:25.3,pPdp:2.3,signal:'warn',note:'Solid mid-funnel. Scale with Search.'},
+  {name:'Pmax Body-NC/RC-Tier2-3',atcPdp:10.6,pAtc:24.7,pPdp:2.6,signal:'good',note:'Best Pmax body funnel. High intent audience.'},
+  {name:'Pmax Hair-04 (Only-NC)',atcPdp:10.2,pAtc:29.9,pPdp:3.1,signal:'warn',note:'Good funnel quality despite low ROAS — budget overspend issue.'},
+  {name:'Pmax HG-Telugu-01',atcPdp:12.6,pAtc:50.2,pPdp:6.3,signal:'good',note:'Best HG funnel. tROAS tightening proved right.'},
+  {name:'Pmax Strawberry Skin-02',atcPdp:7.7,pAtc:13.4,pPdp:1.0,signal:'warn',note:'High PDP volume (14K) but low conversion. Landing page issue?'},
+  {name:'Search Brand',atcPdp:28.8,pAtc:15.4,pPdp:4.4,signal:'good',note:'Best ATC/PDP in account. Intent-driven.'},
+  {name:'Search BrandProduct',atcPdp:22.0,pAtc:24.5,pPdp:5.4,signal:'good',note:'Strong branded funnel. Scale immediately.'},
+  {name:'Shopping AllProducts',atcPdp:11.3,pAtc:31.5,pPdp:3.6,signal:'warn',note:'Decent purchase rate. Monitor CAC.'},
+];
+
+const YT_DATA = [
+  {name:'DemGen Hair-Comp03',ytViews:137,pdp:285,pur:22,note:'137 YT views counted alongside 22 purchases'},
+  {name:'DemGen HairandBody MOF-DropOff',ytViews:112,pdp:3891,pur:134,note:'112 YT views — small vs purchase volume'},
+  {name:'DemGen Hair-LA-02',ytViews:54,pdp:2348,pur:26,note:'54 YT views but only 26 purchases'},
+  {name:'Pmax-Hair-NC/RC-Karnataka',ytViews:70,pdp:661,pur:0,note:'70 YT follow-ons, zero reported purchases'},
+  {name:'Pmax-Hair-NC/RC-Comp-01',ytViews:110,pdp:2105,pur:0,note:'110 YT views, zero purchases — waste signal'},
+  {name:'DemGen Body-Int-02',ytViews:61,pdp:5367,pur:67,note:'61 YT views mixed with 67 purchases in conv. count'},
+  {name:'DemGen Hair-Int-Hyd',ytViews:47,pdp:70,pur:41,note:'YT views almost equal to purchases — suspicious'},
+  {name:'Pmax HG-AP-Telangana',ytViews:54,pdp:915,pur:0,note:'54 YT views, zero purchases in this snapshot'},
+];
+
+const PRODUCT_TAGS = [
+  {tag:'Others',cost:155317,cac:640,roas:2.3},
+  {tag:'HG (Hair Growth)',cost:133858,cac:593,roas:1.6},
+  {tag:'HGRO (Hair Growth Oil)',cost:43606,cac:640,roas:1.7},
+  {tag:'UARO (Urea All-Round)',cost:40715,cac:652,roas:1.4},
+  {tag:'5%BW (Body Wash)',cost:37313,cac:746,roas:1.9},
+  {tag:'UFR (Urea Face Repair)',cost:31188,cac:783,roas:0.8},
+  {tag:'HGP-adv (Hair Growth Pro adv)',cost:26733,cac:411,roas:3.6},
+  {tag:'UPK (Urea Pack)',cost:25526,cac:567,roas:2.4},
+  {tag:'SABW (Sal Acid Body Wash)',cost:23607,cac:604,roas:2.0},
+  {tag:'MG (Magnesium Gummies)',cost:12238,cac:1925,roas:0.8},
+  {tag:'SPF',cost:5321,cac:741,roas:1.7},
+  {tag:'PPHG (Premium Pack HG)',cost:3685,cac:826,roas:0.9},
+  {tag:'HGP (Hair Growth Pack)',cost:897,cac:747,roas:1.4},
+];
+
+// ─── VIDEO TAB RENDERERS ──────────────────────────────────────────────────────
+function renderFunnelRows() {
+  const sorted = [...FUNNEL_DATA].sort((a,b)=>b.pur-a.pur);
+  const maxPdp = Math.max(...sorted.map(r=>r.pdp));
+  const typeColor = t => ({SEARCH:'#1a6fc4',PMAX:'#1e8a52',DEMGEN:'#c93030',SHOPPING:'#b07800'}[t]||'#888');
+  document.getElementById('funnelRows').innerHTML = sorted.map(r => {
+    const purRate = r.pdp > 0 ? (r.pur/r.pdp*100).toFixed(1) : '0.0';
+    const barW = Math.round(r.pdp/maxPdp*100);
+    const rateClass = parseFloat(purRate) >= 4 ? 'flag-good' : parseFloat(purRate) >= 2 ? 'flag-warn' : 'flag-bad';
+    return `<div class="insight-row">
+      <span class="ir-name">${r.name} <span style="font-size:9px;color:${typeColor(r.type)};font-family:var(--mono)">${r.type}</span></span>
+      <span class="ir-num">${r.pdp.toLocaleString()}</span>
+      <span class="ir-num">${r.atc.toLocaleString()}</span>
+      <span class="ir-num ${r.pur<30&&r.type==='DEMGEN'?'flag-bad':r.pur>100?'flag-good':''}">${r.pur}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="ir-bar-wrap" style="flex:1"><div class="ir-bar" style="width:${barW}%;background:${typeColor(r.type)};opacity:0.6"></div></div>
+        <span class="ir-num ${rateClass}" style="width:36px">${purRate}%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderRateRows() {
+  document.getElementById('rateRows').innerHTML = RATE_DATA.map(r => {
+    const sig = {good:'flag-good',warn:'flag-warn',bad:'flag-bad'}[r.signal];
+    const sigLabel = {good:'✓ Good quality',warn:'~ Medium',bad:'✗ Low quality'}[r.signal];
+    return `<div class="insight-row">
+      <span class="ir-name">${r.name}</span>
+      <span class="ir-num">${r.atcPdp}%</span>
+      <span class="ir-num ${r.pAtc>50?'flag-good':r.pAtc<20?'flag-bad':''}">${r.pAtc}%</span>
+      <span class="ir-num ${r.pPdp>=4?'flag-good':r.pPdp>=2?'flag-warn':'flag-bad'}">${r.pPdp}%</span>
+      <div><span class="ir-num ${sig}" style="font-size:11px">${sigLabel}</span> <span style="font-size:10px;color:var(--muted)">${r.note}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderYtRows() {
+  document.getElementById('ytRows').innerHTML = YT_DATA.map(r => {
+    const ratio = r.pur > 0 ? (r.ytViews/r.pur).toFixed(1) : '∞';
+    return `<div class="insight-row">
+      <span class="ir-name">${r.name}</span>
+      <span class="ir-num flag-bad">${r.ytViews} YT views</span>
+      <span class="ir-num">${r.pur} purchases</span>
+      <span class="ir-num ${parseFloat(ratio)>2?'flag-bad':''}">${ratio}× ratio</span>
+      <span style="font-size:10px;color:var(--muted)">${r.note}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderProductTagRows() {
+  const sorted = [...PRODUCT_TAGS].sort((a,b)=>b.cost-a.cost);
+  document.getElementById('productTagRows').innerHTML = sorted.map(r => {
+    const chipClass = r.roas >= 3 ? 'chip-g' : r.roas >= 1.5 ? 'chip-w' : 'chip-r';
+    return `<div class="product-row">
+      <span>${r.tag}</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">₹${Math.round(r.cost/1000)}K</span>
+        <span class="roas-chip ${chipClass}">${r.roas}× ROAS</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let productChartsRendered = false;
+function renderProductCharts() {
+  renderProductTagRows();
+  if (productChartsRendered) return;
+  productChartsRendered = true;
+  const sorted = [...PRODUCT_TAGS].sort((a,b)=>b.roas-a.roas);
+  const roasColors = sorted.map(r => r.roas>=3?'rgba(30,138,82,0.7)':r.roas>=1.5?'rgba(176,120,0,0.6)':'rgba(201,48,48,0.6)');
+
+  new Chart(document.getElementById('productRoasChart').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels: sorted.map(r=>r.tag.split(' ')[0]),
+      datasets:[{label:'ROAS',data:sorted.map(r=>r.roas),backgroundColor:roasColors,borderRadius:4}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#888880',font:{size:9}},grid:{color:'rgba(0,0,0,0.05)'}},
+        y:{ticks:{color:'#888880',font:{size:10},callback:v=>v+'×'},grid:{color:'rgba(0,0,0,0.05)'}}
+      }
+    }
+  });
+
+  const spendSorted = [...PRODUCT_TAGS].sort((a,b)=>b.cost-a.cost).slice(0,8);
+  const palette = ['#1a6fc4','#1e8a52','#b07800','#c93030','#7c3aed','#0891b2','#dc2626','#65a30d'];
+  new Chart(document.getElementById('productSpendChart').getContext('2d'), {
+    type:'doughnut',
+    data:{
+      labels:spendSorted.map(r=>r.tag.split(' ')[0]),
+      datasets:[{data:spendSorted.map(r=>r.cost),backgroundColor:palette,borderWidth:1,borderColor:'#fff'}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},color:'#888880',boxWidth:10}}}}
+  });
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('rangeDisplay').textContent = '72 days · 2026-03-01 → 2026-05-11';
+  render();
+  renderFunnelRows();
+  renderRateRows();
+  renderYtRows();
+  document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+});
+</script>
+</body>
+</html>
