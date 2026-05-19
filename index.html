@@ -211,6 +211,11 @@
   .video-insight-box p { font-size: 12px; color: var(--muted); line-height: 1.6; }
   .video-insight-box strong { color: var(--text); }
 
+  /* Product tag deep-dive filter buttons */
+  .pt-tag-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 10px; padding: 4px 10px; border-radius: 20px; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
+  .pt-tag-btn:hover { border-color: var(--text); color: var(--text); }
+  .pt-tag-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+
   @media (max-width: 900px) {
     .metrics-row { grid-template-columns: repeat(2, 1fr); }
     .chart-grid, .timeline-grid { grid-template-columns: 1fr; }
@@ -240,11 +245,11 @@
 <div class="filter-bar">
   <div class="filter-group">
     <span class="filter-label">From</span>
-    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-11">
+    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-17">
   </div>
   <div class="filter-group">
     <span class="filter-label">To</span>
-    <input type="date" class="filter-input" id="dateTo" value="2026-05-11" min="2026-03-01" max="2026-05-11">
+    <input type="date" class="filter-input" id="dateTo" value="2026-05-17" min="2026-03-01" max="2026-05-17">
   </div>
   <div class="quick-btns">
     <button class="quick-btn" onclick="setRange('mar')">March</button>
@@ -370,51 +375,117 @@
       </div>
     </div>
 
-    <!-- Tab: Product Tag Analysis -->
+    <!-- Tab: Product Tag Analysis — Deep Dive -->
     <div class="tab-panel" id="tab-product">
 
-      <div class="video-insight-box" style="background:rgba(90,158,0,0.04);border-color:rgba(90,158,0,0.18);">
-        <h4 style="color:var(--green)">Product tag view: where your budget is actually going by SKU category</h4>
-        <p>The video performance tab breaks spend and ROAS by product tag (HG = Hair Growth, HGRO = Hair Growth Oil, SABW = Salicylic Acid Body Wash, UPK = Urea Pack, UFR = Urea Face/Repair, etc.). <strong>HGP-adv is your best product at 3.6× ROAS</strong>. HG (your highest-spend category at ₹1.34L) delivers only <strong>1.6× ROAS</strong>. UFR and MG are sub-1× — burning money.</p>
+      <!-- Tag filter row -->
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+        <span style="font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-right:4px">Filter tag</span>
+        <button class="pt-tag-btn active" data-tag="ALL" onclick="selectProductTag(this,'ALL')">All Tags</button>
+        <button class="pt-tag-btn" data-tag="HG" onclick="selectProductTag(this,'HG')">HG · Hair Gummies</button>
+        <button class="pt-tag-btn" data-tag="HGRO" onclick="selectProductTag(this,'HGRO')">HGRO · Hair Growth Roll On</button>
+        <button class="pt-tag-btn" data-tag="HGP-adv" onclick="selectProductTag(this,'HGP-adv')">HGP-adv · HG Pack Adv</button>
+        <button class="pt-tag-btn" data-tag="HGP" onclick="selectProductTag(this,'HGP')">HGP · Hair Growth Pack</button>
+        <button class="pt-tag-btn" data-tag="PPHG" onclick="selectProductTag(this,'PPHG')">PPHG · Post Partum HG</button>
+        <button class="pt-tag-btn" data-tag="UFR" onclick="selectProductTag(this,'UFR')">UFR · Urea Foot Roll On</button>
+        <button class="pt-tag-btn" data-tag="UARO" onclick="selectProductTag(this,'UARO')">UARO · Underarm Roll On</button>
+        <button class="pt-tag-btn" data-tag="UPK" onclick="selectProductTag(this,'UPK')">UPK · Underarm Pig Kit</button>
+        <button class="pt-tag-btn" data-tag="SABW" onclick="selectProductTag(this,'SABW')">SABW · Sal Acid Body Wash</button>
+        <button class="pt-tag-btn" data-tag="5%BW" onclick="selectProductTag(this,'5%BW')">5%BW · Body Wash</button>
+        <button class="pt-tag-btn" data-tag="MG" onclick="selectProductTag(this,'MG')">MG · Mag Gummies</button>
+        <button class="pt-tag-btn" data-tag="SPF" onclick="selectProductTag(this,'SPF')">SPF · Detan Lotion</button>
+        <button class="pt-tag-btn" data-tag="Others" onclick="selectProductTag(this,'Others')">Others</button>
       </div>
 
-      <div class="product-grid">
-        <div class="product-card">
-          <h4>Product tag ROAS (sorted by spend)</h4>
-          <div id="productTagRows"></div>
-        </div>
-        <div class="product-card">
-          <h4>Campaign-level product efficiency — key signals</h4>
-          <div class="product-row"><span>DemGen Body-Int-02 → 5%BW</span><span class="roas-chip chip-w">2.1× ROAS, ₹6.5K spend</span></div>
-          <div class="product-row"><span>DemGen Hair-LA-02 → HG</span><span class="roas-chip chip-r">0.3× ROAS, ₹14.8K spend</span></div>
-          <div class="product-row"><span>DemGen Hair-Int-01 → HG</span><span class="roas-chip chip-r">0.6× ROAS, ₹14.6K spend</span></div>
-          <div class="product-row"><span>Pmax Body Tier2-3 → SABW</span><span class="roas-chip chip-g">3.5× ROAS</span></div>
-          <div class="product-row"><span>Pmax Body Tier2-3 → UPK</span><span class="roas-chip chip-g">3.4× ROAS</span></div>
-          <div class="product-row"><span>Pmax HG-Telugu → HG</span><span class="roas-chip chip-g">2.5× ROAS</span></div>
-          <div class="product-row"><span>Search Brand → HGP-adv</span><span class="roas-chip chip-g">3.6× ROAS</span></div>
-          <div class="product-row"><span>Pmax Hair HGRO-03 → HGRO</span><span class="roas-chip chip-g">3.1× ROAS</span></div>
-          <div class="product-row"><span>UFR (Urea Face Repair) total</span><span class="roas-chip chip-r">0.8× ROAS — cut spend</span></div>
-          <div class="product-row"><span>MG (Magnesium Gummies) total</span><span class="roas-chip chip-r">0.8× ROAS — cut spend</span></div>
-        </div>
-      </div>
+      <!-- 1. Summary metric cards — dynamic per tag & date range -->
+      <div class="section-header"><span class="section-title" id="ptSummaryTitle">Summary — All Tags · Full period</span></div>
+      <div id="ptSummaryCards" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:1.5rem"></div>
 
-      <div class="chart-grid">
+      <!-- 2. Charts row: ROAS trend + CAC trend + Channel mix -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:1.5rem">
         <div class="chart-card">
-          <div class="chart-title">Product tag ROAS comparison</div>
-          <div class="chart-wrap"><canvas id="productRoasChart" role="img" aria-label="Product tag ROAS bar chart"></canvas></div>
+          <div class="chart-title">ROAS — monthly trend</div>
+          <div style="position:relative;height:200px"><canvas id="ptRoasTrend"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">Product tag spend distribution (₹)</div>
-          <div class="chart-wrap"><canvas id="productSpendChart" role="img" aria-label="Product tag spend pie chart"></canvas></div>
+          <div class="chart-title">Spend vs Conversions — monthly</div>
+          <div style="position:relative;height:200px"><canvas id="ptSpendConv"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Channel spend mix (% of tag budget)</div>
+          <div style="position:relative;height:200px"><canvas id="ptChannelMix"></canvas></div>
         </div>
       </div>
 
-      <div class="video-insight-box" style="background:rgba(176,120,0,0.04);border-color:rgba(176,120,0,0.2);margin-top:0;">
-        <h4 style="color:var(--accent2)">Revised budget recommendation by product</h4>
-        <p><strong>Increase:</strong> HGP-adv (3.6× ROAS, underspent at ₹26K — scale via Search Brand + BrandProduct). UPK &amp; SABW via Pmax Body Tier2-3 (3.4–3.5×). HGRO via Pmax HGRO-03 (3.1×).<br><br>
-        <strong>Maintain:</strong> HG via Pmax-HG-Telugu (2.5×). Others via Search Brand (3.0×). Strawberry Skin (5%BW) via PMax only — not DemGen.<br><br>
-        <strong>Cut immediately:</strong> UFR via DemGen Body-Int-02 (0.8×). MG — entire category losing money. HG via DemGen Hair-LA-02 (0.3×) and Hair-Int-01 (0.6×). PPHG via DemGen — 0.6× ROAS.</p>
+      <!-- 3. Day-on-day table — all tags or filtered -->
+      <div class="section-header" style="margin-bottom:0.75rem">
+        <span class="section-title">Day-on-day performance by tag</span>
+        <span style="font-size:10px;font-family:var(--mono);color:var(--muted)" id="ptDodNote">Showing all tags · sorted by date</span>
       </div>
+      <div class="table-card" style="margin-bottom:1.5rem">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th style="text-align:left">Month</th>
+                <th>Cost (₹)</th>
+                <th>Impressions</th>
+                <th>Clicks</th>
+                <th>CTR</th>
+                <th>CPM (₹)</th>
+                <th>Conv.</th>
+                <th>CAC (₹)</th>
+                <th>ROAS</th>
+                <th>vs Prior Month</th>
+              </tr>
+            </thead>
+            <tbody id="ptDodBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 4. Changes that worked / backfired — filtered to selected tag -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem">
+        <div>
+          <div class="section-header" style="margin-bottom:0.75rem"><span class="section-title">✓ Changes that worked</span></div>
+          <div id="ptWorked"></div>
+        </div>
+        <div>
+          <div class="section-header" style="margin-bottom:0.75rem"><span class="section-title">✗ Changes that backfired</span></div>
+          <div id="ptBackfired"></div>
+        </div>
+      </div>
+
+      <!-- 5. Video performance: view rate + ROAS per creative, filtered by tag -->
+      <div class="section-header" style="margin-bottom:0.75rem">
+        <span class="section-title">🎬 Video performance — view rate &amp; ROAS by creative</span>
+        <div style="display:flex;gap:6px">
+          <button class="quick-btn active" id="vtSort-roas" onclick="sortVideos('roas')">Sort: ROAS</button>
+          <button class="quick-btn" id="vtSort-vtr" onclick="sortVideos('vtr')">Sort: View Rate</button>
+          <button class="quick-btn" id="vtSort-spend" onclick="sortVideos('spend')">Sort: Spend</button>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th style="text-align:left;min-width:280px">Video / Creative</th>
+                <th style="text-align:left">Tag</th>
+                <th>Spend (₹)</th>
+                <th>Conv.</th>
+                <th>ROAS</th>
+                <th>CAC (₹)</th>
+                <th>Views</th>
+                <th>View Rate</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody id="ptVideoBody"></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
     <!-- Tab: Video Title Performance -->
@@ -500,161 +571,14 @@
     </div>
   </div>
 
-  <!-- Summary -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-title">Analysis summary</span>
-    </div>
-
-    <!-- Row 1: original 3 boxes -->
-    <div class="summary-row">
-      <div class="summary-box worked">
-        <h4>✓ Changes that worked</h4>
-        <ul>
-          <li>DeTan campaigns paused (both were &lt;2× ROAS)</li>
-          <li>AP-Telangana budget reduced (was overspending at low efficiency)</li>
-          <li>Telugu HG tROAS tightened — 10.58× ROAS spike confirms it worked</li>
-          <li>PMax Body Tier2-3 held 4× ROAS through the entire cliff period</li>
-        </ul>
-      </div>
-      <div class="summary-box backfired">
-        <h4>✗ Changes that backfired</h4>
-        <ul>
-          <li>PMax Hair-04 budget raised ~Apr 11 → ROAS collapsed 3× → 1.5×</li>
-          <li>Search Brand budget reduced/capped → losing volume at 5–9× ROAS</li>
-          <li>DemGen Body Int-02 &amp; LA-02 left running at &lt;0.7× ROAS throughout</li>
-          <li>PMax budget share grew to 60%+ while efficiency fell</li>
-        </ul>
-      </div>
-      <div class="summary-box needed">
-        <h4>⚠ Changes still needed</h4>
-        <ul>
-          <li>Pause DemGen Body Int-02 &amp; LA-02 immediately (burning ₹4L/10 days)</li>
-          <li>Restore Search Brand budget +40% — best ROAS in account</li>
-          <li>Reduce PMax Hair-04 budget or raise tROAS target</li>
-          <li>Scale Pmax Body Tier2-3 by 25–30% — held performance through cliff</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Row 2: video-level insight boxes -->
-    <div class="section-header" style="margin-top:1.5rem;margin-bottom:0.75rem">
-      <span class="section-title">Video & conversion funnel insights</span>
-    </div>
-
-    <!-- Root cause callout -->
-    <div style="background:rgba(201,48,48,0.05);border:1px solid rgba(201,48,48,0.2);border-radius:10px;padding:1.1rem 1.3rem;margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;">
-      <div>
-        <div style="font-size:10px;font-family:var(--mono);color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Root cause #1</div>
-        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">Wrong conversion goal</div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.6">DemGen campaigns count <strong style="color:var(--text)">PDP views, YouTube follow-on views &amp; ATC</strong> as conversions. Google's algo is optimising for video watches, not purchases. This is the single most impactful fix in the account — set primary goal to BBW Master Purchase only across all campaigns.</div>
-      </div>
-      <div>
-        <div style="font-size:10px;font-family:var(--mono);color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Root cause #2</div>
-        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">DemGen purchase funnel is broken</div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.6">DemGen Body-Int-02: <strong style="color:var(--text)">5,367 PDPs → 67 purchases (1.2%)</strong>. DemGen Hair-LA-02: <strong style="color:var(--text)">2,348 PDPs → 26 purchases (1.1%)</strong>. Compare Search Brand: <strong style="color:var(--green)">5,199 PDPs → 231 purchases (4.4%)</strong>. DemGen is driving curiosity, not buyers.</div>
-      </div>
-      <div>
-        <div style="font-size:10px;font-family:var(--mono);color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Root cause #3</div>
-        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">HG category budget misrouted</div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.6">₹1.34L spent on HG at blended <strong style="color:var(--text)">1.6× ROAS</strong>. The drag: DemGen Hair-LA-02 (0.3×) and Hair-Int-01 (0.6×). Pmax-HG-Telugu in the same category delivers <strong style="color:var(--green)">2.5× ROAS</strong>. Shifting HG budget from DemGen to PMax would recover ~0.8× ROAS on this entire category.</div>
-      </div>
-    </div>
-
-    <!-- Video signal boxes: 2-col -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;">
-      <div class="summary-box" style="background:rgba(26,111,196,0.04);border-color:rgba(26,111,196,0.18);">
-        <h4 style="color:var(--blue)">📊 Funnel quality ranking (purchase rate from PDP)</h4>
-        <ul style="list-style:none;padding:0;">
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Search Brand</span> <span style="font-family:var(--mono);color:var(--green);font-size:11px">4.4% P-PDP ✓ Best</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Search BrandProduct</span> <span style="font-family:var(--mono);color:var(--green);font-size:11px">5.4% P-PDP ✓</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax HG-Telugu-01</span> <span style="font-family:var(--mono);color:var(--green);font-size:11px">6.3% P-PDP ✓</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Body Tier2-3</span> <span style="font-family:var(--mono);color:var(--accent2);font-size:11px">2.6% P-PDP ~</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Hair-04 (Only-NC)</span> <span style="font-family:var(--mono);color:var(--accent2);font-size:11px">3.1% P-PDP ~</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen Body-Int-02</span> <span style="font-family:var(--mono);color:var(--red);font-size:11px">1.3% P-PDP ✗</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen Hair-LA-02</span> <span style="font-family:var(--mono);color:var(--red);font-size:11px">1.1% P-PDP ✗</span></li>
-          <li style="font-size:12px;padding:5px 0;display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Strawberry Skin</span> <span style="font-family:var(--mono);color:var(--red);font-size:11px">1.0% P-PDP ✗ LP?</span></li>
-        </ul>
-      </div>
-      <div class="summary-box" style="background:rgba(26,111,196,0.04);border-color:rgba(26,111,196,0.18);">
-        <h4 style="color:var(--blue)">🎬 YouTube follow-on views polluting conversion data</h4>
-        <ul style="list-style:none;padding:0;">
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen Hair-Comp03</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">137 YT views vs 22 purchases</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Hair-Comp-01</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">110 YT views, 0 purchases</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen HairandBody MOF</span><span style="font-family:var(--mono);color:var(--accent2);font-size:11px">112 YT views vs 134 purchases</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">DemGen Hair-Int-Hyd</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">47 YT views vs 41 purchases ⚠</span></li>
-          <li style="font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax-Hair-AP-Telangana</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">54 YT views, 0 purchases</span></li>
-          <li style="font-size:12px;padding:5px 0;display:flex;justify-content:space-between;"><span style="color:var(--muted)">Pmax Hair-Karnataka</span><span style="font-family:var(--mono);color:var(--red);font-size:11px">70 YT views, 0 purchases</span></li>
-        </ul>
-        <div style="margin-top:10px;font-size:11px;color:var(--muted);background:var(--surface2);padding:8px;border-radius:5px;line-height:1.5">Fix: In Google Ads → Conversions, set <strong style="color:var(--text)">BBW Master Purchase</strong> as the only primary conversion action. Move all others to secondary.</div>
-      </div>
-    </div>
-
-    <!-- Video titles summary row -->
-    <div class="section-header" style="margin-top:1.5rem;margin-bottom:0.75rem">
-      <span class="section-title">Video title performance — creative winners & losers</span>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;">
-      <div class="summary-box worked" style="background:rgba(30,138,82,0.05);">
-        <h4>🎬 Top creatives to scale</h4>
-        <ul>
-          <li><strong>Underarm Pigmentation Kit × Thoughtful Threads</strong> — ₹325 CAC, 2.51× ROAS, 156 purchases. Best performing video in the account.</li>
-          <li><strong>De-Tan SPF 50+</strong> — 2.59× ROAS, 21% VTR & W100. Summer relevance driving strong intent. Scale immediately.</li>
-          <li><strong>Magnesium Gummies × Anshika Thakur</strong> — 2.42× ROAS, 25.7% W100 (highest in account). The only MG video that works — isolate in its own campaign.</li>
-          <li><strong>Urea Body Lotion (Snake & Dry Skin)</strong> — 22.7% VTR, 1.54× ROAS. Highest completion rate; hook is working. Increase impression share.</li>
-          <li><strong>Biotin Gummies × Jyoti</strong> — 2.28× ROAS, ₹337 CAC with strong 7.8% VTR. Top Hair Gummies creative.</li>
-          <li><strong>5% AHA BHA × Chahat Malhotra</strong> — 2.20× ROAS, ₹327 CAC. Best body wash creative — move to PMax asset group.</li>
-        </ul>
-      </div>
-      <div class="summary-box backfired" style="background:rgba(201,48,48,0.05);">
-        <h4>🎬 Creatives to pause immediately</h4>
-        <ul>
-          <li><strong>Urea Roll-On × Suhasini</strong> — ₹12.9L spend at 0.77× ROAS. VTR 2.1%, W100 2.3% — audience skipping instantly. Biggest single creative waste in the account.</li>
-          <li><strong>Urea Roll-On × Anushree</strong> — ₹5.8L at 0.78× ROAS. Same pattern. Both Urea Roll-On influencer videos are failing on cold DemGen audiences.</li>
-          <li><strong>Advanced HG Pack with Roll-On</strong> — ₹45.7K spend, only 5 conversions, ROAS 0.11×. CAC ₹9,144. Pause now.</li>
-          <li><strong>7% Glycolic Stick × Raisha + Hiteshi</strong> — ₹3.8L combined at 0.76–0.87× ROAS. DemGen audience wrong for this product.</li>
-          <li><strong>Biotin Gummies × Pooja</strong> — ₹3.9L at 0.87× ROAS in DG_Hair_Int-Hyd only. Hyderabad geo + this creative = no match.</li>
-          <li><strong>Bodywise Urea Roll-On (generic)</strong> — ₹1.3L at 0.37× ROAS, CAC ₹1,208. Worst ROAS among high-spend videos.</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Product tag action row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-      <div class="summary-box worked">
-        <h4>✓ Product categories to scale</h4>
-        <ul>
-          <li><strong>HGP-adv</strong> — 3.6× ROAS, only ₹26K spend. Underfunded. Scale via Search Brand.</li>
-          <li><strong>UPK &amp; SABW</strong> — 2.4–3.5× via Pmax Body Tier2-3. Best Pmax product combo.</li>
-          <li><strong>HGRO</strong> — 1.7× blended but Pmax HGRO-03 alone delivers 3.1×. Shift budget within category.</li>
-          <li><strong>Strawberry Skin (5%BW)</strong> — 1.9× via PMax. Fix landing page to unlock better funnel (1% P-PDP is too low).</li>
-        </ul>
-      </div>
-      <div class="summary-box backfired">
-        <h4>✗ Product categories dragging ROAS</h4>
-        <ul>
-          <li><strong>UFR (Urea Face Repair)</strong> — 0.8× ROAS across all campaigns. DemGen Body-Int-02 is the primary driver at ₹16K spend.</li>
-          <li><strong>MG (Magnesium Gummies)</strong> — 0.8× ROAS, CAC ₹1,925. Worst CAC in the entire account by far. Pause all activity.</li>
-          <li><strong>HG via DemGen</strong> — DemGen Hair-LA-02 at 0.3× and Hair-Int-01 at 0.6× dragging the entire HG category from 2.5× to 1.6×.</li>
-          <li><strong>PPHG</strong> — 0.9× ROAS. Very small spend but still loss-making. Pause.</li>
-        </ul>
-      </div>
-      <div class="summary-box needed">
-        <h4>⚠ Structural fixes (one-time)</h4>
-        <ul>
-          <li>Set <strong>BBW Master Purchase</strong> as sole primary conversion goal — stop counting YT views &amp; PDPs</li>
-          <li>Exclude Strawberry Skin product from DemGen — only 1.0% P-PDP, 14K PDPs wasted</li>
-          <li>Add audience signal for <strong>past purchasers</strong> to all PMax campaigns — currently NC-only signals on Hair-04 are too broad</li>
-          <li>Move MG Gummies spend entirely to Shopping — DemGen MG at ₹4.2K, CAC ₹1,642 vs Shopping MG at ₹7.4K CAC ₹2,453 (both bad, but stop the DemGen first)</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <!-- Summary — rendered dynamically by renderDynamicAnalysis() -->
+  <!-- Summary — fully dynamic, re-rendered on every date range change -->
+  <div class="section" id="dynamicSummary"></div>
 
 </div>
 
 <div class="footer">
-  <span class="footer-text">Source: Google Ads · Be Bodywise · Data range: Mar 1 – May 11, 2026</span>
+  <span class="footer-text">Source: Google Ads · Be Bodywise · Data range: Mar 1 – May 17, 2026</span>
   <span class="footer-text">Last refreshed: <span id="last-updated">—</span></span>
 </div>
 
@@ -732,7 +656,13 @@ const RAW_DAILY = [
   {d:'2026-05-08',cost:453805,impr:6648363,clicks:59691,conv:859,val:1026000,ctr:0.90,cpm:68,cac:528,roas:2.26},
   {d:'2026-05-09',cost:446781,impr:6120379,clicks:52807,conv:844,val:968342,ctr:0.86,cpm:73,cac:529,roas:2.17},
   {d:'2026-05-10',cost:449294,impr:6433970,clicks:53479,conv:883,val:1058300,ctr:0.83,cpm:70,cac:509,roas:2.36},
-  {d:'2026-05-11',cost:417791,impr:5950331,clicks:47866,conv:899,val:1094847,ctr:0.80,cpm:70,cac:465,roas:2.62}
+  {d:'2026-05-11',cost:417791,impr:5950331,clicks:47866,conv:899,val:1094847,ctr:0.80,cpm:70,cac:465,roas:2.62},
+  {d:'2026-05-12',cost:391429,impr:5820445,clicks:48210,conv:861,val:1015001,ctr:0.82,cpm:68,cac:455,roas:2.59},
+  {d:'2026-05-13',cost:400153,impr:5940322,clicks:48890,conv:880,val:1032395,ctr:0.81,cpm:67,cac:455,roas:2.58},
+  {d:'2026-05-14',cost:424105,impr:6134876,clicks:51020,conv:906,val:1064504,ctr:0.83,cpm:66,cac:468,roas:2.51},
+  {d:'2026-05-15',cost:427355,impr:6280190,clicks:50340,conv:875,val:1012831,ctr:0.80,cpm:68,cac:488,roas:2.37},
+  {d:'2026-05-16',cost:467798,impr:6750244,clicks:57415,conv:954,val:1127291,ctr:0.85,cpm:70,cac:490,roas:2.41},
+  {d:'2026-05-17',cost:482806,impr:6910388,clicks:61480,conv:1085,val:1294041,ctr:0.89,cpm:72,cac:445,roas:2.68}
 ];
 
 const CAMPAIGNS = [
@@ -784,7 +714,7 @@ let charts   = {};
 function setRange(preset) {
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
-  const m = { mar:['2026-03-01','2026-03-31'], apr:['2026-04-01','2026-04-30'], may:['2026-05-01','2026-05-11'], cliff:['2026-04-10','2026-04-16'], all:['2026-03-01','2026-05-11'] };
+  const m = { mar:['2026-03-01','2026-03-31'], apr:['2026-04-01','2026-04-30'], may:['2026-05-01','2026-05-17'], cliff:['2026-04-10','2026-04-16'], all:['2026-03-01','2026-05-17'] };
   const [f,t] = m[preset];
   document.getElementById('dateFrom').value = f;
   document.getElementById('dateTo').value = t;
@@ -956,7 +886,313 @@ function renderCampaignTable() {
   document.getElementById('campaignBody').innerHTML = rows;
 }
 
-// ─── SCORECARD ──────────────────────────────────────────────────────────────
+// ─── CHANGE EVENTS (tagged with dates for filtering) ────────────────────────
+const CHANGE_EVENTS = [
+  {
+    date:'2026-04-01', endDate:'2026-04-09', period:'Apr 1–9',
+    type:'good', side:'context',
+    title:'Account at peak ROAS ~3.5–3.6×',
+    detail:'Best period in dataset. Pmax Body campaigns at 4–5× ROAS. Search Brand at 8–9×. AP-Telangana had a budget overshoot on Apr 9 (₹47.9K spend).',
+    pills:[{label:'Acct ROAS: 3.5×',type:'good'},{label:'Search Brand: 8–9×',type:'good'}],
+    changes:[], impacts:[]
+  },
+  {
+    date:'2026-04-11', endDate:'2026-04-12', period:'Apr 11–12',
+    type:'bad', side:'left',
+    title:'PMax Hair-04 budget raised — algo destabilised',
+    detail:'Spend jumps ₹31K → ₹40K/day. ROAS drops 3.0× → 2.1× within 48h. Pmax Strawberry Skin spend also peaks at ₹39K (likely tROAS loosened). Telugu HG tROAS tightened simultaneously: spend drops ₹10K → ₹4.6K, ROAS spikes 4× → 7.9× proving tightening works.',
+    pills:[{label:'Hair-04 ROAS: 2.1×',type:'bad'},{label:'Telugu HG: 7.9×',type:'good'},{label:'Straw Skin spend ↑',type:'bad'}],
+    changes:[
+      {camp:'PMax Hair-04 (Only-NC)', action:'Budget raised ~₹31K→₹40K/day', result:'ROAS halved 3.0→1.5× within 6 days', verdict:'bad'},
+      {camp:'Pmax-HG-Telugu-01', action:'tROAS tightened (inferred)', result:'ROAS spiked to 10.58× on Apr 13', verdict:'good'},
+    ]
+  },
+  {
+    date:'2026-04-13', endDate:'2026-04-13', period:'Apr 13',
+    type:'bad', side:'left',
+    title:'Cliff day — multi-campaign simultaneous collapse',
+    detail:'Single worst day in dataset. DemGen HairandBody DropOff CAC spikes to ₹686. Shopping Nutrition CAC ₹870. Pmax Hair Karnataka drops to 2.07×. Telugu HG hits 10.58× ROAS — highest in period — because budget cap bound at peak efficiency.',
+    pills:[{label:'Acct ROAS: 2.65×',type:'bad'},{label:'Telugu HG: 10.58× 🔥',type:'good'},{label:'Avg CAC: ₹471',type:'bad'}],
+    changes:[]
+  },
+  {
+    date:'2026-04-14', endDate:'2026-04-16', period:'Apr 14–16',
+    type:'warn', side:'left',
+    title:'DeTan paused ✓ · Telangana cut ✓ · Search Brand budget cut ✗ · SPF launched',
+    detail:'DeTan-LA-01 and DeTan-Int-01 paused (correct — both were sub-2× ROAS). AP-Telangana spend cut ₹19K → ₹6.9K over 4 days. Search Brand budget drops ₹36K → ₹17K — losing volume on the account\'s best-performing campaign. Pmax DetanSPF-NC/RC-01 launched.',
+    pills:[{label:'DeTan: paused ✓',type:'good'},{label:'Search cut ✗',type:'bad'},{label:'SPF: launched',type:'warn'}],
+    changes:[
+      {camp:'DeTan-Int-01 + LA-01', action:'Paused', result:'Freed budget; both were <2× ROAS', verdict:'good'},
+      {camp:'Pmax Hair AP-Telangana', action:'Budget cut ₹19K→₹7K/day', result:'ROAS didn\'t improve — cut not enough', verdict:'warn'},
+      {camp:'Search Brand', action:'Budget reduced/capped ₹36K→₹17K', result:'Lost volume on 5–9× ROAS campaign', verdict:'bad'},
+      {camp:'Pmax DetanSPF-NC/RC-01', action:'New campaign launched', result:'Ramping — too early to judge', verdict:'warn'},
+    ]
+  },
+  {
+    date:'2026-04-17', endDate:'2026-04-30', period:'Apr 17–30',
+    type:'bad', side:'right',
+    title:'ROAS fails to recover — DemGen Body campaigns not addressed',
+    detail:'Account ROAS holds 2.3–2.5×. DemGen Body Int-02 (₹29K/day, ROAS 0.56×) and Body LA-02 (₹15K/day, ROAS 0.55×) left running despite performing worse than the DeTan campaigns that were paused. ₹6.5L wasted in this period alone.',
+    pills:[{label:'Body Int-02: 0.56×',type:'bad'},{label:'Body LA-02: 0.55×',type:'bad'},{label:'₹6.5L wasted',type:'bad'}],
+    changes:[
+      {camp:'DemGen Body Int-02 + LA-02', action:'No action taken', result:'₹6.5L wasted at <0.6× ROAS', verdict:'bad'},
+    ]
+  },
+  {
+    date:'2026-05-07', endDate:'2026-05-13', period:'May 7–13',
+    type:'good', side:'left',
+    title:'Major account restructure — 12 changes across budgets, tROAS, pauses & creatives',
+    detail:'Largest single-day change cluster since Apr 14. Key actions: DemGen Body-LA-02 PAUSED (May 7) ✓. DemGen Body-Int-02 budget cut ₹32K→₹22K ✓. DemGen Hair-Comp03 budget cut ₹18K→₹10K ✓. Pmax-HG-Telugu budget raised ₹12K→₹15K ✓. PMax Hair-04 tROAS raised 210%→230% ✓. Pmax Body Tier2-3 tROAS adjusted 480%→460%→445% (loosened slightly). Underperforming videos paused across Body-Int-02 and Hair-Comp03. New Pmax-Urea-NC/RC-04 launched (replacing paused Urea-03 and Tier2-3-02). New Shopping-AllProducts restructured with dedicated ad groups. Pmax-HG-NC/RC-Kannada-02 launched.',
+    pills:[{label:'Body-LA-02: paused ✓',type:'good'},{label:'Body-Int-02 budget cut ✓',type:'good'},{label:'PMax Hair-04 tROAS ↑',type:'good'},{label:'Telugu HG budget ↑',type:'good'}],
+    changes:[
+      {camp:'DemGen Body-LA-02', action:'Paused (May 7)', result:'Stops ₹15K/day at 0.54× ROAS — correct', verdict:'good'},
+      {camp:'DemGen Body-Int-02', action:'Budget cut ₹32K→₹22K/day', result:'Reduced waste; still running but lighter', verdict:'good'},
+      {camp:'DemGen Hair-Comp03', action:'Budget cut ₹18K→₹10K + videos paused', result:'Cleaning up underperforming creatives', verdict:'good'},
+      {camp:'Pmax-HG-Telugu-01', action:'Budget raised ₹12K→₹15K', result:'Scaling proven 2.5× ROAS campaign', verdict:'good'},
+      {camp:'Pmax Hair-04 (Only-NC)', action:'tROAS raised 210%→230%', result:'Forcing efficiency — ROAS recovery expected', verdict:'good'},
+      {camp:'Pmax Body Tier2-3', action:'tROAS loosened 480%→445%', result:'May reduce ROAS slightly, watch closely', verdict:'warn'},
+      {camp:'Pmax Urea-NC/RC-03 + Tier2-3-02', action:'Both paused (May 12)', result:'Replaced by new Pmax-Urea-NC/RC-04', verdict:'good'},
+      {camp:'Shopping-AllProducts', action:'Restructured with 6 ad groups (May 8)', result:'Better segmentation; too early to judge', verdict:'warn'},
+      {camp:'Search Brand', action:'Target CPA reduced ₹160→₹140 (May 11)', result:'Tightening — may reduce volume short-term', verdict:'warn'},
+    ]
+  },
+  {
+    date:'2026-05-01', endDate:'2026-05-17', period:'May 1–17',
+    type:'warn', side:'right',
+    title:'Early recovery signal — May 12–17 ROAS 2.52× vs 2.45× May 1–11',
+    detail:'May 7–13 changes are showing early positive impact. ROAS improved from 2.45× (May 1–11) to 2.52× (May 12–17) and avg CAC dropped ₹27 to ₹467. DemGen Body-LA-02 paused May 7. Body-Int-02 and Hair-Comp03 budgets cut. PMax Hair-04 tROAS tightened to 230%. Telugu HG budget scaled to ₹15K. May 17 was best day in 5 weeks: 1,085 conversions at ₹445 CAC, 2.68× ROAS.',
+    pills:[{label:'ROAS: 2.52× ↑',type:'good'},{label:'CAC: ₹467 ↓₹27',type:'good'},{label:'May 17: 2.68× peak',type:'good'}],
+    changes:[]
+  }
+];
+
+// ─── DYNAMIC ANALYSIS ENGINE ─────────────────────────────────────────────────
+function renderDynamicAnalysis(data) {
+  if (!data.length) { document.getElementById('dynamicSummary').innerHTML = ''; return; }
+
+  const toDate = s => new Date(s);
+  const rangeFrom = toDate(dateFrom);
+  const rangeTo   = toDate(dateTo);
+  const rangeDays = Math.round((rangeTo - rangeFrom) / 86400000) + 1;
+
+  // ── Period stats ──
+  const totalCost = data.reduce((s,r)=>s+r.cost,0);
+  const totalConv = data.reduce((s,r)=>s+r.conv,0);
+  const totalVal  = data.reduce((s,r)=>s+r.val,0);
+  const avgRoas   = totalVal / totalCost;
+  const avgCac    = totalCost / totalConv;
+
+  // Compare first vs second half
+  const mid = Math.floor(data.length/2);
+  const firstHalf = data.slice(0, mid);
+  const secondHalf = data.slice(mid);
+  const h1Roas = firstHalf.reduce((s,r)=>s+r.roas,0) / (firstHalf.length||1);
+  const h2Roas = secondHalf.reduce((s,r)=>s+r.roas,0) / (secondHalf.length||1);
+  const roasTrend = h2Roas - h1Roas; // positive = improving
+  const h1Cac = firstHalf.reduce((s,r)=>s+r.cac,0) / (firstHalf.length||1);
+  const h2Cac = secondHalf.reduce((s,r)=>s+r.cac,0) / (secondHalf.length||1);
+  const cacTrend = h2Cac - h1Cac; // negative = improving
+
+  const fmt = n => n>=1e5?`₹${(n/1e5).toFixed(1)}L`:`₹${Math.round(n/1000)}K`;
+  const pct = (a,b) => ((b-a)/Math.abs(a)*100).toFixed(1);
+
+  // ── Identify most recent 14 days within the selection ──
+  const last14Start = new Date(rangeTo); last14Start.setDate(last14Start.getDate()-13);
+  const recent = data.filter(r => toDate(r.d) >= last14Start);
+  const earlier = data.filter(r => toDate(r.d) < last14Start);
+  const hasRecent = recent.length > 0 && earlier.length > 0;
+  const recentRoas = recent.length ? recent.reduce((s,r)=>s+r.roas,0)/recent.length : avgRoas;
+  const earlierRoas = earlier.length ? earlier.reduce((s,r)=>s+r.roas,0)/earlier.length : avgRoas;
+  const recentCac  = recent.length ? recent.reduce((s,r)=>s+r.cac,0)/recent.length : avgCac;
+  const earlierCac = earlier.length ? earlier.reduce((s,r)=>s+r.cac,0)/earlier.length : avgCac;
+  const recentTrend = recentRoas - earlierRoas;
+
+  // ── Which change events fall within or just before the selected range (within 14 days before end) ──
+  const lookbackStart = new Date(rangeTo); lookbackStart.setDate(lookbackStart.getDate()-14);
+  const relevantChanges = CHANGE_EVENTS.filter(e => {
+    const ed = toDate(e.date);
+    const end = toDate(e.endDate);
+    // Overlap with range OR change is within 14 days before range end
+    return (ed <= rangeTo && end >= rangeFrom) || (ed >= lookbackStart && ed <= rangeTo);
+  });
+  // Sort: most recent first (highest priority)
+  relevantChanges.sort((a,b) => toDate(b.date) - toDate(a.date));
+
+  // ── Classify period ──
+  let periodLabel, periodClass, periodSummary;
+  if (avgRoas >= 3.3) {
+    periodLabel = '✓ Strong performance period'; periodClass = 'good';
+    periodSummary = `Account ROAS averaged <strong>${avgRoas.toFixed(2)}×</strong> in this window — above the 3.3× threshold considered healthy. ${roasTrend > 0 ? 'Trend is improving across the period.' : 'Slight softening in second half but still solid.'}`;
+  } else if (avgRoas >= 2.8) {
+    periodLabel = '~ Moderate performance — efficiency slipping'; periodClass = 'warn';
+    periodSummary = `Account ROAS averaged <strong>${avgRoas.toFixed(2)}×</strong> — down from the 3.3–3.6× seen in early March. ${roasTrend < 0 ? `The trend worsened: ROAS was ${h1Roas.toFixed(2)}× in the first half and ${h2Roas.toFixed(2)}× in the second.` : `Some recovery visible — ROAS improved ${h1Roas.toFixed(2)}× → ${h2Roas.toFixed(2)}× across the period.`}`;
+  } else {
+    periodLabel = '✗ Underperformance — action required'; periodClass = 'bad';
+    periodSummary = `Account ROAS averaged <strong>${avgRoas.toFixed(2)}×</strong> — well below the healthy 3×+ threshold. CAC of <strong>₹${Math.round(avgCac)}</strong> is ${avgCac > 500 ? 'above' : 'near'} the ₹500 concern level. ${roasTrend > 0.1 ? 'Recovery is beginning — ROAS improved in the second half.' : 'No meaningful recovery yet.'}`;
+  }
+
+  // ── Build recent changes block (14-day priority window) ──
+  const recentChangeEvents = relevantChanges.filter(e => toDate(e.date) >= lookbackStart);
+  const recentChangesHTML = recentChangeEvents.length ? recentChangeEvents.map((e, idx) => {
+    const isNewest = idx === 0;
+    const daysAgo = Math.round((rangeTo - toDate(e.date)) / 86400000);
+    const borderColor = e.type==='good'?'rgba(30,138,82,0.3)':e.type==='bad'?'rgba(201,48,48,0.3)':'rgba(176,120,0,0.3)';
+    const bg = e.type==='good'?'rgba(30,138,82,0.04)':e.type==='bad'?'rgba(201,48,48,0.04)':'rgba(176,120,0,0.04)';
+    const col = e.type==='good'?'var(--green)':e.type==='bad'?'var(--red)':'var(--accent2)';
+    const changesHTML = e.changes.map(c => {
+      const vc = c.verdict==='good'?'var(--green)':c.verdict==='bad'?'var(--red)':'var(--accent2)';
+      const vi = c.verdict==='good'?'✓':c.verdict==='bad'?'✗':'⚠';
+      return `<div style="display:grid;grid-template-columns:160px 1fr 1fr;gap:8px;font-size:11px;padding:5px 0;border-bottom:0.5px solid var(--border);">
+        <span style="color:var(--text);font-weight:500">${c.camp}</span>
+        <span style="color:var(--muted)">${c.action}</span>
+        <span style="color:${vc}">${vi} ${c.result}</span>
+      </div>`;
+    }).join('');
+    return `
+      <div style="background:${bg};border:1px solid ${borderColor};border-radius:8px;padding:1rem 1.2rem;margin-bottom:10px;${isNewest?'box-shadow:0 0 0 2px '+borderColor:''}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          ${isNewest?`<span style="font-size:9px;font-family:var(--mono);background:${col};color:#fff;padding:2px 7px;border-radius:3px;letter-spacing:0.06em">MOST RECENT</span>`:''}
+          <span style="font-size:10px;font-family:var(--mono);color:var(--muted)">${e.period} · ${daysAgo <= 0 ? 'today' : daysAgo+' days before range end'}</span>
+        </div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">${e.title}</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:${changesHTML?'10px':'0'}">${e.detail}</div>
+        ${changesHTML ? `<div style="margin-top:6px"><div style="display:grid;grid-template-columns:160px 1fr 1fr;gap:8px;font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;padding-bottom:4px;border-bottom:1px solid var(--border)"><span>Campaign</span><span>Change</span><span>Impact (7-day)</span></div>${changesHTML}</div>` : ''}
+        ${e.pills.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${e.pills.map(p=>{const pc=p.type==='good'?'rgba(30,138,82,0.1);color:var(--green);border-color:rgba(30,138,82,0.2)':p.type==='bad'?'rgba(201,48,48,0.1);color:var(--red);border-color:rgba(201,48,48,0.2)':'rgba(176,120,0,0.1);color:var(--accent2);border-color:rgba(176,120,0,0.2)';return `<span style="font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:3px;background:${pc};border:1px solid">${p.label}</span>`}).join('')}</div>`:''}
+      </div>`;
+  }).join('') : `<div style="font-size:12px;color:var(--muted);padding:1rem;background:var(--surface);border-radius:8px">No changes recorded in the last 14 days of this range.</div>`;
+
+  // ── Context events (before the 14-day window) ──
+  const contextEvents = relevantChanges.filter(e => toDate(e.date) < lookbackStart);
+  const contextHTML = contextEvents.length ? contextEvents.map(e => {
+    const col = e.type==='good'?'var(--green)':e.type==='bad'?'var(--red)':'var(--accent2)';
+    const dot = e.type==='good'?'#1e8a52':e.type==='bad'?'#c93030':'#b07800';
+    return `<div style="display:flex;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);">
+      <div style="width:8px;height:8px;border-radius:50%;background:${dot};margin-top:4px;flex-shrink:0"></div>
+      <div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--muted);margin-bottom:2px">${e.period}</div>
+        <div style="font-size:12px;font-weight:500;color:var(--text)">${e.title}</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-top:2px">${e.detail.substring(0,160)}…</div>
+      </div>
+    </div>`;
+  }).join('') : '';
+
+  // ── What to do now — derived from period and recent changes ──
+  const actions = [];
+
+  // Always-relevant actions based on what data shows
+  if (avgRoas < 3) {
+    if (data.some(r => r.d >= '2026-04-13')) {
+      actions.push({type:'bad', text:'<strong>DemGen Body Int-02 + LA-02 still running</strong> at 0.54–0.64× ROAS. Combined ₹38K/day in waste. Pause immediately — these were not addressed when DeTan was paused.'});
+      actions.push({type:'bad', text:'<strong>Search Brand underbudgeted</strong> — cut from ₹36K to ₹17K/day around Apr 14–15. This is your 5–9× ROAS campaign. Restore budget by at least 40%.'});
+    }
+    if (data.some(r => r.d >= '2026-04-11')) {
+      actions.push({type:'bad', text:'<strong>PMax Hair-04 budget raise</strong> (Apr 11) caused ROAS to halve from 3× to 1.5×. Reduce daily budget back to ₹31K or set tROAS target ≥ 2.5× to force efficiency.'});
+    }
+  }
+  if (data.some(r => r.d >= '2026-04-10') && data.some(r => r.d <= '2026-04-15')) {
+    actions.push({type:'good', text:'<strong>DeTan campaigns paused (Apr 14–15)</strong> — correct action. Both were sub-2× ROAS. Budget freed: ~₹6K/day.'});
+    actions.push({type:'good', text:'<strong>Pmax-HG-Telugu-01 tROAS tightened</strong> — proved effective. Apr 13 spike to 10.58× ROAS shows the campaign delivers when given tighter constraints.'});
+  }
+  if (data.some(r => r.d >= '2026-03-01') && data.some(r => r.d <= '2026-03-31') && avgRoas >= 3.3) {
+    actions.push({type:'good', text:'<strong>March baseline was strong</strong> — ROAS 3.3–3.6× with CAC ₹340–380. The account was healthy before the Apr 11 budget changes.'});
+    actions.push({type:'warn', text:'<strong>Watch Search Brand share</strong> — was 18–20% of spend in March, highest efficiency ratio. Ensure it doesn\'t drop below 15%.'});
+  }
+  if (avgRoas < 2.5) {
+    actions.push({type:'bad', text:'<strong>DemGen share grew to 27–34%</strong> of spend during this period while ROAS deteriorated. Reduce DemGen allocation by shifting ₹1–1.5L/day to Search + PMax Body.'});
+    actions.push({type:'warn', text:'<strong>Conversion goal inflation</strong> — DemGen campaigns count YT follow-on views and PDP visits as conversions. Set BBW Master Purchase as sole primary goal to get true ROAS signal.'});
+  }
+  if (hasRecent && recentTrend > 0.1) {
+    actions.push({type:'good', text:`<strong>Recent trend is improving</strong> — ROAS in the last 14 days of this range (${recentRoas.toFixed(2)}×) is up from earlier (${earlierRoas.toFixed(2)}×). Current changes are working.`});
+  } else if (hasRecent && recentTrend < -0.1) {
+    actions.push({type:'bad', text:`<strong>Recent trend is worsening</strong> — ROAS declined from ${earlierRoas.toFixed(2)}× to ${recentRoas.toFixed(2)}× in the last 14 days. Review any budget or bid changes made in this window.`});
+  }
+
+  // ── Render ──
+  const trendColor = roasTrend >= 0 ? 'var(--green)' : 'var(--red)';
+  const trendArrow = roasTrend >= 0 ? '↑' : '↓';
+  const periodBorderColor = periodClass==='good'?'rgba(30,138,82,0.25)':periodClass==='bad'?'rgba(201,48,48,0.25)':'rgba(176,120,0,0.25)';
+  const periodBg = periodClass==='good'?'rgba(30,138,82,0.04)':periodClass==='bad'?'rgba(201,48,48,0.04)':'rgba(176,120,0,0.04)';
+  const periodCol = periodClass==='good'?'var(--green)':periodClass==='bad'?'var(--red)':'var(--accent2)';
+
+  document.getElementById('dynamicSummary').innerHTML = `
+    <div class="section-header">
+      <span class="section-title">Analysis summary</span>
+      <span style="font-size:11px;font-family:var(--mono);color:var(--muted)">${dateFrom} → ${dateTo} · ${rangeDays} days</span>
+    </div>
+
+    <!-- Period overview strip -->
+    <div style="background:${periodBg};border:1px solid ${periodBorderColor};border-radius:10px;padding:1rem 1.3rem;margin-bottom:1.5rem;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:1.5rem;align-items:center;">
+      <div>
+        <div style="font-size:10px;font-family:var(--mono);color:${periodCol};text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">${periodLabel}</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;max-width:420px">${periodSummary}</div>
+      </div>
+      <div></div>
+      <div style="text-align:center">
+        <div style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:4px">Avg ROAS</div>
+        <div style="font-size:1.6rem;font-family:var(--serif);font-weight:600;color:${avgRoas>=3?'var(--green)':avgRoas>=2.5?'var(--accent2)':'var(--red)'}">${avgRoas.toFixed(2)}×</div>
+        <div style="font-size:10px;font-family:var(--mono);color:${trendColor}">${trendArrow} ${Math.abs(pct(h1Roas,h2Roas))}% h1→h2</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:4px">Avg CAC</div>
+        <div style="font-size:1.6rem;font-family:var(--serif);font-weight:600;color:${avgCac<=400?'var(--green)':avgCac<=500?'var(--accent2)':'var(--red)'}">₹${Math.round(avgCac)}</div>
+        <div style="font-size:10px;font-family:var(--mono);color:${cacTrend<=0?'var(--green)':'var(--red)'}">${cacTrend<=0?'↓':'↑'} ${Math.abs(pct(h1Cac,h2Cac))}% h1→h2</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:4px">Total Spend</div>
+        <div style="font-size:1.3rem;font-family:var(--serif);font-weight:600;color:var(--text)">${fmt(totalCost)}</div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--muted)">${fmt(totalCost/rangeDays)}/day</div>
+      </div>
+    </div>
+
+    <!-- Recent changes (14-day priority window) -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem;">
+      <div>
+        <div class="section-title" style="margin-bottom:0.75rem">
+          🕐 Changes in last 14 days of range <span style="color:var(--accent2)">(highest priority)</span>
+        </div>
+        ${recentChangesHTML}
+        ${contextHTML ? `
+          <div class="section-title" style="margin:1rem 0 0.5rem">Earlier in range</div>
+          ${contextHTML}` : ''}
+      </div>
+      <div>
+        <div class="section-title" style="margin-bottom:0.75rem">📋 Actions for this period</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${actions.map(a => {
+            const ac = a.type==='good'?'rgba(30,138,82,0.08);border-color:rgba(30,138,82,0.2)':a.type==='bad'?'rgba(201,48,48,0.07);border-color:rgba(201,48,48,0.2)':'rgba(176,120,0,0.07);border-color:rgba(176,120,0,0.2)';
+            const ic = a.type==='good'?'var(--green)':a.type==='bad'?'var(--red)':'var(--accent2)';
+            const ii = a.type==='good'?'✓':a.type==='bad'?'✗':'⚠';
+            return `<div style="background:${ac};border:1px solid;border-radius:7px;padding:8px 12px;display:flex;gap:8px;align-items:flex-start">
+              <span style="color:${ic};font-weight:600;font-size:13px;flex-shrink:0">${ii}</span>
+              <span style="font-size:12px;color:var(--muted);line-height:1.5">${a.text}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Persistent structural insights (always shown) -->
+    <div class="section-title" style="margin-bottom:0.75rem">🔬 Structural findings (video & funnel — across full dataset)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1rem;">
+      <div style="background:rgba(201,48,48,0.04);border:1px solid rgba(201,48,48,0.18);border-radius:8px;padding:1rem;">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--red);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">Conversion goal inflation</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">DemGen campaigns count <strong style="color:var(--text)">YT follow-on views, PDP views & ATC</strong> as conversions — inflating reported ROAS. DemGen Hair-Comp03: 137 YT views vs 22 purchases. Pmax Hair-Comp-01: 110 YT views, 0 purchases.<br><br><strong style="color:var(--text)">Fix:</strong> Set BBW Master Purchase as sole primary conversion goal.</div>
+      </div>
+      <div style="background:rgba(201,48,48,0.04);border:1px solid rgba(201,48,48,0.18);border-radius:8px;padding:1rem;">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--red);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">DemGen purchase funnel broken</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">DemGen Body-Int-02: <strong style="color:var(--text)">5,367 PDPs → 67 purchases (1.2%)</strong>. DemGen Hair-LA-02: <strong style="color:var(--text)">2,348 PDPs → 26 purchases (1.1%)</strong>. Search Brand by contrast: <strong style="color:var(--green)">5,199 PDPs → 231 purchases (4.4%)</strong>. DemGen drives curiosity, not buyers.</div>
+      </div>
+      <div style="background:rgba(30,138,82,0.04);border:1px solid rgba(30,138,82,0.18);border-radius:8px;padding:1rem;">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--green);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">Top video creatives</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">
+          <strong style="color:var(--text)">Scale:</strong> Underarm Pigmentation × Thoughtful Threads (2.51× ROAS, ₹325 CAC) · De-Tan SPF 50+ (2.59× ROAS, 21% VTR) · Urea Body Lotion — Snake & Dry Skin (22.7% VTR)<br><br>
+          <strong style="color:var(--text)">Pause:</strong> Urea Roll-On × Suhasini (₹12.9L, 0.77×) · Urea Roll-On × Anushree (₹5.8L, 0.78×) · HG Pack with Roll-On (0.11× ROAS)
+        </div>
+      </div>
+    </div>`;
+}
+
+// ─── SCORECARD (now driven by dynamic analysis, kept for change history tab only) ───
 function renderScorecard() {
   const cards = SCORECARD.map(s=>`
     <div class="sc-card">
@@ -971,18 +1207,25 @@ function renderScorecard() {
   document.getElementById('scorecardGrid').innerHTML = cards;
 }
 
-// ─── TIMELINE ───────────────────────────────────────────────────────────────
+// ─── TIMELINE (filtered to show only events overlapping selected range) ──────
 function renderTimeline() {
+  const relevant = CHANGE_EVENTS.filter(e => {
+    const ed = e.date; const end = e.endDate;
+    return ed <= dateTo && end >= dateFrom;
+  });
+  const left = relevant.filter((_,i) => i % 2 === 0);
+  const right = relevant.filter((_,i) => i % 2 === 1);
   const mkEvent = e => `
     <div class="tl-event">
       <div class="tl-dot ${e.type}"></div>
-      <div class="tl-date">${e.date}</div>
+      <div class="tl-date">${e.period}</div>
       <div class="tl-title">${e.title}</div>
       <div class="tl-detail">${e.detail}</div>
       ${e.pills.length?`<div class="tl-impacts">${e.pills.map(p=>`<span class="tl-pill ${p.type}">${p.label}</span>`).join('')}</div>`:''}
     </div>`;
-  document.getElementById('timelineLeft').innerHTML = TIMELINE_EVENTS.filter(e=>e.side==='left').map(mkEvent).join('');
-  document.getElementById('timelineRight').innerHTML = TIMELINE_EVENTS.filter(e=>e.side==='right').map(mkEvent).join('');
+  const noEvents = `<div style="font-size:12px;color:var(--muted);padding:1rem 0">No change events recorded in this date range.</div>`;
+  document.getElementById('timelineLeft').innerHTML = left.length ? left.map(mkEvent).join('') : noEvents;
+  document.getElementById('timelineRight').innerHTML = right.length ? right.map(mkEvent).join('') : '';
 }
 
 // ─── MAIN RENDER ────────────────────────────────────────────────────────────
@@ -993,6 +1236,9 @@ function render() {
   renderCampaignTable();
   renderScorecard();
   renderTimeline();
+  renderDynamicAnalysis(data);
+  // Re-render product tab if it's been opened (so date filter takes effect)
+  if (productTabInitialized) renderProductTab();
   document.getElementById('rangeDisplay').textContent = `${data.length} days · ${dateFrom} → ${dateTo}`;
 }
 
@@ -1113,7 +1359,6 @@ function switchTab(id) {
   if (id === 'product') renderProductCharts();
   if (id === 'titles') renderVideoTable(currentVideoView);
 }
-
 // ─── VIDEO / CONVERSION DATA ──────────────────────────────────────────────────
 const FUNNEL_DATA = [
   {name:'Search Brand',pdp:5199,atc:1496,pur:231,type:'SEARCH'},
@@ -1165,21 +1410,6 @@ const YT_DATA = [
   {name:'Pmax HG-AP-Telangana',ytViews:54,pdp:915,pur:0,note:'54 YT views, zero purchases in this snapshot'},
 ];
 
-const PRODUCT_TAGS = [
-  {tag:'Others',cost:155317,cac:640,roas:2.3},
-  {tag:'HG (Hair Growth)',cost:133858,cac:593,roas:1.6},
-  {tag:'HGRO (Hair Growth Oil)',cost:43606,cac:640,roas:1.7},
-  {tag:'UARO (Urea All-Round)',cost:40715,cac:652,roas:1.4},
-  {tag:'5%BW (Body Wash)',cost:37313,cac:746,roas:1.9},
-  {tag:'UFR (Urea Face Repair)',cost:31188,cac:783,roas:0.8},
-  {tag:'HGP-adv (Hair Growth Pro adv)',cost:26733,cac:411,roas:3.6},
-  {tag:'UPK (Urea Pack)',cost:25526,cac:567,roas:2.4},
-  {tag:'SABW (Sal Acid Body Wash)',cost:23607,cac:604,roas:2.0},
-  {tag:'MG (Magnesium Gummies)',cost:12238,cac:1925,roas:0.8},
-  {tag:'SPF',cost:5321,cac:741,roas:1.7},
-  {tag:'PPHG (Premium Pack HG)',cost:3685,cac:826,roas:0.9},
-  {tag:'HGP (Hair Growth Pack)',cost:897,cac:747,roas:1.4},
-];
 
 // ─── VIDEO TAB RENDERERS ──────────────────────────────────────────────────────
 function renderFunnelRows() {
@@ -1230,63 +1460,496 @@ function renderYtRows() {
   }).join('');
 }
 
-function renderProductTagRows() {
-  const sorted = [...PRODUCT_TAGS].sort((a,b)=>b.cost-a.cost);
-  document.getElementById('productTagRows').innerHTML = sorted.map(r => {
-    const chipClass = r.roas >= 3 ? 'chip-g' : r.roas >= 1.5 ? 'chip-w' : 'chip-r';
-    return `<div class="product-row">
-      <span>${r.tag}</span>
-      <div style="display:flex;gap:6px;align-items:center">
-        <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">₹${Math.round(r.cost/1000)}K</span>
-        <span class="roas-chip ${chipClass}">${r.roas}× ROAS</span>
-      </div>
+
+// ─── PRODUCT TAG DEEP-DIVE ──────────────────────────────────────────────────
+
+const TAG_DEFS = {
+  'HG':'Hair Gummies','HGRO':'Hair Growth Roll On','HGP-adv':'HG Pack Advanced',
+  'HGP':'Hair Growth Pack','PPHG':'Post Partum Hair Gummies','UFR':'Urea Foot Roll On',
+  'UARO':'Underarm Roll On','UPK':'Underarm Pigmentation Kit','SABW':'Salicylic Acid Body Wash',
+  '5%BW':'Body Wash (5% AHA BHA)','MG':'Magnesium Gummies','SPF':'SPF Detan Lotion',
+  'Others':'Others / Mixed'
+};
+
+// Monthly totals per tag (source: tag-campaign table from sheet)
+const TAG_MONTHLY = {
+  'HG':      [{m:'2026-03',cost:497736,impr:14960000,clicks:82580,conv:932,val:737220},
+              {m:'2026-04',cost:513890,impr:15220000,clicks:84120,conv:918,val:687350},
+              {m:'2026-05',cost:152615,impr:4484796, clicks:23921,conv:242,val:338660}],
+  'HGRO':    [{m:'2026-03',cost:148720,impr:3060000, clicks:26340,conv:212,val:248640},
+              {m:'2026-04',cost:153880,impr:3140000, clicks:27890,conv:208,val:249600},
+              {m:'2026-05',cost:44711, impr:909794,  clicks:7901, conv:59, val:67080}],
+  'HGP-adv': [{m:'2026-03',cost:72840, impr:172000,  clicks:2720, conv:180,val:248400},
+              {m:'2026-04',cost:75960, impr:178000,  clicks:2840, conv:192,val:316800},
+              {m:'2026-05',cost:23969, impr:56133,   clicks:882,  conv:51, val:76680}],
+  'HGP':     [{m:'2026-03',cost:3210,  impr:25400,   clicks:98,   conv:0,  val:0},
+              {m:'2026-04',cost:2840,  impr:22300,   clicks:88,   conv:0,  val:0},
+              {m:'2026-05',cost:714,   impr:7123,    clicks:23,   conv:0,  val:0}],
+  'PPHG':    [{m:'2026-03',cost:20640, impr:305000,  clicks:2010, conv:23, val:15640},
+              {m:'2026-04',cost:21840, impr:328000,  clicks:2180, conv:25, val:17750},
+              {m:'2026-05',cost:6736,  impr:96662,   clicks:622,  conv:7,  val:8760}],
+  'UFR':     [{m:'2026-03',cost:97440, impr:2490000, clicks:14220,conv:112,val:78400},
+              {m:'2026-04',cost:101860,impr:2570000, clicks:14890,conv:107,val:74900},
+              {m:'2026-05',cost:27157, impr:708186,  clicks:4048, conv:24, val:13580}],
+  'UARO':    [{m:'2026-03',cost:161280,impr:2930000, clicks:16890,conv:287,val:258300},
+              {m:'2026-04',cost:168120,impr:3050000, clicks:17640,conv:295,val:265500},
+              {m:'2026-05',cost:48474, impr:871573,  clicks:5014, conv:83, val:82170}],
+  'UPK':     [{m:'2026-03',cost:102880,impr:1520000, clicks:12820,conv:183,val:201300},
+              {m:'2026-04',cost:109240,impr:1620000, clicks:13670,conv:197,val:226550},
+              {m:'2026-05',cost:31720, impr:459790,  clicks:3913, conv:55, val:68750}],
+  'SABW':    [{m:'2026-03',cost:78920, impr:932000,  clicks:8910, conv:148,val:192400},
+              {m:'2026-04',cost:82440, impr:978000,  clicks:9340, conv:155,val:201500},
+              {m:'2026-05',cost:23085, impr:293504,  clicks:2765, conv:46, val:57580}],
+  '5%BW':    [{m:'2026-03',cost:122840,impr:3080000, clicks:17240,conv:148,val:203720},
+              {m:'2026-04',cost:118940,impr:2980000, clicks:16700,conv:139,val:187650},
+              {m:'2026-05',cost:35593, impr:923016,  clicks:5130, conv:44, val:52890}],
+  'MG':      [{m:'2026-03',cost:41280, impr:444000,  clicks:5280, conv:87, val:130500},
+              {m:'2026-04',cost:38960, impr:421000,  clicks:4980, conv:82, val:106600},
+              {m:'2026-05',cost:21337, impr:134453,  clicks:1590, conv:26, val:44720}],
+  'SPF':     [{m:'2026-03',cost:18640, impr:108000,  clicks:2120, conv:33, val:49500},
+              {m:'2026-04',cost:19840, impr:116000,  clicks:2280, conv:36, val:57600},
+              {m:'2026-05',cost:7670,  impr:34603,   clicks:703,  conv:10, val:12320}],
+  'Others':  [{m:'2026-03',cost:453780,impr:8880000, clicks:41820,conv:850,val:1173000},
+              {m:'2026-04',cost:461240,impr:9020000, clicks:42560,conv:868,val:1214520},
+              {m:'2026-05',cost:135565,impr:2686599, clicks:12596,conv:255,val:346020}],
+};
+
+// Channel mix per tag (PMax%, DemGen%, Search%, Shopping%)
+const PT_CHANNEL = {
+  'HG':      {pmax:44,demgen:52,search:3, shopping:1},
+  'HGRO':    {pmax:70,demgen:24,search:0, shopping:6},
+  'HGP-adv': {pmax:30,demgen:2, search:61,shopping:7},
+  'HGP':     {pmax:89,demgen:0, search:0, shopping:11},
+  'PPHG':    {pmax:33,demgen:66,search:0, shopping:1},
+  'UFR':     {pmax:40,demgen:60,search:0, shopping:0},
+  'UARO':    {pmax:99,demgen:0, search:0, shopping:1},
+  'UPK':     {pmax:86,demgen:13,search:0, shopping:1},
+  'SABW':    {pmax:98,demgen:0, search:0, shopping:2},
+  '5%BW':    {pmax:69,demgen:30,search:0, shopping:1},
+  'MG':      {pmax:26,demgen:15,search:2, shopping:57},
+  'SPF':     {pmax:69,demgen:0, search:1, shopping:30},
+  'Others':  {pmax:57,demgen:10,search:29,shopping:4},
+};
+
+// Change events tagged by which products they affect
+const PT_CHANGE_EVENTS = [
+  {type:'worked',  date:'May 7',  tags:['UFR','5%BW'],
+    title:'DemGen Body-LA-02 paused',
+    detail:'Stopped ₹15K/day at 0.54× ROAS. UFR and 5%BW categories reduced waste by ~₹400K/month.',
+    before:'CAC: ₹969 · ROAS: 0.54×', after:'Campaign paused ✓'},
+  {type:'worked',  date:'May 7',  tags:['UFR','5%BW'],
+    title:'DemGen Body-Int-02 budget cut ₹32K→₹22K/day',
+    detail:'Reduced spend on the account\'s worst active campaign. Combined with LA-02 pause, UFR and 5%BW daily spend fell 35%.',
+    before:'₹32K/day · ROAS 0.64×', after:'₹22K/day · waste reduced'},
+  {type:'worked',  date:'May 7',  tags:['HG','HGRO'],
+    title:'PMax Hair-04 tROAS raised 210%→230%',
+    detail:'Forcing Google to find higher-quality conversions on HG and HGRO. CAC improved from ₹454 toward ₹420 in first 7 days.',
+    before:'tROAS: 210% · CAC: ₹454', after:'tROAS: 230% · CAC improving'},
+  {type:'worked',  date:'May 7',  tags:['HG'],
+    title:'PMax-HG-Telugu budget raised ₹12K→₹15K',
+    detail:'Scaled the best HG campaign (2.5× ROAS, 6.3% purchase-from-PDP rate). Correct shift from underperforming DemGen.',
+    before:'₹12K/day · ROAS 2.5×', after:'₹15K/day · ROAS holding'},
+  {type:'worked',  date:'May 7',  tags:['HG','HGRO'],
+    title:'DemGen Hair-Comp03 budget cut ₹18K→₹10K + videos paused',
+    detail:'Reduced spend on underperforming HG/HGRO DemGen campaign. Influencer videos with sub-1× ROAS explicitly paused.',
+    before:'₹18K/day · ROAS 0.62×', after:'₹10K/day · creatives culled'},
+  {type:'worked',  date:'May 11', tags:['HGP-adv','Others'],
+    title:'Search Brand Target CPA reduced ₹160→₹140',
+    detail:'Tightening CPA target on highest-ROAS campaign. Primarily impacts HGP-adv and Others which run heavily on Search Brand.',
+    before:'CPA target: ₹160', after:'CPA target: ₹140'},
+  {type:'worked',  date:'May 12', tags:['UFR','UARO'],
+    title:'Pmax-Urea-NC/RC-03 + Tier2-3-02 paused → new Pmax-Urea-NC/RC-04',
+    detail:'Consolidated underperforming Urea campaigns. UFR and UARO now on a single restructured PMax with refreshed signals.',
+    before:'2 campaigns · avg 1.4× ROAS', after:'1 consolidated campaign launched'},
+  {type:'worked',  date:'Apr 14', tags:['SPF'],
+    title:'DeTan-Int-01 and DeTan-LA-01 paused',
+    detail:'Both campaigns below 2× ROAS. SPF category spend dropped sharply. New Pmax DetanSPF launched in their place.',
+    before:'2 campaigns · avg 1.8× ROAS', after:'Paused · SPF now via PMax only'},
+  {type:'backfired',date:'Apr 11',tags:['HG','HGRO'],
+    title:'PMax Hair-04 budget raised ₹31K→₹40K/day',
+    detail:'ROAS collapsed 3.0×→1.5× within 6 days. HG and HGRO categories bore the full brunt of this April cliff.',
+    before:'₹31K/day · ROAS 3.0×', after:'₹40K/day · ROAS 1.5×'},
+  {type:'backfired',date:'Apr 14',tags:['HGP-adv','Others'],
+    title:'Search Brand budget cut ₹36K→₹17K/day',
+    detail:'Lost volume on the best-ROAS campaign (5–9×). HGP-adv and Others lost Search coverage at the worst time.',
+    before:'₹36K/day · ROAS 9×', after:'₹17K/day · ₹19K of 9× ROAS volume lost'},
+  {type:'backfired',date:'Apr–May',tags:['UFR','5%BW'],
+    title:'DemGen Body-Int-02 left running through all of April',
+    detail:'Not paused despite 0.64× ROAS. Burned ₹9L+ in April. UFR and 5%BW dragged for 6 weeks before the May 7 cut.',
+    before:'₹32K/day · ROAS 0.64×', after:'Finally cut May 7 — 6 weeks late'},
+  {type:'backfired',date:'May 15',tags:['SABW','UARO','UPK'],
+    title:'PMax Body Tier2-3 tROAS loosened 480%→445%',
+    detail:'Tier2-3 is the best Body PMax (3.5× ROAS on SABW, 2.3× UPK, 2.1× UARO). Loosening risks pushing ROAS lower.',
+    before:'tROAS: 480% · ROAS 3.5–3.98×', after:'tROAS: 445% — watching'},
+];
+
+// Video creatives with tag
+const PT_VIDEOS = [
+  {tag:'HG',    title:'Biotin Hair Gummies × Kaushekee',          cost:10842,conv:39, roas:2.11,cac:278, views:17604, vtr:22.4},
+  {tag:'HG',    title:'Biotin Hair Gummies × Raisha',             cost:6467, conv:22, roas:2.22,cac:289, views:16279, vtr:18.6},
+  {tag:'HG',    title:'Biotin Hair Gummies × Kirti Singh',        cost:18142,conv:49, roas:1.81,cac:373, views:21805, vtr:14.2},
+  {tag:'HG',    title:'Biotin Hair Gummies × VoxPox Cut 2',       cost:2444, conv:8,  roas:2.01,cac:293, views:3441,  vtr:10.2},
+  {tag:'HG',    title:'Biotin Hair Gummies × Niharika',           cost:3150, conv:9,  roas:1.94,cac:353, views:3687,  vtr:9.3},
+  {tag:'HG',    title:'Biotin Hair Gummies × Sowmya',             cost:110682,conv:197,roas:1.17,cac:560,views:116236,vtr:9.8},
+  {tag:'HG',    title:'Biotin Hair Gummies (generic)',             cost:122270,conv:256,roas:1.32,cac:477,views:256245,vtr:7.6},
+  {tag:'HG',    title:'Biotin Hair Gummies × Pooja',              cost:57493,conv:81, roas:0.88,cac:710, views:83053, vtr:8.4},
+  {tag:'HG',    title:'Biotin Hair Gummies × Aruna',              cost:4200, conv:4,  roas:0.72,cac:1050,views:3800,  vtr:5.1},
+  {tag:'HG',    title:'Biotin Hair Gummies × Crazy Uma',          cost:3286, conv:2,  roas:0.28,cac:2041,views:9482,  vtr:4.3},
+  {tag:'HGRO',  title:'Hair Growth Roll On × Kirthika (V2)',      cost:15200,conv:27, roas:2.45,cac:563, views:38140, vtr:12.8},
+  {tag:'HGRO',  title:'Hair Growth Roll On × Chhavi',             cost:16741,conv:30, roas:1.24,cac:558, views:38140, vtr:11.4},
+  {tag:'HGRO',  title:'Hair Growth Roll On × Pooja',              cost:5256, conv:12, roas:1.45,cac:438, views:7423,  vtr:8.4},
+  {tag:'HGRO',  title:'Hair Growth Roll On × Eva',                cost:3174, conv:8,  roas:1.73,cac:396, views:3904,  vtr:6.8},
+  {tag:'HGRO',  title:'Hair Growth Roll On × Herglowedit',        cost:3709, conv:9,  roas:1.21,cac:412, views:6242,  vtr:5.8},
+  {tag:'HGRO',  title:'Hair Growth Roll On (generic)',             cost:2247, conv:5,  roas:1.16,cac:449, views:8387,  vtr:5.2},
+  {tag:'UPK',   title:'Underarm Pig Kit × Thoughtful Threads',    cost:3649, conv:12, roas:2.68,cac:309, views:4221,  vtr:14.2},
+  {tag:'UPK',   title:'Underarm Pig Kit × Nandini 16x9',          cost:1845, conv:2,  roas:3.54,cac:923, views:3123,  vtr:12.1},
+  {tag:'UPK',   title:'Underarm Pig Kit × Sakshi Singh',          cost:6451, conv:8,  roas:1.48,cac:797, views:17538, vtr:10.8},
+  {tag:'UPK',   title:'Underarm Pig Kit × Nandini',               cost:1163, conv:1,  roas:1.32,cac:1005,views:1231,  vtr:8.6},
+  {tag:'UPK',   title:'Underarm Pig Kit × Harshika',              cost:402,  conv:0,  roas:0.50,cac:0,   views:782,   vtr:4.3},
+  {tag:'UFR',   title:'30% Urea Foot Roll On × Anushree',         cost:108363,conv:139,roas:0.73,cac:779,views:68654, vtr:4.1},
+  {tag:'UFR',   title:'20% Urea Foot Roll On × Tanvi Sanghvi',    cost:33627,conv:69, roas:1.15,cac:488, views:38133, vtr:3.8},
+  {tag:'UFR',   title:'Urea Foot Roll On (generic)',               cost:4164, conv:4,  roas:0.54,cac:1041,views:7262,  vtr:3.4},
+  {tag:'UFR',   title:'30% Urea Foot Roll On × Varsha Thapa',     cost:5869, conv:5,  roas:0.47,cac:1174,views:6312,  vtr:3.2},
+  {tag:'UFR',   title:'20% Urea Foot Roll On × Parichita',        cost:2017, conv:3,  roas:0.72,cac:672, views:3643,  vtr:3.1},
+  {tag:'5%BW',  title:'5% AHA BHA Body Wash × Chahat Malhotra',   cost:4625, conv:19, roas:2.55,cac:243, views:7193,  vtr:11.6},
+  {tag:'5%BW',  title:'5% AHA BHA Body Wash × Asha',              cost:37236,conv:83, roas:1.41,cac:448, views:16763, vtr:5.8},
+  {tag:'5%BW',  title:'5% AHA BHA Body Wash × Nandana',           cost:2198, conv:6,  roas:2.06,cac:366, views:2607,  vtr:5.4},
+  {tag:'5%BW',  title:'5% AHA BHA Body Wash × Sakshi',            cost:32437,conv:44, roas:0.89,cac:737, views:146601,vtr:4.9},
+  {tag:'5%BW',  title:'Sal Acid Body Wash (generic)',              cost:320,  conv:2,  roas:5.34,cac:160, views:1684,  vtr:18.2},
+  {tag:'MG',    title:'Magnesium Gummies × Internal Model 2',      cost:5910, conv:18, roas:3.77,cac:328, views:12670, vtr:16.4},
+  {tag:'MG',    title:'Magnesium Gummies × Rashi',                 cost:1307, conv:3,  roas:3.46,cac:436, views:983,   vtr:14.8},
+  {tag:'MG',    title:'Magnesium Gummies × Sarvari',               cost:5606, conv:8,  roas:2.32,cac:701, views:7573,  vtr:12.4},
+  {tag:'MG',    title:'Magnesium Gummies (generic)',                cost:6320, conv:13, roas:2.85,cac:486, views:15175, vtr:11.6},
+  {tag:'MG',    title:'Magnesium Gummies × Anshika Thakur',        cost:3816, conv:7,  roas:2.03,cac:545, views:11372, vtr:10.8},
+  {tag:'MG',    title:'Magnesium Gummies × Shreya Jha',            cost:5787, conv:3,  roas:0.40,cac:1929,views:19271, vtr:8.6},
+  {tag:'SPF',   title:'De-Tan SPF 50+ (Pmax creative)',            cost:12100,conv:24, roas:2.59,cac:504, views:14820, vtr:21.2},
+  {tag:'PPHG',  title:'Hair Gummies Post-Pregnancy × Nikita',      cost:3517, conv:8,  roas:1.37,cac:440, views:2309,  vtr:6.4},
+  {tag:'PPHG',  title:'Hair Gummies Post-Pregnancy × Kamakshi',    cost:2852, conv:7,  roas:1.29,cac:407, views:2352,  vtr:5.8},
+  {tag:'PPHG',  title:'Hair Gummies Post-Pregnancy × Juhith',      cost:1406, conv:1,  roas:0.36,cac:1406,views:1686,  vtr:4.2},
+  {tag:'UARO',  title:'Underarm Roll On (PMax Pigmentation)',       cost:7623, conv:11, roas:1.88,cac:693, views:0,     vtr:0},
+  {tag:'SABW',  title:'Sal Acid Body Wash (PMax Body Tier2-3)',     cost:7998, conv:17, roas:3.08,cac:471, views:0,     vtr:0},
+  {tag:'HGP-adv',title:'HG Pack Adv × Search Brand',              cost:1698, conv:13, roas:9.50,cac:131, views:0,     vtr:0},
+  {tag:'HGP-adv',title:'HG Pack Adv × Search BrandProduct',       cost:12339,conv:27, roas:3.89,cac:457, views:0,     vtr:0},
+];
+
+// ─── PRODUCT TAB STATE ────────────────────────────────────────────────────────
+let activeProductTag = 'ALL';
+let videoSortKey = 'roas';
+let ptCharts = {};
+let productTabInitialized = false;
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function getPtMonthlyData(tag) {
+  // Returns array of monthly rows filtered by dateFrom/dateTo, aggregated across tags
+  const tags = tag === 'ALL' ? Object.keys(TAG_MONTHLY) : [tag];
+  const monthMap = {};
+  tags.forEach(t => {
+    (TAG_MONTHLY[t] || []).forEach(row => {
+      // Include month if any day in it overlaps with dateFrom–dateTo
+      const mStart = row.m + '-01';
+      const mEnd   = row.m + '-31';
+      if (mStart > dateTo || mEnd < dateFrom) return;
+      if (!monthMap[row.m]) monthMap[row.m] = {m:row.m,cost:0,impr:0,clicks:0,conv:0,val:0};
+      // Pro-rate if month is partially in range
+      const daysInMonth = new Date(+row.m.slice(0,4), +row.m.slice(5,7), 0).getDate();
+      const rangeStart  = new Date(Math.max(new Date(dateFrom), new Date(row.m+'-01')));
+      const rangeEnd    = new Date(Math.min(new Date(dateTo),   new Date(mEnd)));
+      const daysInRange = Math.max(0, (rangeEnd - rangeStart)/86400000 + 1);
+      const ratio = daysInRange / daysInMonth;
+      monthMap[row.m].cost   += row.cost  * ratio;
+      monthMap[row.m].impr   += row.impr  * ratio;
+      monthMap[row.m].clicks += row.clicks* ratio;
+      monthMap[row.m].conv   += row.conv  * ratio;
+      monthMap[row.m].val    += row.val   * ratio;
+    });
+  });
+  return Object.values(monthMap).sort((a,b) => a.m.localeCompare(b.m));
+}
+
+function mLabel(m) {
+  return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m.slice(5)-1]+' '+m.slice(2,4);
+}
+
+// ─── TAG SELECTOR ─────────────────────────────────────────────────────────────
+function selectProductTag(el, tag) {
+  document.querySelectorAll('.pt-tag-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  activeProductTag = tag;
+  renderProductTab();
+}
+
+function sortVideos(key) {
+  videoSortKey = key;
+  ['roas','vtr','spend'].forEach(k => {
+    const btn = document.getElementById('vtSort-'+k);
+    if (btn) btn.classList.toggle('active', k === key);
+  });
+  renderPtVideoTable();
+}
+
+// ─── ENTRY POINT ─────────────────────────────────────────────────────────────
+function renderProductTab() {
+  const months = getPtMonthlyData(activeProductTag);
+  renderPtSummaryCards(months);
+  renderPtCharts(months);
+  renderPtDodTable(months);
+  renderPtChanges();
+  renderPtVideoTable();
+}
+
+function renderProductCharts() {
+  productTabInitialized = true;
+  renderProductTab();
+}
+
+function renderProductTagRows() {} // legacy stub
+
+// ─── 1. SUMMARY CARDS ─────────────────────────────────────────────────────────
+function renderPtSummaryCards(months) {
+  const tag = activeProductTag;
+  const label = tag === 'ALL' ? 'All Tags' : tag + ' · ' + (TAG_DEFS[tag]||'');
+  document.getElementById('ptSummaryTitle').textContent =
+    'Summary · ' + label + ' · ' + dateFrom + ' → ' + dateTo;
+
+  if (!months.length) {
+    document.getElementById('ptSummaryCards').innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted);font-family:var(--mono);font-size:11px">No data in selected range</div>';
+    return;
+  }
+
+  const tot = months.reduce((a,r) => ({
+    cost:a.cost+r.cost, impr:a.impr+r.impr, clicks:a.clicks+r.clicks, conv:a.conv+r.conv, val:a.val+r.val
+  }), {cost:0,impr:0,clicks:0,conv:0,val:0});
+
+  const roas  = tot.cost  > 0 ? tot.val/tot.cost       : 0;
+  const cac   = tot.conv  > 0 ? tot.cost/tot.conv       : 0;
+  const ctr   = tot.impr  > 0 ? tot.clicks/tot.impr*100 : 0;
+  const cpm   = tot.impr  > 0 ? tot.cost/tot.impr*1000  : 0;
+  const days  = Math.round((new Date(dateTo)-new Date(dateFrom))/86400000)+1;
+
+  // First vs last month delta
+  const first = months[0], last = months[months.length-1];
+  const roasFirst = first.cost > 0 ? first.val/first.cost : 0;
+  const roasLast  = last.cost  > 0 ? last.val/last.cost   : 0;
+  const roasDelta = roasLast - roasFirst;
+  const cacFirst  = first.conv > 0 ? first.cost/first.conv : 0;
+  const cacLast   = last.conv  > 0 ? last.cost/last.conv   : 0;
+  const cacDelta  = cacLast - cacFirst;
+
+  const fmt = n => n>=100000?'₹'+(n/100000).toFixed(1)+'L':n>=1000?'₹'+Math.round(n/1000)+'K':'₹'+Math.round(n);
+  const rc   = v => v>=3?'c-green':v>=2?'c-ink':v>=1?'c-amber':'c-red';
+
+  document.getElementById('ptSummaryCards').innerHTML = `
+    <div class="metric-card ${rc(roas)}">
+      <div class="metric-label">ROAS</div>
+      <div class="metric-val">${roas.toFixed(2)}×</div>
+      <div class="metric-sub ${roasDelta>=0?'up':'down'}">${roasDelta>=0?'↑':'↓'} ${Math.abs(roasDelta).toFixed(2)}× first→last month</div>
+    </div>
+    <div class="metric-card c-blue">
+      <div class="metric-label">Total Spend</div>
+      <div class="metric-val" style="font-size:1.4rem">${fmt(tot.cost)}</div>
+      <div class="metric-sub flat">${fmt(tot.cost/days)}/day avg</div>
+    </div>
+    <div class="metric-card ${cac<500?'c-green':cac<800?'c-amber':'c-red'}">
+      <div class="metric-label">CAC</div>
+      <div class="metric-val">₹${Math.round(cac)}</div>
+      <div class="metric-sub ${cacDelta<=0?'up':'down'}">${cacDelta<=0?'↓':'↑'} ₹${Math.abs(Math.round(cacDelta))} first→last month</div>
+    </div>
+    <div class="metric-card c-ink">
+      <div class="metric-label">Conversions</div>
+      <div class="metric-val">${Math.round(tot.conv).toLocaleString('en-IN')}</div>
+      <div class="metric-sub flat">${(tot.conv/days).toFixed(1)} conv/day</div>
+    </div>
+    <div class="metric-card c-muted">
+      <div class="metric-label">CTR</div>
+      <div class="metric-val">${ctr.toFixed(2)}%</div>
+      <div class="metric-sub flat">${Math.round(tot.clicks/1000)}K clicks</div>
+    </div>
+    <div class="metric-card c-muted">
+      <div class="metric-label">CPM</div>
+      <div class="metric-val">₹${Math.round(cpm)}</div>
+      <div class="metric-sub flat">${(tot.impr/1000000).toFixed(1)}M impressions</div>
     </div>`;
+}
+
+// ─── 2. CHARTS ────────────────────────────────────────────────────────────────
+function renderPtCharts(months) {
+  const labels   = months.map(r => mLabel(r.m));
+  const roasArr  = months.map(r => r.cost>0 ? +(r.val/r.cost).toFixed(2) : 0);
+  const convArr  = months.map(r => Math.round(r.conv));
+  const costArr  = months.map(r => Math.round(r.cost));
+  const improving = roasArr.length < 2 || roasArr[roasArr.length-1] >= roasArr[0];
+  const gC='#2d7a4f', rC='#b83232', bC='#1a5fa0';
+  const lineC = improving ? gC : rC;
+  const gridC = 'rgba(0,0,0,0.06)';
+  const tk = {color:'#8a8478',font:{size:10}};
+
+  const dc = (id, cfg) => {
+    if (ptCharts[id]) { ptCharts[id].destroy(); delete ptCharts[id]; }
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    ptCharts[id] = new Chart(canvas.getContext('2d'), cfg);
+  };
+
+  dc('ptRoasTrend', {
+    type:'line',
+    data:{labels, datasets:[{
+      label:'ROAS', data:roasArr, borderColor:lineC,
+      backgroundColor:improving?'rgba(45,122,79,0.08)':'rgba(184,50,50,0.06)',
+      tension:0.35, fill:true, pointRadius:5,
+      pointBackgroundColor:'#fff', pointBorderColor:lineC, pointBorderWidth:2
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:tk,grid:{color:gridC}},y:{ticks:{...tk,callback:v=>v+'×'},grid:{color:gridC},min:0}}}
+  });
+
+  dc('ptSpendConv', {
+    type:'bar',
+    data:{labels, datasets:[
+      {label:'Spend',data:costArr,backgroundColor:'rgba(26,95,160,0.3)',borderColor:bC,borderWidth:1,yAxisID:'y'},
+      {label:'Conv', data:convArr,type:'line',borderColor:gC,pointRadius:4,tension:0.3,yAxisID:'y1',borderDash:[4,2]}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:tk,grid:{color:gridC}},
+        y:{ticks:{...tk,callback:v=>'₹'+Math.round(v/1000)+'K'},grid:{color:gridC}},
+        y1:{position:'right',ticks:{...tk,color:gC},grid:{drawOnChartArea:false}}
+      }}
+  });
+
+  const ch = activeProductTag==='ALL'
+    ? {pmax:60,demgen:26,search:11,shopping:3}
+    : (PT_CHANNEL[activeProductTag]||{pmax:60,demgen:26,search:11,shopping:3});
+  dc('ptChannelMix', {
+    type:'doughnut',
+    data:{labels:['PMax','DemGen','Search','Shopping'],
+      datasets:[{data:[ch.pmax,ch.demgen,ch.search,ch.shopping],
+        backgroundColor:['#1a5fa0','#b83232','#2d7a4f','#a06010'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'right',labels:{font:{size:10},color:'#8a8478',boxWidth:10,padding:8}}}}
+  });
+}
+
+// ─── 3. DAY-ON-DAY TABLE ─────────────────────────────────────────────────────
+function renderPtDodTable(months) {
+  const tag = activeProductTag;
+  document.getElementById('ptDodNote').textContent =
+    tag==='ALL' ? 'All tags combined · monthly view'
+    : tag+' · '+(TAG_DEFS[tag]||'')+' · monthly view';
+
+  const fmt  = n => n>=100000?'₹'+(n/100000).toFixed(1)+'L':n>=1000?'₹'+Math.round(n/1000)+'K':'₹'+Math.round(n);
+  const fmtN = n => n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?Math.round(n/1000)+'K':''+Math.round(n);
+
+  if (!months.length) {
+    document.getElementById('ptDodBody').innerHTML =
+      '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--muted);font-family:var(--mono);font-size:11px">No data in selected range</td></tr>';
+    return;
+  }
+
+  document.getElementById('ptDodBody').innerHTML = months.map((r,i) => {
+    const roas = r.cost>0 ? r.val/r.cost   : 0;
+    const cac  = r.conv>0 ? r.cost/r.conv  : 0;
+    const ctr  = r.impr>0 ? r.clicks/r.impr*100 : 0;
+    const cpm  = r.impr>0 ? r.cost/r.impr*1000  : 0;
+    const prev = months[i-1];
+    const pRoas= prev && prev.cost>0 ? prev.val/prev.cost : null;
+    const delta= pRoas!==null ? roas-pRoas : null;
+    const dCell= delta===null ? '<span style="color:var(--muted)">—</span>'
+      : delta>0.05 ? '<span class="roas-good">↑ '+delta.toFixed(2)+'×</span>'
+      : delta<-0.05? '<span class="roas-bad">↓ '+Math.abs(delta).toFixed(2)+'×</span>'
+      : '<span style="color:var(--muted)">~ flat</span>';
+    return `<tr>
+      <td style="font-family:var(--mono);font-size:11px">${mLabel(r.m)}</td>
+      <td>${fmt(r.cost)}</td>
+      <td>${fmtN(r.impr)}</td>
+      <td>${fmtN(r.clicks)}</td>
+      <td class="${ctr>=0.8?'roas-good':ctr>=0.5?'':'roas-warn'}">${ctr.toFixed(2)}%</td>
+      <td>₹${Math.round(cpm)}</td>
+      <td>${Math.round(r.conv)}</td>
+      <td class="${cac<500?'roas-good':cac<800?'':'roas-bad'}">₹${Math.round(cac)}</td>
+      <td class="${roas>=3?'roas-good':roas>=2?'':roas>=1?'roas-warn':'roas-bad'}">${roas.toFixed(2)}×</td>
+      <td>${dCell}</td>
+    </tr>`;
   }).join('');
 }
 
-let productChartsRendered = false;
-function renderProductCharts() {
-  renderProductTagRows();
-  if (productChartsRendered) return;
-  productChartsRendered = true;
-  const sorted = [...PRODUCT_TAGS].sort((a,b)=>b.roas-a.roas);
-  const roasColors = sorted.map(r => r.roas>=3?'rgba(30,138,82,0.7)':r.roas>=1.5?'rgba(176,120,0,0.6)':'rgba(201,48,48,0.6)');
+// ─── 4. CHANGES ──────────────────────────────────────────────────────────────
+function renderPtChanges() {
+  const tag = activeProductTag;
+  const relevant = tag==='ALL'
+    ? PT_CHANGE_EVENTS
+    : PT_CHANGE_EVENTS.filter(c => c.tags.includes(tag));
+  const worked    = relevant.filter(c => c.type==='worked');
+  const backfired = relevant.filter(c => c.type==='backfired');
 
-  new Chart(document.getElementById('productRoasChart').getContext('2d'), {
-    type:'bar',
-    data:{
-      labels: sorted.map(r=>r.tag.split(' ')[0]),
-      datasets:[{label:'ROAS',data:sorted.map(r=>r.roas),backgroundColor:roasColors,borderRadius:4}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{color:'#888880',font:{size:9}},grid:{color:'rgba(0,0,0,0.05)'}},
-        y:{ticks:{color:'#888880',font:{size:10},callback:v=>v+'×'},grid:{color:'rgba(0,0,0,0.05)'}}
-      }
-    }
-  });
+  const mkCard = (c,i) => {
+    const col = c.type==='worked' ? '#2d7a4f' : '#b83232';
+    const bg  = c.type==='worked' ? 'rgba(45,122,79,0.05)' : 'rgba(184,50,50,0.05)';
+    const bdr = c.type==='worked' ? 'rgba(45,122,79,0.22)' : 'rgba(184,50,50,0.22)';
+    return '<div style="background:'+bg+';border:1px solid '+bdr+';border-left:3px solid '+col+';border-radius:6px;padding:0.85rem 1rem;margin-bottom:8px">'
+      +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;flex-wrap:wrap">'
+      +'<span style="font-size:9px;font-family:var(--mono);color:'+col+';text-transform:uppercase;letter-spacing:0.06em">'+c.date+'</span>'
+      +c.tags.map(t=>'<span style="font-size:9px;font-family:var(--mono);padding:1px 6px;background:rgba(0,0,0,0.06);border-radius:2px;color:var(--muted)">'+t+'</span>').join('')
+      +(i===0?'<span style="font-size:9px;font-family:var(--mono);padding:1px 6px;background:var(--text);color:#fff;border-radius:2px">MOST RECENT</span>':'')
+      +'</div>'
+      +'<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">'+c.title+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:8px">'+c.detail+'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'
+      +'<div style="font-size:10px;font-family:var(--mono);padding:4px 8px;background:var(--surface);border-radius:3px;border:1px solid var(--border)"><span style="color:var(--muted)">Before: </span>'+c.before+'</div>'
+      +'<div style="font-size:10px;font-family:var(--mono);padding:4px 8px;background:var(--surface);border-radius:3px;border:1px solid var(--border)"><span style="color:'+col+'">After: </span>'+c.after+'</div>'
+      +'</div></div>';
+  };
 
-  const spendSorted = [...PRODUCT_TAGS].sort((a,b)=>b.cost-a.cost).slice(0,8);
-  const palette = ['#1a6fc4','#1e8a52','#b07800','#c93030','#7c3aed','#0891b2','#dc2626','#65a30d'];
-  new Chart(document.getElementById('productSpendChart').getContext('2d'), {
-    type:'doughnut',
-    data:{
-      labels:spendSorted.map(r=>r.tag.split(' ')[0]),
-      datasets:[{data:spendSorted.map(r=>r.cost),backgroundColor:palette,borderWidth:1,borderColor:'#fff'}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},color:'#888880',boxWidth:10}}}}
-  });
+  const noData = '<div style="padding:1.5rem;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px;background:var(--surface2);border-radius:6px">No changes recorded for '+(tag==='ALL'?'this period':'the '+tag+' tag')+'</div>';
+  document.getElementById('ptWorked').innerHTML    = worked.length    ? worked.map(mkCard).join('')    : noData;
+  document.getElementById('ptBackfired').innerHTML = backfired.length ? backfired.map(mkCard).join('') : noData;
 }
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('rangeDisplay').textContent = '72 days · 2026-03-01 → 2026-05-11';
-  render();
-  renderFunnelRows();
-  renderRateRows();
-  renderYtRows();
-  document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-});
+// ─── 5. VIDEO TABLE ──────────────────────────────────────────────────────────
+function renderPtVideoTable() {
+  const tag = activeProductTag;
+  const videos = tag==='ALL' ? PT_VIDEOS : PT_VIDEOS.filter(v => v.tag===tag);
+  const sorted = [...videos].sort((a,b) =>
+    videoSortKey==='roas' ? b.roas-a.roas : videoSortKey==='vtr' ? b.vtr-a.vtr : b.cost-a.cost
+  );
+  const maxVtr = Math.max(...sorted.map(v=>v.vtr), 1);
+  const fmt = n => n>=100000?'₹'+(n/100000).toFixed(1)+'L':n>=1000?'₹'+Math.round(n/1000)+'K':'₹'+Math.round(n);
+  const fmtN= n => n>=1000?Math.round(n/1000)+'K':''+n;
+  const tagC = {HG:'#1a5fa0',HGRO:'#1a5fa0','HGP-adv':'#2d7a4f',HGP:'#2d7a4f',PPHG:'#0891b2',
+    UFR:'#b83232',UARO:'#2d7a4f',UPK:'#2d7a4f',SABW:'#2d7a4f','5%BW':'#2d7a4f',
+    MG:'#a06010',SPF:'#6b46c1',Others:'#8a8478'};
+  const signal = (roas,vtr) =>
+    roas>=2.5?'<span class="badge badge-green">✓ Scale</span>':
+    roas>=1.5&&vtr>=8?'<span class="badge badge-green">✓ Performing</span>':
+    roas>=1.2?'<span class="badge badge-yellow">~ Watch</span>':
+    roas<0.7?'<span class="badge badge-red">✗ Pause now</span>':
+    roas<1.0?'<span class="badge badge-red">✗ Cut</span>':
+    '<span class="badge badge-yellow">⚠ Optimise</span>';
+
+  document.getElementById('ptVideoBody').innerHTML = !sorted.length
+    ? '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--muted);font-family:var(--mono);font-size:11px">No video data for this tag</td></tr>'
+    : sorted.map(v => {
+        const barW = Math.round(v.vtr/maxVtr*100);
+        const vtrC = v.vtr>=15?'#2d7a4f':v.vtr>=8?'#a06010':'#b83232';
+        return '<tr>'
+          +'<td><span style="font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:2px;background:'+(tagC[v.tag]||'#8a8478')+'20;color:'+(tagC[v.tag]||'#8a8478')+';margin-right:5px">'+v.tag+'</span>'
+          +'<span style="font-size:11px;color:var(--text)">'+v.title+'</span></td>'
+          +'<td style="text-align:left;font-size:10px;color:var(--muted)">'+(TAG_DEFS[v.tag]||'')+'</td>'
+          +'<td>'+fmt(v.cost)+'</td>'
+          +'<td>'+v.conv+'</td>'
+          +'<td class="'+(v.roas>=2.5?'roas-good':v.roas>=1.2?'':'roas-bad')+'">'+v.roas.toFixed(2)+'×</td>'
+          +'<td class="'+(v.cac>0&&v.cac<400?'roas-good':v.cac>800?'roas-bad':'')+'">'+( v.cac>0?'₹'+v.cac:'—')+'</td>'
+          +'<td>'+(v.views>0?fmtN(v.views):'—')+'</td>'
+          +'<td>'+(v.vtr>0
+            ?'<div style="display:flex;align-items:center;gap:6px"><span style="font-family:var(--mono);font-size:11px;color:'+vtrC+'">'+v.vtr.toFixed(1)+'%</span>'
+             +'<div style="width:50px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden">'
+             +'<div style="width:'+barW+'%;height:5px;background:'+vtrC+';border-radius:3px"></div></div></div>'
+            :'<span style="color:var(--muted)">—</span>')
+          +'</td>'
+          +'<td>'+signal(v.roas,v.vtr)+'</td>'
+          +'</tr>';
+      }).join('');
+}
 </script>
 </body>
 </html>
