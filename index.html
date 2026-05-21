@@ -3179,8 +3179,8 @@ function renderPtDodTable() {
     (TAG_DAY_PIVOT[t]||[]).forEach(r => {
       if (r.d < dateFrom || r.d > dateTo) return;
       if (!dayMap[r.d]) dayMap[r.d] = {d:r.d,cost:0,impr:0,clicks:0,conv:0,val:0};
-      dayMap[r.d].cost+=r.cost; dayMap[r.d].impr+=r.impr;
-      dayMap[r.d].clicks+=r.clicks; dayMap[r.d].conv+=r.conv; dayMap[r.d].val+=r.val;
+      dayMap[r.d].cost+=r.co||0; dayMap[r.d].impr+=r.im||0;
+      dayMap[r.d].clicks+=r.cl||0; dayMap[r.d].conv+=r.cv||0; dayMap[r.d].val+=r.vl||0;
     });
   });
 
