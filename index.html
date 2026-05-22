@@ -391,6 +391,7 @@
           <button class="quick-btn" id="vtSort-spend" onclick="sortVideos('spend')">Sort: Spend</button>
         </div>
       </div>
+      <div id="ptVideoNotice"></div>
       <div class="table-card">
         <div class="table-scroll">
           <table>
@@ -403,7 +404,7 @@
                 <th>ROAS</th>
                 <th>CAC (₹)</th>
                 <th>Views</th>
-                <th>View Rate</th>
+                <th>CTR</th>
                 <th>Signal</th>
               </tr>
             </thead>
@@ -2212,6 +2213,130 @@ const VIDEO_BY_TAG = {
   ],
 };
 
+// Video performance by tag — from sheet "Video Performance" tab (full period totals)
+const VIDEO_PERF = {
+  "5%BW":[
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Asha",co:37236,vw:16763,cv:93.0,vl:58969,ro:1.6},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, Strawberry Skin and De-tan | Bodywise x Sakshi",co:32437,vw:146601,cv:47.0,vl:29282,ro:0.9},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | BeBodywise X Chahat Malhotra",co:4625,vw:7193,cv:22.0,vl:14579,ro:3.2},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Chandni",co:3799,vw:4436,cv:7.0,vl:3522,ro:0.9},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Nandana",co:2198,vw:2607,cv:6.0,vl:4521,ro:2.1},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Janmada",co:1288,vw:1160,cv:2.0,vl:1328,ro:1.0},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Tia Mittal",co:699,vw:1632,cv:1.0,vl:649,ro:0.9},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Yagya",co:479,vw:616,cv:0.0,vl:70,ro:0.1},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Rose",co:371,vw:246,cv:0.0,vl:0,ro:0.0},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Koyal",co:119,vw:307,cv:0.0,vl:0,ro:0.0},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Chahat M 16x9",co:61,vw:327,cv:0.0,vl:0,ro:0.0},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Keshavi",co:59,vw:215,cv:0.0,vl:0,ro:0.0},
+    {ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Bhavika",co:40,vw:173,cv:0.0,vl:0,ro:0.0}
+  ],
+  "HG":[
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise",co:122270,vw:256245,cv:269.0,vl:170101,ro:1.4},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Sowmya",co:110682,vw:116236,cv:197.0,vl:125989,ro:1.1},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Pooja",co:57493,vw:83053,cv:77.0,vl:47265,ro:0.8},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Kirti Singh",co:18142,vw:21805,cv:47.0,vl:32506,ro:1.8},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Megha Chaubey",co:16076,vw:38155,cv:29.0,vl:19942,ro:1.2},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Kaushekee",co:10842,vw:17604,cv:41.0,vl:23633,ro:2.2},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Bodywise",co:10085,vw:9515,cv:16.0,vl:9758,ro:1.0},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Harini",co:7924,vw:3377,cv:16.0,vl:10870,ro:1.4},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Ritika Jain",co:7223,vw:11485,cv:9.0,vl:4543,ro:0.6},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Meenal",co:6606,vw:6956,cv:11.0,vl:7711,ro:1.2},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Raisha",co:6467,vw:16279,cv:24.0,vl:14915,ro:2.3},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Kratika Tyagi",co:5538,vw:4822,cv:9.0,vl:7997,ro:1.4},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X VoxPox1",co:3677,vw:8660,cv:3.0,vl:1835,ro:0.5},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Crazy Uma ForYou",co:3286,vw:9482,cv:3.0,vl:1448,ro:0.4},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Niharika",co:3150,vw:3687,cv:14.0,vl:9505,ro:3.0},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Pranavi",co:3056,vw:5410,cv:3.0,vl:2187,ro:0.7},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X VoxPox Cut 2",co:2444,vw:3441,cv:8.0,vl:4370,ro:1.8},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Ishika Farma",co:2150,vw:3299,cv:4.0,vl:2639,ro:1.2},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Samritha Telugu",co:1675,vw:857,cv:1.0,vl:502,ro:0.3},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Gunjita",co:1627,vw:5268,cv:1.0,vl:1014,ro:0.6},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Nirali Raman",co:1503,vw:2730,cv:3.0,vl:2395,ro:1.6},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Jeenal Patel",co:1440,vw:1034,cv:5.0,vl:4734,ro:3.3},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Priya Jaiswal",co:1401,vw:4229,cv:6.0,vl:6087,ro:4.3},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Shamitha Reddy",co:830,vw:1162,cv:0.0,vl:237,ro:0.3},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Priyanka Chandola",co:619,vw:1513,cv:0.0,vl:0,ro:0.0},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Divya Dogra",co:250,vw:655,cv:0.0,vl:0,ro:0.0},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Riya Kapoor",co:157,vw:495,cv:0.0,vl:0,ro:0.0},
+    {ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Ronavi",co:10,vw:38,cv:0.0,vl:0,ro:0.0}
+  ],
+  "HGP":[
+    {ti:"Advanced Hair Growth Pack with Roll On 25ml | Hair Thinning & Hairfall | Be Bodywise X Ankita",co:264,vw:494,cv:0.0,vl:135,ro:0.5}
+  ],
+  "HGRO":[
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Chhavi",co:16741,vw:38140,cv:35.0,vl:26453,ro:1.6},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Pooja",co:5256,vw:7423,cv:13.0,vl:8145,ro:1.5},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Herglowedit",co:3709,vw:6242,cv:9.0,vl:4503,ro:1.2},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall",co:3459,vw:22596,cv:11.0,vl:7357,ro:2.1},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Eva",co:3174,vw:3904,cv:7.0,vl:4811,ro:1.5},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise",co:2247,vw:8387,cv:4.0,vl:2074,ro:0.9},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Devika Vohra",co:1707,vw:3006,cv:2.0,vl:1466,ro:0.9},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Shilpy Home",co:1230,vw:1936,cv:3.0,vl:1971,ro:1.6},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Sadhika",co:1110,vw:2020,cv:2.0,vl:1179,ro:1.1},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Vamshika",co:893,vw:1160,cv:2.0,vl:2201,ro:2.5},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X TheBaredBeauty",co:549,vw:488,cv:3.0,vl:2302,ro:4.2},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Ngapu",co:499,vw:618,cv:2.0,vl:1511,ro:3.0},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Swati Chauhan",co:297,vw:347,cv:0.0,vl:194,ro:0.7},
+    {ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Garima",co:211,vw:231,cv:0.0,vl:0,ro:0.0}
+  ],
+  "MG":[
+    {ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise",co:6320,vw:15175,cv:13.0,vl:18205,ro:2.9},
+    {ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Internal Model 2",co:5910,vw:12670,cv:12.0,vl:15993,ro:2.7},
+    {ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Shreya Jha",co:5787,vw:19271,cv:6.0,vl:5023,ro:0.9},
+    {ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Sarvari",co:5606,vw:7573,cv:10.0,vl:14680,ro:2.6},
+    {ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Anshika Thakur",co:3816,vw:11372,cv:6.0,vl:7567,ro:2.0},
+    {ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Rashi",co:1307,vw:983,cv:4.0,vl:5302,ro:4.1}
+  ],
+  "PPHG":[
+    {ti:"Hair Gummies for Post-Pregnancy Hair Fall | 100% Vegan Hair Vitamins | Be Bodywise X Nikita",co:3517,vw:2309,cv:8.0,vl:5039,ro:1.4},
+    {ti:"Hair Gummies for Post-Pregnancy Hair Fall | 100% Vegan Hair Vitamins | Be Bodywise X Kamakshi",co:2852,vw:2352,cv:9.0,vl:5097,ro:1.8},
+    {ti:"Hair Gummies for Post-Pregnancy Hair Fall | 100% Vegan Hair Vitamins | Be Bodywise X Juhith Reddy",co:1406,vw:1686,cv:1.0,vl:502,ro:0.4},
+    {ti:"Hair Gummies for Post-Pregnancy Hair Fall | 100% Vegan Hair Vitamins | Be Bodywise X Shruti",co:750,vw:306,cv:0.0,vl:12,ro:0.0},
+    {ti:"Hair Gummies for Post-Pregnancy Hair Fall | 100% Vegan Hair Vitamins | Be Bodywise X Sagarika Uppal",co:11,vw:20,cv:0.0,vl:0,ro:0.0}
+  ],
+  "SABW":[
+    {ti:"Bodywise 1% Salicylic Acid Body Wash | FOR: Body Acne & Strawberry Skin | Bodywise",co:320,vw:1684,cv:2.0,vl:1707,ro:5.3}
+  ],
+  "UFR":[
+    {ti:"30% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise  X Anushree",co:108363,vw:68654,cv:142.0,vl:81867,ro:0.8},
+    {ti:"20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise  X Tanvi Sanghvi",co:33627,vw:38133,cv:77.0,vl:45945,ro:1.4},
+    {ti:"30% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise  X Varsha Thapa",co:5869,vw:6312,cv:5.0,vl:2778,ro:0.5},
+    {ti:"Be Bodywise 20% Urea Foot and Heel Roll On | For Cracked & Rough heels",co:4164,vw:7262,cv:4.0,vl:2262,ro:0.5},
+    {ti:"30% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise  X Shreya Arora",co:3422,vw:4043,cv:6.0,vl:4071,ro:1.2},
+    {ti:"20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise X Parichita",co:2017,vw:3643,cv:5.0,vl:2298,ro:1.1}
+  ],
+  "UPK":[
+    {ti:"Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | Be Bodywise X Sakshi Singh",co:6451,vw:17538,cv:8.0,vl:7515,ro:1.2},
+    {ti:"Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | BeBodywise X ThoughtfulGirl",co:3649,vw:4221,cv:12.0,vl:11498,ro:3.2},
+    {ti:"Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | Be Bodywise X Nandini 16x9",co:1845,vw:3123,cv:4.0,vl:7565,ro:4.1},
+    {ti:"Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | Be Bodywise X Nandini",co:1163,vw:1231,cv:1.0,vl:1537,ro:1.3},
+    {ti:"Underarm Pigmentation Kit| For Underarm Odour and Severe Pigmentation | BeBodywise X Shivani Gulhane",co:928,vw:687,cv:2.0,vl:2845,ro:3.1},
+    {ti:"Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | Be Bodywise X Harshika",co:402,vw:782,cv:0.0,vl:202,ro:0.5},
+    {ti:"Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | Be Bodywise X AnjuMorVlogs",co:384,vw:497,cv:0.0,vl:634,ro:1.6}
+  ]
+};
+
+// Daily video performance — keyed by date then tag (populated from sheet daily, grows over time)
+// Fields: ti=title, co=cost, im=impressions, cl=clicks, cv=conversions, vl=conv_value, vw=trueview_views, ro=ROAS
+const VIDEO_DAY = {
+  "2026-05-20":{
+    "5%BW":[{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Tia Mittal",co:52.76,im:939,cl:8,cv:0.0,vl:0.0,vw:136,ro:0.0},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Shivani Wagh",co:148.41,im:5781,cl:15,cv:0.0,vl:0.0,vw:121,ro:0.0},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Vridhi",co:46.59,im:1151,cl:10,cv:0.0,vl:0.0,vw:73,ro:0.0},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, Strawberry Skin and De-tan | Bodywise x Sakshi",co:1898.88,im:59049,cl:290,cv:1.0,vl:403.0,vw:3629,ro:0.21},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Asha",co:910.92,im:12911,cl:146,cv:1.0,vl:399.0,vw:316,ro:0.44},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Koyal",co:14.09,im:379,cl:0,cv:0.0,vl:0.0,vw:44,ro:0.0}],
+    "SABW":[{ti:"Bodywise 1% Salicylic Acid Body Wash | FOR: Body Acne & Strawberry Skin | Bodywise",co:22.93,im:343,cl:0,cv:0.0,vl:0.0,vw:152,ro:0.0}],
+    "UFR":[{ti:"Be Bodywise 20% Urea Foot and Heel Roll On | For Cracked & Rough heels",co:444.86,im:6242,cl:41,cv:1.0,vl:634.0,vw:373,ro:1.43}]
+  },
+  "2026-05-21":{
+    "5%BW":[{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Tia Mittal",co:30.32,im:450,cl:1,cv:0.0,vl:0.0,vw:75,ro:0.0},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Shivani Wagh",co:939.91,im:37773,cl:114,cv:1.0,vl:699.0,vw:861,ro:0.74},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Vridhi",co:224.16,im:4805,cl:24,cv:0.0,vl:0.0,vw:273,ro:0.0},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, Strawberry Skin and De-tan | Bodywise x Sakshi",co:1360.19,im:44009,cl:231,cv:2.0,vl:798.0,vw:2665,ro:0.59},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Asha",co:4135.21,im:81312,cl:622,cv:6.0,vl:2230.0,vw:1655,ro:0.54},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Koyal",co:12.05,im:225,cl:2,cv:0.0,vl:0.0,vw:12,ro:0.0},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Nandana",co:325.12,im:8450,cl:39,cv:1.0,vl:399.0,vw:346,ro:1.23},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | BeBodywise X Chahat Malhotra",co:297.67,im:12385,cl:62,cv:2.0,vl:469.0,vw:578,ro:1.58},{ti:"5% AHA BHA Exfoliating Body Wash | For Body Acne, and Strawberry Skin | Be Bodywise X Chandni",co:283.46,im:8747,cl:51,cv:0.0,vl:0.0,vw:437,ro:0.0}],
+    "HG":[{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Harini",co:2793.89,im:92167,cl:840,cv:3.0,vl:1257.0,vw:4609,ro:0.45},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Raisha",co:3758.05,im:147056,cl:1137,cv:5.0,vl:2222.0,vw:15911,ro:0.59},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise",co:24387.4,im:1318625,cl:4625,cv:45.0,vl:24500.0,vw:46699,ro:1.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Vibha",co:102.79,im:2568,cl:19,cv:0.0,vl:0.0,vw:175,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Kaushiki",co:3129.55,im:88306,cl:1602,cv:2.0,vl:1206.0,vw:13566,ro:0.39},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Meenal",co:343.8,im:16828,cl:92,cv:0.0,vl:0.0,vw:396,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Megha Chaubey",co:2261.86,im:151391,cl:620,cv:5.0,vl:3338.0,vw:5730,ro:1.48},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Megha",co:1798.17,im:56760,cl:1033,cv:5.0,vl:3007.0,vw:6881,ro:1.67},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Poorvi",co:796.88,im:20083,cl:433,cv:1.0,vl:504.0,vw:4503,ro:0.63},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Niharika",co:759.07,im:18217,cl:100,cv:1.0,vl:499.0,vw:660,ro:0.66},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Kirti Singh",co:3281.8,im:147498,cl:827,cv:8.0,vl:7749.0,vw:3752,ro:2.36},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Gunjita",co:88.76,im:1512,cl:16,cv:0.0,vl:219.0,vw:250,ro:2.47},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Sowmya",co:10939.27,im:555730,cl:1893,cv:17.0,vl:8475.0,vw:14224,ro:0.77},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Kratika Tyagi",co:528.24,im:11070,cl:133,cv:1.0,vl:679.0,vw:589,ro:1.29},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Priya Jaiswal",co:47.44,im:770,cl:4,cv:0.0,vl:0.0,vw:82,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X VoxPox1",co:103.86,im:1275,cl:21,cv:0.0,vl:0.0,vw:283,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Ritika Jain",co:2630.98,im:97656,cl:434,cv:4.0,vl:2442.0,vw:2656,ro:0.93},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X VoxPox Cut 2",co:189.56,im:4416,cl:23,cv:0.0,vl:0.0,vw:221,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Nirali Raman",co:39.4,im:567,cl:5,cv:0.0,vl:0.0,vw:64,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Bodywise",co:1292.65,im:18571,cl:275,cv:2.0,vl:792.0,vw:2157,ro:0.61},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Shamitha Reddy",co:37.23,im:986,cl:5,cv:0.0,vl:0.0,vw:76,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Pooja",co:6004.9,im:289778,cl:866,cv:4.0,vl:2056.0,vw:7684,ro:0.34},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Crazy Uma ForYou",co:256.08,im:7806,cl:61,cv:0.0,vl:0.0,vw:606,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Samritha Telugu",co:60.7,im:2206,cl:15,cv:0.0,vl:0.0,vw:34,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Pranavi",co:121.59,im:2810,cl:13,cv:0.0,vl:0.0,vw:219,ro:0.0},{ti:"Biotin Hair Gummies | 100% Vegan Hair Vitamins with No Added Sugar | Be Bodywise X Kaushekee",co:4725.24,im:292507,cl:859,cv:4.0,vl:4966.0,vw:8601,ro:1.05}],
+    "HGRO":[{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Eva",co:207.26,im:8207,cl:79,cv:0.0,vl:2.0,vw:383,ro:0.01},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Ngapu",co:20.5,im:1108,cl:3,cv:0.0,vl:0.0,vw:31,ro:0.0},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X TheBaredBeauty",co:58.6,im:3645,cl:11,cv:0.0,vl:0.0,vw:35,ro:0.0},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Garima",co:1728.84,im:42292,cl:260,cv:3.0,vl:5276.0,vw:2163,ro:3.05},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Prarthna",co:635.86,im:8984,cl:55,cv:0.0,vl:437.0,vw:1068,ro:0.69},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Raisha",co:1964.73,im:64372,cl:489,cv:2.0,vl:1724.0,vw:2444,ro:0.88},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall",co:2001.54,im:37230,cl:759,cv:4.0,vl:5606.0,vw:7899,ro:2.8},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Swati Chauhan",co:771.24,im:10608,cl:108,cv:0.0,vl:35.0,vw:653,ro:0.05},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Shilpy Home",co:61.69,im:2057,cl:20,cv:0.0,vl:0.0,vw:95,ro:0.0},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Pooja",co:538.29,im:16694,cl:110,cv:0.0,vl:410.0,vw:703,ro:0.76},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise",co:98.95,im:3836,cl:40,cv:0.0,vl:0.0,vw:287,ro:0.0},{ti:"Advanced Hair Growth Serum Roll On | For : Hair Thinning & Hair fall | Be Bodywise X Chhavi",co:2915.68,im:165811,cl:1455,cv:3.0,vl:2452.0,vw:8539,ro:0.84}],
+    "MG":[{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Anshika Thakur",co:435.33,im:4806,cl:23,cv:0.0,vl:303.0,vw:1096,ro:0.7},{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Sarvari",co:448.79,im:7145,cl:29,cv:0.0,vl:0.0,vw:428,ro:0.0},{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Internal Model 2",co:653.27,im:19265,cl:51,cv:1.0,vl:1180.0,vw:931,ro:1.81},{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Rashi",co:363.05,im:10363,cl:18,cv:0.0,vl:0.0,vw:379,ro:0.0},{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Shreya Jha",co:588.67,im:12178,cl:36,cv:1.0,vl:2961.0,vw:1149,ro:5.03},{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise",co:814.46,im:12681,cl:56,cv:0.0,vl:606.0,vw:1397,ro:0.74}],
+    "Others":[{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Bodywise x Zarna Shah",co:110.28,im:2219,cl:10,cv:1.0,vl:1398.0,vw:93,ro:12.68},{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Dt Nikita",co:107.66,im:2483,cl:8,cv:0.0,vl:0.0,vw:94,ro:0.0},{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Aanya",co:192.5,im:5113,cl:21,cv:0.0,vl:0.0,vw:180,ro:0.0},{ti:"Magnesium Gummies | Magnesium Complex with Vitamins B6, D3, B9 | Be Bodywise X Ankita",co:285.85,im:7766,cl:30,cv:0.0,vl:0.0,vw:148,ro:0.0}],
+    "PPHG":[{ti:"Hair Gummies for Post-Pregnancy Hair Fall | 100% Vegan Hair Vitamins | Be Bodywise X Nikita",co:305.6,im:4766,cl:76,cv:0.0,vl:0.0,vw:236,ro:0.0},{ti:"Hair Gummies for Post-Pregnancy Hair Fall | 100% Vegan Hair Vitamins | Be Bodywise X Kamakshi",co:428.11,im:8305,cl:50,cv:1.0,vl:450.0,vw:343,ro:1.05}],
+    "SABW":[{ti:"Bodywise 1% Salicylic Acid Body Wash | FOR: Body Acne & Strawberry Skin | Bodywise",co:14.51,im:189,cl:6,cv:0.0,vl:0.0,vw:74,ro:0.0}],
+    "UFR":[{ti:"Be Bodywise 20% Urea Foot and Heel Roll On | For Cracked & Rough heels",co:1198.72,im:12574,cl:145,cv:1.0,vl:629.0,vw:1934,ro:0.52},{ti:"30% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise  X Anushree",co:9671.72,im:134668,cl:961,cv:10.0,vl:5603.0,vw:4948,ro:0.58},{ti:"20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise X Parichita",co:7183.27,im:163394,cl:806,cv:9.0,vl:4509.0,vw:8146,ro:0.63},{ti:"30% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise  X Varsha Thapa",co:144.84,im:1490,cl:8,cv:0.0,vl:0.0,vw:193,ro:0.0},{ti:"20% Urea Foot and Heel Roll On | For Cracked & Rough heels | Be Bodywise  X Tanvi Sanghvi",co:887.01,im:41830,cl:183,cv:1.0,vl:399.0,vw:1235,ro:0.45}],
+    "UPK":[{ti:"Underarm Pigmentation Kit | For Underarm Odour and Severe Pigmentation | BeBodywise X ThoughtfulGirl",co:263.46,im:6772,cl:42,cv:0.0,vl:191.0,vw:301,ro:0.72}]
+  }
+};
+
 // Monthly totals per tag (source: tag-campaign table from sheet)
 const CAMPAIGN_DATA_EXACT = {
   '5%BW': [
@@ -3252,71 +3377,91 @@ function renderPtChanges() {
 // ─── 5. VIDEO TABLE — filtered by tag and date range ────────────────────────
 function renderPtVideoTable() {
   const tag = activeProductTag;
-  // Get video rows for selected tag(s), filter by month overlap with dateFrom/dateTo
-  const fromMo = dateFrom.slice(0,7), toMo = dateTo.slice(0,7);
-  let rows = [];
-  const tagsToShow = tag === 'ALL' ? Object.keys(VIDEO_BY_TAG) : (VIDEO_BY_TAG[tag] ? [tag] : []);
-
-  tagsToShow.forEach(t => {
-    (VIDEO_BY_TAG[t]||[]).forEach(r => {
-      if (r.mo >= fromMo && r.mo <= toMo) {
-        rows.push({...r, tag:t});
-      }
-    });
-  });
-
-  // Merge same title+tag across months
-  const merged = {};
-  rows.forEach(r => {
-    const key = r.ti + '||' + r.tag;
-    if (!merged[key]) merged[key] = {ti:r.ti,tag:r.tag,co:0,cv:0,vl:0,vw:0,im:0};
-    merged[key].co+=r.co; merged[key].cv+=r.cv; merged[key].vl+=r.vl;
-    merged[key].vw+=r.vw; merged[key].im+=r.im||0;
-  });
-
-  const mergedArr = Object.values(merged).map(r => ({
-    ...r,
-    ro: r.co>0?+(r.vl/r.co).toFixed(2):0,
-    ca: r.cv>0?Math.round(r.co/r.cv):0,
-    vr: r.im>0?+(r.vw/r.im*100).toFixed(1):0
-  }));
-
-  const sorted = mergedArr.sort((a,b) =>
-    videoSortKey==='roas'?b.ro-a.ro:videoSortKey==='vtr'?b.vr-a.vr:b.co-a.co
-  );
-  const maxVtr = Math.max(...sorted.map(v=>v.vr),1);
   const fmt = n => n>=100000?'₹'+(n/100000).toFixed(1)+'L':n>=1000?'₹'+Math.round(n/1000)+'K':'₹'+Math.round(n);
-  const fmtN= n => n>=1000?Math.round(n/1000)+'K':''+n;
+  const fmtN= n => n>=1000?Math.round(n/1000)+'K':''+Math.round(n);
   const tagC = {HG:'#1a5fa0',HGRO:'#1a5fa0','HGP-adv':'#2d7a4f',HGP:'#2d7a4f',PPHG:'#0891b2',
     UFR:'#b83232',UARO:'#2d7a4f',UPK:'#2d7a4f',SABW:'#2d7a4f','5%BW':'#2d7a4f',
     MG:'#a06010',SPF:'#6b46c1',Others:'#8a8478'};
-  const signal = (ro,vr) =>
+  const signal = ro =>
     ro>=2.5?'<span class="badge badge-green">✓ Scale</span>':
-    ro>=1.5&&vr>=8?'<span class="badge badge-green">✓ Performing</span>':
+    ro>=1.5?'<span class="badge badge-green">✓ Performing</span>':
     ro>=1.2?'<span class="badge badge-yellow">~ Watch</span>':
     ro<0.7?'<span class="badge badge-red">✗ Pause now</span>':
     ro<1.0?'<span class="badge badge-red">✗ Cut</span>':
     '<span class="badge badge-yellow">⚠ Optimise</span>';
 
+  // --- Try to aggregate from VIDEO_DAY for the selected date range ---
+  const daysInRange = Object.keys(VIDEO_DAY).filter(d => d >= dateFrom && d <= dateTo);
+  let usingDaily = daysInRange.length > 0;
+  let rows = [];
+
+  if (usingDaily) {
+    // Aggregate by tag+title across all days in range
+    const agg = {};
+    const tagsWanted = tag === 'ALL' ? null : new Set([tag]);
+    daysInRange.forEach(d => {
+      const dayData = VIDEO_DAY[d];
+      Object.keys(dayData).forEach(t => {
+        if (tagsWanted && !tagsWanted.has(t)) return;
+        dayData[t].forEach(v => {
+          const key = t + '\x00' + v.ti;
+          if (!agg[key]) agg[key] = {ti:v.ti, tag:t, co:0, im:0, cl:0, cv:0, vl:0, vw:0};
+          agg[key].co += v.co;
+          agg[key].im += v.im;
+          agg[key].cl += v.cl;
+          agg[key].cv += v.cv;
+          agg[key].vl += v.vl;
+          agg[key].vw += v.vw;
+        });
+      });
+    });
+    rows = Object.values(agg).map(v => ({...v, ro: v.co>0?v.vl/v.co:0}));
+    // Only show videos that actually spent
+    rows = rows.filter(v => v.co > 0);
+  } else {
+    // Fall back to full-period VIDEO_PERF totals
+    const tagsToShow = tag === 'ALL' ? Object.keys(VIDEO_PERF) : (VIDEO_PERF[tag] ? [tag] : []);
+    tagsToShow.forEach(t => {
+      (VIDEO_PERF[t]||[]).forEach(r => rows.push({...r, tag:t}));
+    });
+  }
+
+  const sorted = rows.sort((a,b) =>
+    videoSortKey==='roas'?b.ro-a.ro:videoSortKey==='vtr'?b.vw-a.vw:b.co-a.co
+  );
+
+  // Build date range label for the notice banner
+  const fmtDt = s => { const p=s.split('-'); return p[2]+'/'+p[1]; };
+  const datesAvail = Object.keys(VIDEO_DAY).sort();
+  const noticeHtml = usingDaily
+    ? `<div style="font-family:var(--mono);font-size:10px;color:#2d7a4f;background:#2d7a4f12;border:1px solid #2d7a4f40;border-radius:4px;padding:6px 10px;margin-bottom:8px">
+        📊 Showing daily video data for <strong>${daysInRange.map(fmtDt).join(', ')}</strong> (${rows.length} videos spent in this range)
+       </div>`
+    : `<div style="font-family:var(--mono);font-size:10px;color:#8a6a00;background:#fef9e715;border:1px solid #d9970030;border-radius:4px;padding:6px 10px;margin-bottom:8px">
+        ⚠ No daily video data for selected range. Showing <strong>full-period totals</strong> (Mar 1 – May 21).
+        Daily tracking started ${datesAvail[0]||'recently'} — select ${datesAvail.map(fmtDt).join(' or ')} for date-filtered metrics.
+       </div>`;
+
+  const noticeEl = document.getElementById('ptVideoNotice');
+  if (noticeEl) noticeEl.innerHTML = noticeHtml;
+
   document.getElementById('ptVideoBody').innerHTML = !sorted.length
-    ? '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--muted);font-family:var(--mono);font-size:11px">No video data for this tag in the selected date range</td></tr>'
+    ? '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--muted);font-family:var(--mono);font-size:11px">No video data for this tag / date range</td></tr>'
     : sorted.map(v => {
-      const barW=Math.round(v.vr/maxVtr*100);
-      const vtrC=v.vr>=15?'#2d7a4f':v.vr>=8?'#a06010':'#b83232';
+      const ca = v.cv>0?Math.round(v.co/v.cv):0;
+      const ro = typeof v.ro==='number'?v.ro:0;
+      const ctr = v.im>0?((v.cl/v.im)*100).toFixed(2)+'%':'—';
       return '<tr>'+
         '<td><span style="font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:2px;background:'+(tagC[v.tag]||'#8a8478')+'20;color:'+(tagC[v.tag]||'#8a8478')+';margin-right:5px">'+v.tag+'</span>'+
         '<span style="font-size:11px;color:var(--text)">'+v.ti+'</span></td>'+
         '<td style="text-align:left;font-size:10px;color:var(--muted)">'+(TAG_DEFS[v.tag]||'')+'</td>'+
-        '<td>'+fmt(v.co)+'</td><td>'+v.cv.toFixed(1)+'</td>'+
-        '<td class="'+(v.ro>=2.5?'roas-good':v.ro>=1.2?'':'roas-bad')+'">'+v.ro.toFixed(2)+'×</td>'+
-        '<td class="'+(v.ca>0&&v.ca<400?'roas-good':v.ca>800?'roas-bad':'')+'">'+( v.ca>0?'₹'+v.ca:'—')+'</td>'+
+        '<td>'+fmt(v.co)+'</td>'+
+        '<td>'+v.cv.toFixed(1)+'</td>'+
+        '<td class="'+(ro>=2.5?'roas-good':ro>=1.2?'':'roas-bad')+'">'+ro.toFixed(2)+'×</td>'+
+        '<td class="'+(ca>0&&ca<400?'roas-good':ca>800?'roas-bad':'')+'">'+( ca>0?'₹'+ca:'—')+'</td>'+
         '<td>'+(v.vw>0?fmtN(v.vw):'—')+'</td>'+
-        '<td>'+(v.vr>0?
-          '<div style="display:flex;align-items:center;gap:6px"><span style="font-family:var(--mono);font-size:11px;color:'+vtrC+'">'+v.vr.toFixed(1)+'%</span>'+
-          '<div style="width:50px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden">'+
-          '<div style="width:'+barW+'%;height:5px;background:'+vtrC+';border-radius:3px"></div></div></div>'
-          :'<span style="color:var(--muted)">—</span>')+'</td>'+
-        '<td>'+signal(v.ro,v.vr)+'</td></tr>';
+        '<td>'+(usingDaily?ctr:'<span style="color:var(--muted)">—</span>')+'</td>'+
+        '<td>'+signal(ro)+'</td></tr>';
     }).join('');
 }
 
