@@ -687,7 +687,8 @@ let charts   = {};
 function setRange(preset) {
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
-  const m = { mar:['2026-03-01','2026-03-31'], apr:['2026-04-01','2026-04-30'], may:['2026-05-01','2026-05-18'], cliff:['2026-04-10','2026-04-16'], all:['2026-03-01','2026-05-18'] };
+  const lastDate = RAW_DAILY[RAW_DAILY.length - 1].d;
+  const m = { mar:['2026-03-01','2026-03-31'], apr:['2026-04-01','2026-04-30'], may:['2026-05-01',lastDate], cliff:['2026-04-10','2026-04-16'], all:['2026-03-01',lastDate] };
   const [f,t] = m[preset];
   document.getElementById('dateFrom').value = f;
   document.getElementById('dateTo').value = t;
@@ -717,6 +718,8 @@ function renderMetrics(data) {
   const avgRoas   = totalVal / totalCost;
   const avgCac    = totalCost / totalConv;
   const avgCtr    = data.reduce((s,r)=>s+r.ctr,0) / data.length;
+  const totalImpr  = data.reduce((s,r)=>s+r.impr,0);
+  const avgCpm     = (totalCost / totalImpr) * 1000;
 
   // compare first half vs second half
   const mid = Math.floor(data.length/2);
@@ -731,11 +734,6 @@ function renderMetrics(data) {
   const fmt = n => n>=1e7?`₹${(n/1e7).toFixed(1)}Cr`:n>=1e5?`₹${(n/1e5).toFixed(1)}L`:`₹${Math.round(n).toLocaleString('en-IN')}`;
 
   document.getElementById('metricsRow').innerHTML = `
-    <div class="metric-card ${avgRoas>=3?'green':avgRoas>=2.5?'yellow':'red'}">
-      <div class="metric-label">Avg ROAS</div>
-      <div class="metric-val">${avgRoas.toFixed(2)}×</div>
-      <div class="metric-sub ${roasDelta>=0?'up':'down'}">${roasDelta>=0?'↑':'↓'} ${Math.abs(roasDelta)}% vs first half</div>
-    </div>
     <div class="metric-card blue">
       <div class="metric-label">Total Spend</div>
       <div class="metric-val" style="font-size:1.5rem">${fmt(totalCost)}</div>
@@ -746,6 +744,11 @@ function renderMetrics(data) {
       <div class="metric-val">₹${Math.round(avgCac)}</div>
       <div class="metric-sub ${cacDelta<=0?'up':'down'}">${cacDelta<=0?'↓':'↑'} ${Math.abs(cacDelta)}% vs first half</div>
     </div>
+    <div class="metric-card ${avgRoas>=3?'green':avgRoas>=2.5?'yellow':'red'}">
+      <div class="metric-label">Avg ROAS</div>
+      <div class="metric-val">${avgRoas.toFixed(2)}×</div>
+      <div class="metric-sub ${roasDelta>=0?'up':'down'}">${roasDelta>=0?'↑':'↓'} ${Math.abs(roasDelta)}% vs first half</div>
+    </div>
     <div class="metric-card accent">
       <div class="metric-label">Total Conv.</div>
       <div class="metric-val">${totalConv.toLocaleString('en-IN')}</div>
@@ -755,6 +758,11 @@ function renderMetrics(data) {
       <div class="metric-label">Avg CTR</div>
       <div class="metric-val">${avgCtr.toFixed(2)}%</div>
       <div class="metric-sub flat">${fmt(totalVal)} total rev value</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Avg CPM</div>
+      <div class="metric-val">₹${Math.round(avgCpm)}</div>
+      <div class="metric-sub flat">${(totalImpr/1e3).toFixed(0)}K impressions</div>
     </div>`;
 }
 
