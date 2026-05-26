@@ -199,11 +199,11 @@
 <div class="filter-bar">
   <div class="filter-group">
     <span class="filter-label">From</span>
-    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-22">
+    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-25">
   </div>
   <div class="filter-group">
     <span class="filter-label">To</span>
-    <input type="date" class="filter-input" id="dateTo" value="2026-05-22" min="2026-03-01" max="2026-05-22">
+    <input type="date" class="filter-input" id="dateTo" value="2026-05-25" min="2026-03-01" max="2026-05-25">
   </div>
   <div class="quick-btns">
     <button class="quick-btn" onclick="setRange('mar')">March</button>
@@ -595,6 +595,10 @@ const RAW_DAILY = [
   {d:"2026-05-20",cost:638616,impr:13221747,clicks:83670,conv:978.361,val:1093573,ctr:0.633,cpm:48.3,cac:653,roas:1.71},
   {d:"2026-05-21",cost:676104,impr:16965131,clicks:110583,conv:951.454,val:1102677,ctr:0.652,cpm:39.9,cac:711,roas:1.63},
   {d:"2026-05-22",cost:702932,impr:17973778,clicks:118819,conv:963.759,val:1140883,ctr:0.661,cpm:39.1,cac:729,roas:1.62}
+,
+  {d:"2026-05-23",cost:480273,impr:8112336,clicks:74295,conv:989.0,val:1212258,ctr:0.916,cpm:59.2,cac:486,roas:2.52},
+  {d:"2026-05-24",cost:487757,impr:7910097,clicks:69848,conv:1026.0,val:1197062,ctr:0.883,cpm:61.7,cac:475,roas:2.45},
+  {d:"2026-05-25",cost:449776,impr:7691952,clicks:70595,conv:956.0,val:1140406,ctr:0.918,cpm:58.5,cac:470,roas:2.54}
 ];
 
 const CAMPAIGNS = [
@@ -680,7 +684,7 @@ const TIMELINE_EVENTS = [
 
 // ─── STATE ─────────────────────────────────────────────────────────────────
 let dateFrom = '2026-03-01';
-let dateTo   = '2026-05-22';
+let dateTo   = '2026-05-25';
 let charts   = {};
 
 // ─── FILTER UTILS ──────────────────────────────────────────────────────────
