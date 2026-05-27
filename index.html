@@ -199,11 +199,11 @@
 <div class="filter-bar">
   <div class="filter-group">
     <span class="filter-label">From</span>
-    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-25">
+    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-26">
   </div>
   <div class="filter-group">
     <span class="filter-label">To</span>
-    <input type="date" class="filter-input" id="dateTo" value="2026-05-25" min="2026-03-01" max="2026-05-25">
+    <input type="date" class="filter-input" id="dateTo" value="2026-05-25" min="2026-03-01" max="2026-05-26">
   </div>
   <div class="quick-btns">
     <button class="quick-btn" onclick="setRange('mar')">March</button>
@@ -599,6 +599,8 @@ const RAW_DAILY = [
   {d:"2026-05-23",cost:480273,impr:8112336,clicks:74295,conv:989.0,val:1212258,ctr:0.916,cpm:59.2,cac:486,roas:2.52},
   {d:"2026-05-24",cost:487757,impr:7910097,clicks:69848,conv:1026.0,val:1197062,ctr:0.883,cpm:61.7,cac:475,roas:2.45},
   {d:"2026-05-25",cost:449776,impr:7691952,clicks:70595,conv:956.0,val:1140406,ctr:0.918,cpm:58.5,cac:470,roas:2.54}
+
+  {d:"2026-05-26",cost:462769,impr:8011161,clicks:74974,conv:980.7,val:1163647,ctr:0.936,cpm:57.8,cac:472,roas:2.51}
 ];
 
 const CAMPAIGNS = [
@@ -7425,6 +7427,118 @@ const CAMP_PERF_DAILY = [
   {camp:"Pmax_Hair-NC/RC-Tier2-3_02",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:7535,impr:320901,clicks:3514,conv:14.0,val:22328},
   {camp:"Pmax_Hair-NC/RC-Tier2-3_02",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:8716,impr:426072,clicks:4026,conv:11.0,val:18903},
   {camp:"Pmax_Hair-NC/RC-Tier2-3_02",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:6562,impr:379917,clicks:3988,conv:19.0,val:28797},
+  {camp:"Demand_Gen_Body-Int-02",d:"2026-05-23",type:"DEMAND_GEN",cost:22008,impr:352505,clicks:2292,conv:16.497,val:9300}
+  {camp:"Demand_Gen_Hair-Hair-Int-01",d:"2026-05-23",type:"DEMAND_GEN",cost:17423,impr:701055,clicks:2976,conv:19.380,val:12481}
+  {camp:"Demand_Gen_Hair_HGRO-Int-01",d:"2026-05-23",type:"DEMAND_GEN",cost:4721,impr:47921,clicks:398,conv:6.419,val:10628}
+  {camp:"Demand_Gen_HairandBody-MOF-DropOff",d:"2026-05-23",type:"DEMAND_GEN",cost:34509,impr:1721422,clicks:8676,conv:66.557,val:47003}
+  {camp:"Demand_Gen_MagnesiumGummies-Int-03",d:"2026-05-23",type:"DEMAND_GEN",cost:3974,impr:60851,clicks:242,conv:3.295,val:4717}
+  {camp:"Pmax-HG-NC/RC-Kannada-02",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:6206,impr:54154,clicks:827,conv:11.679,val:12943}
+  {camp:"Pmax-HG-NC/RC-Malayalam-01",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:5555,impr:43971,clicks:1460,conv:3.011,val:4142}
+  {camp:"Pmax-HG-NC/RC-Tamil-01",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:5782,impr:275615,clicks:1448,conv:12.569,val:12842}
+  {camp:"Pmax-HGRO-NC/RC-Marathi-01",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:4917,impr:42881,clicks:609,conv:7.335,val:7673}
+  {camp:"Pmax-HGRO-NC/RC-Tamil-01",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:2366,impr:36424,clicks:602,conv:1.991,val:2611}
+  {camp:"Pmax-Hair-04-(Only-NC)",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:45190,impr:360632,clicks:5277,conv:101.213,val:81270}
+  {camp:"Pmax_5AHABHA_Marathi-NC/RC-01",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:5311,impr:42662,clicks:713,conv:2.900,val:3032}
+  {camp:"Pmax_Body-01-(Only-NC)",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:31287,impr:158155,clicks:2805,conv:62.425,val:36361}
+  {camp:"Pmax_Body-Magnesium-NC/RC-02",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:6720,impr:59672,clicks:1243,conv:12.116,val:22066}
+  {camp:"Pmax_Body-NC/RC-Tier2-3",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:37477,impr:878394,clicks:10123,conv:80.119,val:114116}
+  {camp:"Pmax_Body_Anti_Stretch_Mark_Roll_On_NC/RC",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:2979,impr:5440,clicks:135,conv:6.146,val:7259}
+  {camp:"Pmax_DetanSPFLotion-NC/RC-01",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:6055,impr:66655,clicks:804,conv:8.154,val:11653}
+  {camp:"Pmax_Hair-NC/RC-HGRO-03",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:7218,impr:87027,clicks:1724,conv:8.584,val:16931}
+  {camp:"Pmax_Pigmentation-NC/RC-Comp-01",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:6052,impr:65896,clicks:692,conv:17.852,val:21087}
+  {camp:"Pmax_Strawberry_Skin-NC/RC-02",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:28385,impr:213302,clicks:3014,conv:39.438,val:72754}
+  {camp:"Pmax_Urea-NC/RC-04",d:"2026-05-23",type:"PERFORMANCE_MAX",cost:5008,impr:123213,clicks:3059,conv:5.268,val:5998}
+  {camp:"Search_Brand",d:"2026-05-23",type:"SEARCH",cost:29361,impr:8767,clicks:1265,conv:168.746,val:249789}
+  {camp:"Search_BrandProduct",d:"2026-05-23",type:"SEARCH",cost:38977,impr:6094,clicks:1058,conv:95.157,val:164314}
+  {camp:"Search_Brand_UFRO",d:"2026-05-23",type:"SEARCH",cost:1180,impr:580,clicks:45,conv:5.999,val:8462}
+  {camp:"Search_Generic_UFRO",d:"2026-05-23",type:"SEARCH",cost:2075,impr:1921,clicks:58,conv:4,val:5096}
+  {camp:"Shopping-Anti Stretch Mark Roll On",d:"2026-05-23",type:"SHOPPING",cost:3950,impr:10792,clicks:280,conv:5,val:2995}
+  {camp:"Demand_Gen_Body-Int-02",d:"2026-05-24",type:"DEMAND_GEN",cost:22334,impr:490239,clicks:2756,conv:16.493,val:10092}
+  {camp:"Demand_Gen_Hair-Hair-Int-01",d:"2026-05-24",type:"DEMAND_GEN",cost:17002,impr:722597,clicks:2986,conv:27.218,val:19640}
+  {camp:"Demand_Gen_Hair_HGRO-Int-01",d:"2026-05-24",type:"DEMAND_GEN",cost:4499,impr:39859,clicks:337,conv:5.285,val:5337}
+  {camp:"Demand_Gen_HairandBody-MOF-DropOff",d:"2026-05-24",type:"DEMAND_GEN",cost:34996,impr:1784804,clicks:8134,conv:76.936,val:47363}
+  {camp:"Demand_Gen_MagnesiumGummies-Int-03",d:"2026-05-24",type:"DEMAND_GEN",cost:3957,impr:48000,clicks:214,conv:3.177,val:6332}
+  {camp:"Pmax-HG-NC/RC-Kannada-02",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:4317,impr:50653,clicks:737,conv:4.913,val:4764}
+  {camp:"Pmax-HG-NC/RC-Malayalam-01",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:5046,impr:25470,clicks:326,conv:6.925,val:7449}
+  {camp:"Pmax-HG-NC/RC-Tamil-01",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:5078,impr:211139,clicks:1215,conv:16.868,val:16701}
+  {camp:"Pmax-HGRO-NC/RC-Marathi-01",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:5142,impr:46467,clicks:641,conv:7.941,val:9243}
+  {camp:"Pmax-HGRO-NC/RC-Tamil-01",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:2224,impr:24775,clicks:507,conv:6.699,val:9977}
+  {camp:"Pmax-Hair-04-(Only-NC)",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:48755,impr:220603,clicks:4044,conv:108.071,val:83262}
+  {camp:"Pmax_5AHABHA_Marathi-NC/RC-01",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:4729,impr:26865,clicks:524,conv:4.500,val:2694}
+  {camp:"Pmax_Body-01-(Only-NC)",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:32498,impr:140438,clicks:2691,conv:58.138,val:28955}
+  {camp:"Pmax_Body-Magnesium-NC/RC-02",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:6252,impr:43604,clicks:853,conv:14.262,val:22741}
+  {camp:"Pmax_Body-NC/RC-Tier2-3",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:35177,impr:565484,clicks:7745,conv:95.691,val:137795}
+  {camp:"Pmax_Body_Anti_Stretch_Mark_Roll_On_NC/RC",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:7501,impr:23864,clicks:572,conv:11.436,val:15576}
+  {camp:"Pmax_DetanSPFLotion-NC/RC-01",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:5817,impr:48141,clicks:661,conv:3,val:5195}
+  {camp:"Pmax_Hair-NC/RC-HGRO-03",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:6987,impr:208282,clicks:2344,conv:7.549,val:14570}
+  {camp:"Pmax_Pigmentation-NC/RC-Comp-01",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:5722,impr:63918,clicks:650,conv:13.111,val:15413}
+  {camp:"Pmax_Strawberry_Skin-NC/RC-02",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:34040,impr:260294,clicks:3690,conv:34.131,val:63274}
+  {camp:"Pmax_Urea-NC/RC-04",d:"2026-05-24",type:"PERFORMANCE_MAX",cost:4431,impr:80947,clicks:2262,conv:5.393,val:7207}
+  {camp:"Search_Brand",d:"2026-05-24",type:"SEARCH",cost:25191,impr:8931,clicks:1343,conv:150.586,val:208071}
+  {camp:"Search_BrandProduct",d:"2026-05-24",type:"SEARCH",cost:40234,impr:6657,clicks:1217,conv:102.203,val:169699}
+  {camp:"Search_Brand_UFRO",d:"2026-05-24",type:"SEARCH",cost:1305,impr:648,clicks:47,conv:1.300,val:1984}
+  {camp:"Search_Generic_UFRO",d:"2026-05-24",type:"SEARCH",cost:3170,impr:2226,clicks:83,conv:2.600,val:3946}
+  {camp:"Shopping-Anti Stretch Mark Roll On",d:"2026-05-24",type:"SHOPPING",cost:3620,impr:10298,clicks:268,conv:8.000,val:5992}
+  {camp:"Demand_Gen_Body-Int-02",d:"2026-05-25",type:"DEMAND_GEN",cost:21265,impr:523832,clicks:2785,conv:19.487,val:10234}
+  {camp:"Demand_Gen_Hair-Hair-Int-01",d:"2026-05-25",type:"DEMAND_GEN",cost:17030,impr:686632,clicks:2974,conv:12.014,val:8206}
+  {camp:"Demand_Gen_Hair_HGRO-Int-01",d:"2026-05-25",type:"DEMAND_GEN",cost:4269,impr:38916,clicks:362,conv:2.038,val:2146}
+  {camp:"Demand_Gen_HairandBody-MOF-DropOff",d:"2026-05-25",type:"DEMAND_GEN",cost:33396,impr:1553818,clicks:7459,conv:51.341,val:31256}
+  {camp:"Demand_Gen_MagnesiumGummies-Int-03",d:"2026-05-25",type:"DEMAND_GEN",cost:2798,impr:26830,clicks:151,conv:6.084,val:10327}
+  {camp:"Pmax-HG-NC/RC-Kannada-02",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:5764,impr:65075,clicks:976,conv:9.874,val:11419}
+  {camp:"Pmax-HG-NC/RC-Malayalam-01",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:4909,impr:35682,clicks:375,conv:5.200,val:4987}
+  {camp:"Pmax-HG-NC/RC-Tamil-01",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:3965,impr:203670,clicks:1189,conv:8.185,val:9072}
+  {camp:"Pmax-HGRO-NC/RC-Marathi-01",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:4523,impr:42460,clicks:483,conv:4.180,val:7842}
+  {camp:"Pmax-HGRO-NC/RC-Tamil-01",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:4028,impr:92683,clicks:1185,conv:6.228,val:6895}
+  {camp:"Pmax-Hair-04-(Only-NC)",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:41033,impr:201978,clicks:3669,conv:98.070,val:73146}
+  {camp:"Pmax_5AHABHA_Marathi-NC/RC-01",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:5718,impr:38321,clicks:647,conv:7.431,val:8715}
+  {camp:"Pmax_Body-01-(Only-NC)",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:30572,impr:155636,clicks:2837,conv:65.505,val:37929}
+  {camp:"Pmax_Body-Magnesium-NC/RC-02",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:6667,impr:70003,clicks:1343,conv:12.544,val:21259}
+  {camp:"Pmax_Body-NC/RC-Tier2-3",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:27840,impr:616375,clicks:8460,conv:57.565,val:75340}
+  {camp:"Pmax_Body_Anti_Stretch_Mark_Roll_On_NC/RC",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:9171,impr:30515,clicks:639,conv:16.284,val:17257}
+  {camp:"Pmax_DetanSPFLotion-NC/RC-01",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:6725,impr:68912,clicks:771,conv:9.048,val:11518}
+  {camp:"Pmax_Hair-NC/RC-HGRO-03",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:7595,impr:331961,clicks:3476,conv:8.296,val:15539}
+  {camp:"Pmax_Pigmentation-NC/RC-Comp-01",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:6517,impr:80160,clicks:759,conv:12.406,val:14022}
+  {camp:"Pmax_Strawberry_Skin-NC/RC-02",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:29247,impr:277718,clicks:3745,conv:43.331,val:81070}
+  {camp:"Pmax_Urea-NC/RC-04",d:"2026-05-25",type:"PERFORMANCE_MAX",cost:4529,impr:104761,clicks:2468,conv:3.972,val:4508}
+  {camp:"Search_Brand",d:"2026-05-25",type:"SEARCH",cost:23359,impr:8648,clicks:1395,conv:160.201,val:226772}
+  {camp:"Search_BrandProduct",d:"2026-05-25",type:"SEARCH",cost:35873,impr:6104,clicks:1059,conv:102.424,val:174281}
+  {camp:"Search_Brand_UFRO",d:"2026-05-25",type:"SEARCH",cost:1029,impr:580,clicks:44,conv:2.000,val:2198}
+  {camp:"Search_Generic_UFRO",d:"2026-05-25",type:"SEARCH",cost:2650,impr:2003,clicks:61,conv:0.817,val:1184}
+  {camp:"Shopping-Anti Stretch Mark Roll On",d:"2026-05-25",type:"SHOPPING",cost:3918,impr:9533,clicks:274,conv:6.350,val:3886}
+  {camp:"Demand_Gen_Body-Int-02",d:"2026-05-26",type:"DEMAND_GEN",cost:21520,impr:582081,clicks:2968,conv:19.228,val:11142}
+  {camp:"Demand_Gen_Hair-Comp03",d:"2026-05-26",type:"DEMAND_GEN",cost:9762,impr:566876,clicks:2337,conv:13.393,val:6773}
+  {camp:"Demand_Gen_Hair-Hair-Int-01",d:"2026-05-26",type:"DEMAND_GEN",cost:16917,impr:712522,clicks:3069,conv:23.345,val:12889}
+  {camp:"Demand_Gen_Hair-LA-02",d:"2026-05-26",type:"DEMAND_GEN",cost:10177,impr:411640,clicks:5806,conv:18.430,val:11732}
+  {camp:"Demand_Gen_Hair_HGRO-Int-01",d:"2026-05-26",type:"DEMAND_GEN",cost:4086,impr:36273,clicks:307,conv:13.287,val:40658}
+  {camp:"Demand_Gen_Hair_Int-Hyd",d:"2026-05-26",type:"DEMAND_GEN",cost:13918,impr:746713,clicks:2440,conv:18.357,val:10409}
+  {camp:"Demand_Gen_HairandBody-MOF-DropOff",d:"2026-05-26",type:"DEMAND_GEN",cost:33808,impr:1353786,clicks:6475,conv:60.924,val:49510}
+  {camp:"Demand_Gen_MagnesiumGummies-Int-03",d:"2026-05-26",type:"DEMAND_GEN",cost:5213,impr:83486,clicks:1840,conv:3.838,val:4349}
+  {camp:"Pmax-HG-NC/RC-Kannada-02",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:4767,impr:58110,clicks:910,conv:8.524,val:13107}
+  {camp:"Pmax-HG-NC/RC-Malayalam-01",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:5588,impr:35027,clicks:511,conv:8.999,val:12034}
+  {camp:"Pmax-HG-NC/RC-Tamil-01",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:6399,impr:313189,clicks:1808,conv:10.928,val:10903}
+  {camp:"Pmax-HG-NC/RC-Telugu-01",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:12184,impr:108408,clicks:2126,conv:28.017,val:31486}
+  {camp:"Pmax-HGRO-NC/RC-Marathi-01",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:2169,impr:17826,clicks:181,conv:2.838,val:2705}
+  {camp:"Pmax-HGRO-NC/RC-Tamil-01",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:4540,impr:157879,clicks:1610,conv:5.004,val:4315}
+  {camp:"Pmax-Hair-04-(Only-NC)",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:44240,impr:249085,clicks:4882,conv:101.484,val:83624}
+  {camp:"Pmax_5AHABHA_Marathi-NC/RC-01",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:4583,impr:35891,clicks:586,conv:6.748,val:7965}
+  {camp:"Pmax_Body-01-(Only-NC)",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:32299,impr:160359,clicks:2899,conv:67.298,val:35591}
+  {camp:"Pmax_Body-Magnesium-NC/RC-02",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:6305,impr:65659,clicks:1186,conv:9.618,val:16063}
+  {camp:"Pmax_Body-NC/RC-04",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:11733,impr:106749,clicks:2144,conv:29.346,val:42275}
+  {camp:"Pmax_Body-NC/RC-Tier2-3",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:33995,impr:1028075,clicks:11705,conv:69.333,val:100016}
+  {camp:"Pmax_Body_Anti_Stretch_Mark_Roll_On_NC/RC",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:5604,impr:11121,clicks:258,conv:10.952,val:10955}
+  {camp:"Pmax_DetanSPFLotion-NC/RC-01",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:6142,impr:52594,clicks:675,conv:3.617,val:6195}
+  {camp:"Pmax_Hair-NC/RC-HGRO-03",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:5962,impr:189278,clicks:2013,conv:9.742,val:18849}
+  {camp:"Pmax_Hair-NC/RC-Tier2-3_02",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:5723,impr:347840,clicks:3699,conv:23.436,val:35367}
+  {camp:"Pmax_Pigmentation-NC/RC-Comp-01",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:5471,impr:65034,clicks:586,conv:15.888,val:17243}
+  {camp:"Pmax_Strawberry_Skin-NC/RC-02",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:29553,impr:212727,clicks:3038,conv:41.696,val:73477}
+  {camp:"Pmax_Urea-NC/RC-04",d:"2026-05-26",type:"PERFORMANCE_MAX",cost:6185,impr:150714,clicks:3745,conv:3.372,val:7518}
+  {camp:"Search_Brand",d:"2026-05-26",type:"SEARCH",cost:26258,impr:8306,clicks:1294,conv:148.738,val:194533}
+  {camp:"Search_BrandProduct",d:"2026-05-26",type:"SEARCH",cost:34045,impr:5937,clicks:982,conv:88.133,val:148476}
+  {camp:"Search_Brand_UFRO",d:"2026-05-26",type:"SEARCH",cost:1354,impr:586,clicks:54,conv:5.820,val:8284}
+  {camp:"Search_Generic_UFRO",d:"2026-05-26",type:"SEARCH",cost:3689,impr:2313,clicks:85,conv:6.500,val:8948}
+  {camp:"Shopping-AllProducts",d:"2026-05-26",type:"SHOPPING",cost:31563,impr:92891,clicks:2062,conv:88.039,val:105237}
+  {camp:"Shopping-Anti Stretch Mark Roll On",d:"2026-05-26",type:"SHOPPING",cost:3350,impr:9882,clicks:257,conv:3.333,val:1997}
+  {camp:"Shopping-Nutrition01",d:"2026-05-26",type:"SHOPPING",cost:13667,impr:32304,clicks:436,conv:12.500,val:19020}
   {camp:"Demand_Gen_AllProduct-Int01",d:"period",type:"DEMAND_GEN",cost:765035,impr:22054541,clicks:132326,conv:1551.487,val:1079810},
   {camp:"Demand_Gen_AllProduct-Int02",d:"period",type:"DEMAND_GEN",cost:157247,impr:3352095,clicks:24244,conv:398.587,val:260977},
   {camp:"Demand_Gen_Body-Int-02",d:"period",type:"DEMAND_GEN",cost:1944449,impr:72951516,clicks:310710,conv:2705.399,val:1321567},
