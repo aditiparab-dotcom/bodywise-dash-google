@@ -199,11 +199,11 @@
 <div class="filter-bar">
   <div class="filter-group">
     <span class="filter-label">From</span>
-    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-26">
+    <input type="date" class="filter-input" id="dateFrom" value="2026-03-01" min="2026-03-01" max="2026-05-30">
   </div>
   <div class="filter-group">
     <span class="filter-label">To</span>
-    <input type="date" class="filter-input" id="dateTo" value="2026-05-25" min="2026-03-01" max="2026-05-26">
+    <input type="date" class="filter-input" id="dateTo" value="2026-05-25" min="2026-03-01" max="2026-05-30">
   </div>
   <div class="quick-btns">
     <button class="quick-btn" onclick="setRange('mar')">March</button>
@@ -601,6 +601,11 @@ const RAW_DAILY = [
   {d:"2026-05-25",cost:449776,impr:7691952,clicks:70595,conv:956.0,val:1140406,ctr:0.918,cpm:58.5,cac:470,roas:2.54},
 
   {d:"2026-05-26",cost:462769,impr:8011161,clicks:74974,conv:980.7,val:1163647,ctr:0.936,cpm:57.8,cac:472,roas:2.51}
+
+  {d:"2026-05-27",cost:468728,impr:8921358,clicks:91279,conv:970.0,val:1109333,ctr:1.02,cpm:53.0,cac:483,roas:2.37},
+  {d:"2026-05-28",cost:470707,impr:8236241,clicks:81054,conv:952.0,val:1051796,ctr:0.98,cpm:57.0,cac:495,roas:2.23},
+  {d:"2026-05-29",cost:477346,impr:7092751,clicks:65261,conv:950.0,val:1132691,ctr:0.92,cpm:67.0,cac:502,roas:2.37},
+  {d:"2026-05-30",cost:469923,impr:6594881,clicks:61810,conv:998.0,val:1214730,ctr:0.94,cpm:71.0,cac:471,roas:2.58}
 ];
 
 const CAMPAIGNS = [
@@ -4134,7 +4139,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:40711,im:576308,cl:4459,cv:32.8,vl:44782,ct:0.774,cp:70.6,ca:1242,ro:1.1},
     {d:"2026-05-24",co:49238,im:652175,cl:5049,cv:33.9,vl:44314,ct:0.774,cp:75.5,ca:1454,ro:0.9},
     {d:"2026-05-25",co:45558,im:739145,cl:5058,cv:37.9,vl:54670,ct:0.684,cp:61.6,ca:1201,ro:1.2}
-    ],
+    ,
+    {d:"2026-05-26",co:38289,im:492752,cl:3632,cv:42.8,vl:57434,ct:0.737,cp:77.7,ca:896,ro:1.5},
+    {d:"2026-05-27",co:42447,im:582195,cl:4237,cv:32.3,vl:38202,ct:0.728,cp:72.9,ca:1314,ro:0.9},
+    {d:"2026-05-28",co:41564,im:551508,cl:4196,cv:30.5,vl:45720,ct:0.761,cp:75.4,ca:1364,ro:1.1},
+    {d:"2026-05-29",co:27661,im:356373,cl:2613,cv:29.7,vl:38725,ct:0.733,cp:77.6,ca:933,ro:1.4},
+    {d:"2026-05-30",co:30920,im:446882,cl:3082,cv:30.1,vl:40196,ct:0.69,cp:69.2,ca:1028,ro:1.3}],
   "HG": [
     {d:"2026-03-01",co:123585,im:393926,cl:21806,cv:247.3,vl:256319,ct:5.536,cp:313.7,ca:500,ro:2.07},
     {d:"2026-03-02",co:114721,im:376478,cl:18670,cv:187.72,vl:194833,ct:4.959,cp:304.7,ca:611,ro:1.7},
@@ -4223,7 +4233,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:180221,im:6607134,cl:34903,cv:247.5,vl:216265,ct:0.528,cp:27.3,ca:728,ro:1.2},
     {d:"2026-05-24",co:179610,im:6434406,cl:33229,cv:285.6,vl:233493,ct:0.516,cp:27.9,ca:629,ro:1.3},
     {d:"2026-05-25",co:168651,im:5843745,cl:30692,cv:230.1,vl:202381,ct:0.525,cp:28.9,ca:733,ro:1.2}
-    ],
+    ,
+    {d:"2026-05-26",co:176250,im:6236199,cl:32456,cv:278.4,vl:264375,ct:0.52,cp:28.3,ca:633,ro:1.5},
+    {d:"2026-05-27",co:175891,im:6908886,cl:37492,cv:274.5,vl:246247,ct:0.543,cp:25.5,ca:641,ro:1.4},
+    {d:"2026-05-28",co:174267,im:6437433,cl:37359,cv:290.6,vl:243974,ct:0.58,cp:27.1,ca:600,ro:1.4},
+    {d:"2026-05-29",co:179191,im:5514847,cl:30775,cv:238.9,vl:232948,ct:0.558,cp:32.5,ca:750,ro:1.3},
+    {d:"2026-05-30",co:168928,im:4482384,cl:26504,cv:274.3,vl:270285,ct:0.591,cp:37.7,ca:616,ro:1.6}],
   "HGP": [
     {d:"2026-03-01",co:46,im:1071,cl:3,cv:1.0,vl:949,ct:0.28,cp:43.1,ca:46,ro:20.55},
     {d:"2026-03-02",co:36,im:294,cl:3,cv:0.0,vl:0,ct:1.02,cp:121.8,ca:0,ro:0.0},
@@ -4386,7 +4401,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:25829,im:41393,cl:808,cv:60.6,vl:105899,ct:1.952,cp:624.0,ca:426,ro:4.1},
     {d:"2026-05-24",co:25159,im:45447,cl:864,cv:48.5,vl:70445,ct:1.901,cp:553.6,ca:518,ro:2.8},
     {d:"2026-05-25",co:23336,im:41277,cl:830,cv:50.6,vl:86343,ct:2.011,cp:565.4,ca:461,ro:3.7}
-    ],
+    ,
+    {d:"2026-05-26",co:22213,im:41354,cl:759,cv:44.5,vl:55532,ct:1.835,cp:537.1,ca:499,ro:2.5},
+    {d:"2026-05-27",co:21164,im:42427,cl:793,cv:63.6,vl:93122,ct:1.869,cp:498.8,ca:333,ro:4.4},
+    {d:"2026-05-28",co:22758,im:42989,cl:779,cv:53.5,vl:72826,ct:1.812,cp:529.4,ca:425,ro:3.2},
+    {d:"2026-05-29",co:25278,im:47010,cl:873,cv:52.1,vl:68251,ct:1.857,cp:537.7,ca:485,ro:2.7},
+    {d:"2026-05-30",co:24208,im:49491,cl:806,cv:57.9,vl:94411,ct:1.629,cp:489.1,ca:418,ro:3.9}],
   "HGRO": [
     {d:"2026-03-01",co:18161,im:177419,cl:1697,cv:45.4,vl:42996,ct:0.956,cp:102.4,ca:400,ro:2.37},
     {d:"2026-03-02",co:17964,im:209437,cl:1622,cv:47.85,vl:44411,ct:0.774,cp:85.8,ca:375,ro:2.47},
@@ -4475,7 +4495,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:61610,im:1683970,cl:14318,cv:76.4,vl:92415,ct:0.85,cp:36.6,ca:806,ro:1.5},
     {d:"2026-05-24",co:68159,im:1945305,cl:14779,cv:95.9,vl:102238,ct:0.76,cp:35.0,ca:711,ro:1.5},
     {d:"2026-05-25",co:69219,im:2239447,cl:17907,cv:84.3,vl:89985,ct:0.8,cp:30.9,ca:822,ro:1.3}
-    ],
+    ,
+    {d:"2026-05-26",co:63517,im:1981413,cl:15552,cv:95.0,vl:133386,ct:0.785,cp:32.1,ca:669,ro:2.1},
+    {d:"2026-05-27",co:65038,im:2537590,cl:18679,cv:86.2,vl:97557,ct:0.736,cp:25.6,ca:754,ro:1.5},
+    {d:"2026-05-28",co:65742,im:2307863,cl:17629,cv:81.1,vl:78890,ct:0.764,cp:28.5,ca:811,ro:1.2},
+    {d:"2026-05-29",co:67716,im:2034986,cl:16137,cv:102.3,vl:115117,ct:0.793,cp:33.3,ca:662,ro:1.7},
+    {d:"2026-05-30",co:66699,im:1970582,cl:14971,cv:87.7,vl:93379,ct:0.76,cp:33.8,ca:761,ro:1.4}],
   "MG": [
     {d:"2026-03-01",co:6094,im:22629,cl:262,cv:7.58,vl:8879,ct:1.158,cp:269.3,ca:804,ro:1.46},
     {d:"2026-03-02",co:6267,im:25095,cl:228,cv:14.0,vl:18300,ct:0.909,cp:249.7,ca:448,ro:2.92},
@@ -4564,7 +4589,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:19046,im:148210,cl:1383,cv:30.4,vl:47615,ct:0.933,cp:128.5,ca:626,ro:2.5},
     {d:"2026-05-24",co:17413,im:114250,cl:1118,cv:23.5,vl:38309,ct:0.979,cp:152.4,ca:740,ro:2.2},
     {d:"2026-05-25",co:16636,im:109835,cl:1237,cv:26.2,vl:43254,ct:1.126,cp:151.5,ca:636,ro:2.6}
-    ],
+    ,
+    {d:"2026-05-26",co:21490,im:157881,cl:2797,cv:25.8,vl:38682,ct:1.772,cp:136.1,ca:834,ro:1.8},
+    {d:"2026-05-27",co:18418,im:124364,cl:2434,cv:18.5,vl:27627,ct:1.957,cp:148.1,ca:996,ro:1.5},
+    {d:"2026-05-28",co:17797,im:131348,cl:2391,cv:17.0,vl:26696,ct:1.82,cp:135.5,ca:1047,ro:1.5},
+    {d:"2026-05-29",co:18538,im:154778,cl:1964,cv:29.4,vl:50053,ct:1.269,cp:119.8,ca:630,ro:2.7},
+    {d:"2026-05-30",co:18303,im:136545,cl:1396,cv:30.0,vl:49418,ct:1.022,cp:134.0,ca:611,ro:2.7}],
   "Others": [
     {d:"2026-03-01",co:151287,im:411074,cl:13078,cv:429.9,vl:382692,ct:3.181,cp:368.0,ca:352,ro:2.53},
     {d:"2026-03-02",co:127913,im:589940,cl:12375,cv:462.8,vl:288034,ct:2.098,cp:216.8,ca:276,ro:2.25},
@@ -4653,7 +4683,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:181799,im:4660786,cl:27582,cv:253.9,vl:381778,ct:0.592,cp:39.0,ca:716,ro:2.1},
     {d:"2026-05-24",co:176835,im:4356130,cl:24292,cv:241.7,vl:353670,ct:0.558,cp:40.6,ca:732,ro:2.0},
     {d:"2026-05-25",co:172264,im:4582490,cl:26788,cv:255.4,vl:361754,ct:0.585,cp:37.6,ca:675,ro:2.1}
-    ],
+    ,
+    {d:"2026-05-26",co:166448,im:4634731,cl:25205,cv:225.5,vl:316251,ct:0.544,cp:35.9,ca:738,ro:1.9},
+    {d:"2026-05-27",co:186439,im:6500316,cl:29971,cv:203.5,vl:298302,ct:0.461,cp:28.7,ca:916,ro:1.6},
+    {d:"2026-05-28",co:171645,im:5566461,cl:26766,cv:196.2,vl:274632,ct:0.481,cp:30.8,ca:875,ro:1.6},
+    {d:"2026-05-29",co:168446,im:4028097,cl:22433,cv:236.5,vl:336892,ct:0.557,cp:41.8,ca:712,ro:2.0},
+    {d:"2026-05-30",co:164856,im:4047593,cl:21693,cv:237.9,vl:362683,ct:0.536,cp:40.7,ca:693,ro:2.2}],
   "PPHG": [
     {d:"2026-03-01",co:14197,im:99030,cl:3238,cv:4.78,vl:4526,ct:3.27,cp:143.4,ca:2970,ro:0.32},
     {d:"2026-03-02",co:13292,im:91815,cl:2469,cv:6.05,vl:3999,ct:2.689,cp:144.8,ca:2197,ro:0.3},
@@ -4831,7 +4866,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:60619,im:2457171,cl:16364,cv:89.8,vl:109114,ct:0.666,cp:24.7,ca:675,ro:1.8},
     {d:"2026-05-24",co:46092,im:1383423,cl:10286,cv:64.5,vl:78356,ct:0.744,cp:33.3,ca:715,ro:1.7},
     {d:"2026-05-25",co:41624,im:1445788,cl:10677,cv:58.8,vl:66598,ct:0.738,cp:28.8,ca:708,ro:1.6}
-    ],
+    ,
+    {d:"2026-05-26",co:51875,im:2337372,cl:13881,cv:65.8,vl:72625,ct:0.594,cp:22.2,ca:789,ro:1.4},
+    {d:"2026-05-27",co:70103,im:3946203,cl:20400,cv:74.9,vl:77113,ct:0.517,cp:17.8,ca:936,ro:1.1},
+    {d:"2026-05-28",co:57580,im:2889110,cl:14930,cv:65.4,vl:69096,ct:0.517,cp:19.9,ca:881,ro:1.2},
+    {d:"2026-05-29",co:43931,im:1422843,cl:9299,cv:52.8,vl:61503,ct:0.654,cp:30.9,ca:833,ro:1.4},
+    {d:"2026-05-30",co:51575,im:1567778,cl:10526,cv:64.7,vl:82520,ct:0.671,cp:32.9,ca:797,ro:1.6}],
   "SPF": [
     {d:"2026-03-25",co:72,im:210,cl:4,cv:1.0,vl:549,ct:1.905,cp:341.4,ca:72,ro:7.66},
     {d:"2026-03-26",co:1239,im:2954,cl:135,cv:4.54,vl:4651,ct:4.57,cp:419.6,ca:273,ro:3.75},
@@ -4985,7 +5025,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:67992,im:1416018,cl:7526,cv:85.2,vl:81590,ct:0.531,cp:48.0,ca:798,ro:1.2},
     {d:"2026-05-24",co:63349,im:1166046,cl:6812,cv:105.6,vl:107693,ct:0.584,cp:54.3,ca:600,ro:1.7},
     {d:"2026-05-25",co:60212,im:1197473,cl:6777,cv:97.7,vl:96339,ct:0.566,cp:50.3,ca:616,ro:1.6}
-    ],
+    ,
+    {d:"2026-05-26",co:59522,im:1312887,cl:6594,cv:87.4,vl:77379,ct:0.502,cp:45.3,ca:681,ro:1.3},
+    {d:"2026-05-27",co:57772,im:1508469,cl:6674,cv:102.0,vl:103990,ct:0.442,cp:38.3,ca:567,ro:1.8},
+    {d:"2026-05-28",co:60146,im:1145646,cl:5616,cv:100.1,vl:96234,ct:0.49,cp:52.5,ca:601,ro:1.6},
+    {d:"2026-05-29",co:63147,im:1072375,cl:5579,cv:82.9,vl:82091,ct:0.52,cp:58.9,ca:762,ro:1.3},
+    {d:"2026-05-30",co:67046,im:1169281,cl:5873,cv:99.7,vl:87160,ct:0.502,cp:57.3,ca:672,ro:1.3}],
   "UFR": [
     {d:"2026-03-01",co:36679,im:233495,cl:4369,cv:72.26,vl:74750,ct:1.871,cp:157.1,ca:508,ro:2.04},
     {d:"2026-03-02",co:36973,im:388727,cl:5201,cv:68.49,vl:69176,ct:1.338,cp:95.1,ca:540,ro:1.87},
@@ -5074,7 +5119,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:28794,im:488158,cl:5332,cv:32.3,vl:28794,ct:1.092,cp:59.0,ca:891,ro:1.0},
     {d:"2026-05-24",co:29803,im:573567,cl:4981,cv:29.9,vl:23842,ct:0.868,cp:52.0,ca:997,ro:0.8},
     {d:"2026-05-25",co:27438,im:593308,cl:5083,cv:28.4,vl:19207,ct:0.857,cp:46.2,ca:966,ro:0.7}
-    ],
+    ,
+    {d:"2026-05-26",co:31228,im:698658,cl:6593,cv:33.9,vl:37474,ct:0.944,cp:44.7,ca:921,ro:1.2},
+    {d:"2026-05-27",co:29920,im:739092,cl:6250,cv:28.6,vl:23936,ct:0.846,cp:40.5,ca:1045,ro:0.8},
+    {d:"2026-05-28",co:28670,im:768979,cl:6264,cv:32.3,vl:25803,ct:0.815,cp:37.3,ca:888,ro:0.9},
+    {d:"2026-05-29",co:28686,im:753805,cl:5309,cv:29.8,vl:25817,ct:0.704,cp:38.1,ca:963,ro:0.9},
+    {d:"2026-05-30",co:28721,im:668460,cl:4378,cv:24.5,vl:22977,ct:0.655,cp:43.0,ca:1172,ro:0.8}],
   "UPK": [
     {d:"2026-03-01",co:13174,im:167447,cl:1600,cv:49.56,vl:69502,ct:0.956,cp:78.7,ca:266,ro:5.28},
     {d:"2026-03-02",co:13402,im:182038,cl:1688,cv:35.47,vl:55834,ct:0.927,cp:73.6,ca:378,ro:4.17},
@@ -5163,7 +5213,12 @@ const TAG_DAY_PIVOT = {
     {d:"2026-05-23",co:46842,im:929542,cl:7174,cv:43.8,vl:60895,ct:0.772,cp:50.4,ca:1070,ro:1.3},
     {d:"2026-05-24",co:44669,im:734171,cl:6243,cv:53.3,vl:75937,ct:0.85,cp:60.8,ca:838,ro:1.7},
     {d:"2026-05-25",co:37970,im:699527,cl:6510,cv:35.7,vl:49361,ct:0.931,cp:54.3,ca:1062,ro:1.3}
-    ],
+    ,
+    {d:"2026-05-26",co:42209,im:874712,cl:7868,cv:50.7,vl:67534,ct:0.899,cp:48.3,ca:832,ro:1.6},
+    {d:"2026-05-27",co:36894,im:939218,cl:7293,cv:46.2,vl:66409,ct:0.776,cp:39.3,ca:799,ro:1.8},
+    {d:"2026-05-28",co:41376,im:730698,cl:6070,cv:46.7,vl:62064,ct:0.831,cp:56.6,ca:886,ro:1.5},
+    {d:"2026-05-29",co:40999,im:661229,cl:5631,cv:53.2,vl:65598,ct:0.852,cp:62.0,ca:771,ro:1.6},
+    {d:"2026-05-30",co:46661,im:817114,cl:6543,cv:56.9,vl:79324,ct:0.801,cp:57.1,ca:820,ro:1.7}],
 };
 
 const CAMP_PERF_DAILY = [
@@ -7777,6 +7832,34 @@ const CAMP_PERF_DAILY = [
   {camp:"Shopping-AllProducts",d:"2026-05-26",type:"SHOPPING",cost:31563,impr:92891,clicks:2062,conv:88.039,val:105237},
   {camp:"Shopping-Anti Stretch Mark Roll On",d:"2026-05-26",type:"SHOPPING",cost:3350,impr:9882,clicks:257,conv:3.333,val:1997},
   {camp:"Shopping-Nutrition01",d:"2026-05-26",type:"SHOPPING",cost:13667,impr:32304,clicks:436,conv:12.500,val:19020},
+  {camp:"Pmax_Body-NC/RC-04",d:"2026-05-27",type:"PERFORMANCE_MAX",cost:13107,impr:212482,clicks:4753,conv:27,val:41509},
+  {camp:"Pmax_Body-NC/RC-04",d:"2026-05-28",type:"PERFORMANCE_MAX",cost:13994,impr:181774,clicks:3450,conv:32,val:49286},
+  {camp:"Pmax_Body-NC/RC-04",d:"2026-05-29",type:"PERFORMANCE_MAX",cost:15031,impr:183076,clicks:2593,conv:36,val:53393},
+  {camp:"Pmax_Body-NC/RC-04",d:"2026-05-30",type:"PERFORMANCE_MAX",cost:21622,impr:323848,clicks:3382,conv:47,val:69430},
+  {camp:"Shopping-AllProducts",d:"2026-05-27",type:"SHOPPING",cost:31061,impr:103160,clicks:2203,conv:106,val:130764},
+  {camp:"Shopping-AllProducts",d:"2026-05-28",type:"SHOPPING",cost:36763,impr:112779,clicks:2217,conv:95,val:112059},
+  {camp:"Shopping-AllProducts",d:"2026-05-29",type:"SHOPPING",cost:36347,impr:112482,clicks:2118,conv:96,val:127428},
+  {camp:"Shopping-AllProducts",d:"2026-05-30",type:"SHOPPING",cost:35345,impr:111107,clicks:1933,conv:88,val:117457},
+  {camp:"Pmax-HG-NC/RC-Telugu-01",d:"2026-05-27",type:"PERFORMANCE_MAX",cost:12114,impr:109359,clicks:1810,conv:21,val:24372},
+  {camp:"Pmax-HG-NC/RC-Telugu-01",d:"2026-05-28",type:"PERFORMANCE_MAX",cost:11663,impr:120279,clicks:2166,conv:36,val:43202},
+  {camp:"Pmax-HG-NC/RC-Telugu-01",d:"2026-05-29",type:"PERFORMANCE_MAX",cost:11494,impr:103499,clicks:1900,conv:22,val:24335},
+  {camp:"Pmax-HG-NC/RC-Telugu-01",d:"2026-05-30",type:"PERFORMANCE_MAX",cost:11426,impr:99437,clicks:1853,conv:30,val:33457},
+  {camp:"Shopping-Nutrition01",d:"2026-05-27",type:"SHOPPING",cost:11933,impr:33500,clicks:418,conv:14,val:21246},
+  {camp:"Shopping-Nutrition01",d:"2026-05-28",type:"SHOPPING",cost:9386,impr:26843,clicks:355,conv:13,val:19236},
+  {camp:"Shopping-Nutrition01",d:"2026-05-29",type:"SHOPPING",cost:8610,impr:22546,clicks:302,conv:16,val:26425},
+  {camp:"Shopping-Nutrition01",d:"2026-05-30",type:"SHOPPING",cost:9641,impr:25846,clicks:328,conv:17,val:27951},
+  {camp:"Demand_Gen_Hair_Int-Hyd",d:"2026-05-27",type:"DEMAND_GEN",cost:13517,impr:676761,clicks:2085,conv:20,val:10516},
+  {camp:"Demand_Gen_Hair_Int-Hyd",d:"2026-05-28",type:"DEMAND_GEN",cost:13615,impr:683740,clicks:2149,conv:19,val:10282},
+  {camp:"Demand_Gen_Hair_Int-Hyd",d:"2026-05-29",type:"DEMAND_GEN",cost:13379,impr:605868,clicks:2130,conv:24,val:15939},
+  {camp:"Demand_Gen_Hair_Int-Hyd",d:"2026-05-30",type:"DEMAND_GEN",cost:13062,impr:539019,clicks:1877,conv:18,val:13197},
+  {camp:"Demand_Gen_Hair-Comp03",d:"2026-05-27",type:"DEMAND_GEN",cost:9678,impr:559050,clicks:2286,conv:8,val:3829},
+  {camp:"Demand_Gen_Hair-Comp03",d:"2026-05-28",type:"DEMAND_GEN",cost:9549,impr:590029,clicks:2412,conv:16,val:10508},
+  {camp:"Demand_Gen_Hair-Comp03",d:"2026-05-29",type:"DEMAND_GEN",cost:9389,impr:544949,clicks:2305,conv:7,val:4460},
+  {camp:"Demand_Gen_Hair-Comp03",d:"2026-05-30",type:"DEMAND_GEN",cost:9164,impr:478901,clicks:2152,conv:6,val:2828},
+  {camp:"Demand_Gen_Hair-LA-02",d:"2026-05-27",type:"DEMAND_GEN",cost:10077,impr:401251,clicks:5444,conv:14,val:10056},
+  {camp:"Demand_Gen_Hair-LA-02",d:"2026-05-28",type:"DEMAND_GEN",cost:9942,impr:420131,clicks:5399,conv:13,val:8704},
+  {camp:"Demand_Gen_Hair-LA-02",d:"2026-05-29",type:"DEMAND_GEN",cost:9870,impr:406881,clicks:5621,conv:13,val:7441},
+  {camp:"Demand_Gen_Hair-LA-02",d:"2026-05-30",type:"DEMAND_GEN",cost:9447,impr:338112,clicks:5004,conv:9,val:7040},
   {camp:"Demand_Gen_AllProduct-Int01",d:"period",type:"DEMAND_GEN",cost:765035,impr:22054541,clicks:132326,conv:1551.487,val:1079810},
   {camp:"Demand_Gen_AllProduct-Int02",d:"period",type:"DEMAND_GEN",cost:157247,impr:3352095,clicks:24244,conv:398.587,val:260977},
   {camp:"Demand_Gen_Body-Int-02",d:"period",type:"DEMAND_GEN",cost:1944449,impr:72951516,clicks:310710,conv:2705.399,val:1321567},
